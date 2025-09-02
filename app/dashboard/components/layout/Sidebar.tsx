@@ -1,6 +1,9 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import * as React from "react";
+import { usePathname } from "next/navigation";
 import { FaAngleDown } from "react-icons/fa";
 import { FiHome, FiShoppingCart } from "react-icons/fi";
 import { LuStore, LuChartNoAxesCombined } from "react-icons/lu";
@@ -127,6 +130,17 @@ export const navItems: INavItem[] = [
 ];
 
 export function Sidebar(props: ISidebarProps) {
+  const [expanded, setExpanded] = React.useState<string[]>([]);
+  const pathname = usePathname();
+
+  const handleToggle = (title: string) => {
+    setExpanded((prev) =>
+      prev.includes(title)
+        ? prev.filter((t) => t !== title)
+        : [...prev, title]
+    );
+  };
+
   return (
     <div className="w-2/11 h-[100vh] px-8 overflow-y-scroll">
       <Link href="/">
@@ -141,46 +155,59 @@ export function Sidebar(props: ISidebarProps) {
       <ul className="list-none">
         {navItems.map((item) => (
           <li key={item.title} className="my-4 flex flex-col">
-            <Link href={item.href}>
-              <span className="w-full bg-white rounded-md flex flex-row justify-start items-center gap-2 px-2 py-1">
+            {item.children && item.children.length > 0 ? (
+              <button
+                type="button"
+                className={`w-full rounded-md flex flex-row justify-start items-center gap-2 px-2 py-1 text-left ${pathname.startsWith(item.href) ? 'bg-white' : ''}`}
+                onClick={() => handleToggle(item.title)}
+              >
                 {item.icon && item.icon}
                 {item.title}
-                {item.children && item.children.length > 0 && (
-                  <FaAngleDown className="ms-auto" />
-                )}
-              </span>
-            </Link>
-            {item.children && item.children.length > 0 && (
+                <FaAngleDown className={`ms-auto transition-transform ${expanded.includes(item.title) ? 'rotate-180' : ''}`} />
+              </button>
+            ) : (
+              <Link href={item.href} className={`w-full rounded-md flex flex-row justify-start items-center gap-2 px-2 py-1 ${pathname === item.href ? 'bg-white' : ''}`}>
+                {item.icon && item.icon}
+                {item.title}
+              </Link>
+            )}
+            {item.children && item.children.length > 0 && expanded.includes(item.title) && (
               <div className="px-1 py-2">
                 {item.children.map((itemChild) => (
                   <div key={itemChild.title}>
-                    <Link href={itemChild.href} key={itemChild.title}>
-                      <span className="w-full hover:bg-white rounded-md flex flex-row justify-start items-center gap-3 px-2 py-1">
-                        {itemChild.icon && itemChild.icon}
-                        {itemChild.title}
-                        {itemChild.children &&
-                          itemChild.children.length > 0 && (
-                            <FaAngleDown className="ms-auto" />
-                          )}
-                      </span>
-                    </Link>
-                    {itemChild.children && itemChild.children.length > 0 && (
-                      <div className="ms-3 px-1 border-l-1 border-l-gray-400">
-                        {itemChild.children.map((itemChild2) => (
-                          <div key={itemChild2.title}>
-                            <Link href={itemChild2.href}>
-                              <span className="w-full hover:bg-white rounded-md flex flex-row justify-start items-center gap-3 ps-2 py-1">
-                                {itemChild2.icon && itemChild2.icon}
-                                {itemChild2.title}
-                                {itemChild2.children &&
-                                  itemChild2.children.length > 0 && (
-                                    <FaAngleDown className="ms-auto" />
-                                  )}
-                              </span>
-                            </Link>
+                    {!itemChild.children ? (
+                      <Link href={itemChild.href} key={itemChild.title}>
+                        <span className={`w-full hover:bg-white rounded-md flex flex-row justify-start items-center gap-3 px-2 py-1 ${pathname === itemChild.href ? 'bg-white' : ''}`}>
+                          {itemChild.icon && itemChild.icon}
+                          {itemChild.title}
+                        </span>
+                      </Link>
+                    ) : (
+                      <>
+                        <button
+                          type="button"
+                          className="w-full hover:bg-white rounded-md flex flex-row justify-start items-center gap-3 px-2 py-1 text-left"
+                          onClick={() => handleToggle(itemChild.title)}
+                        >
+                          {itemChild.icon && itemChild.icon}
+                          {itemChild.title}
+                          <FaAngleDown className={`ms-auto transition-transform ${expanded.includes(itemChild.title) ? 'rotate-180' : ''}`} />
+                        </button>
+                        {expanded.includes(itemChild.title) && itemChild.children && (
+                          <div className="ms-3 px-1 border-l-1 border-l-gray-400">
+                            {itemChild.children.map((itemChild2) => (
+                              <div key={itemChild2.title}>
+                                <Link href={itemChild2.href}>
+                                  <span className="w-full hover:bg-white rounded-md flex flex-row justify-start items-center gap-3 ps-2 py-1">
+                                    {itemChild2.icon && itemChild2.icon}
+                                    {itemChild2.title}
+                                  </span>
+                                </Link>
+                              </div>
+                            ))}
                           </div>
-                        ))}
-                      </div>
+                        )}
+                      </>
                     )}
                   </div>
                 ))}
