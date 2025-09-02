@@ -143,18 +143,21 @@ export default function Dashboard() {
       </div>
       <div className="my-6">
         <div className="w-full h-[40vh] flex flex-row justify-between items-start gap-6">
-          <div className="w-full h-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between">
+          <div className="w-full h-full bg-white rounded-2xl shadow-md p-6 flex flex-col justify-between">
             <div className="flex flex-row justify-start items-center">
-              <GrMoney className="mr-6" />
+              <GrMoney className="mr-6 text-xl" />
               <h4 className="text-lg font-normal">Sales</h4>
             </div>
             <Line options={options} data={data} />
           </div>
-          <div className="w-full h-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between">
+          <div className="w-full h-full bg-white rounded-2xl shadow-md p-6 flex flex-col justify-between">
             <div className="flex flex-row justify-start items-center">
-              <AiOutlineStock className="mr-6" />
-              <div>
+              <AiOutlineStock className="mr-6 text-xl" />
+              <div className="w-full flex flex-row justify-between items-center">
                 <h4 className="text-lg font-normal">Inventory Stocks</h4>
+                <Link href="/" className="text-sm text-blue-500">
+                  See All
+                </Link>
               </div>
             </div>
             <div className="mt-4 mx-2 mb-2 h-full overflow-y-scroll">
@@ -211,14 +214,19 @@ export default function Dashboard() {
       </div>
       <div className="my-6">
         <div className="w-full h-[40vh] flex flex-row justify-between items-start gap-6">
-          <div className="w-full h-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between">
+          <div className="w-full h-full bg-white rounded-2xl shadow-md p-6 flex flex-col justify-between">
             <div className="flex flex-row justify-start items-center">
-              <FiShoppingCart className="mr-6" />
-              <div>
-                <h4 className="text-lg font-normal">Recent Orders</h4>
-                <p className="text-sm text-gray-500">
-                  You have completed 350 orders this month
-                </p>
+              <FiShoppingCart className="mr-6 text-xl" />
+              <div className="w-full flex flex-row justify-between items-center">
+                <div>
+                  <h4 className="text-lg font-normal">Recent Orders</h4>
+                  <p className="text-sm text-gray-500">
+                    You have completed 350 orders this month
+                  </p>
+                </div>
+                <Link href="/" className="text-sm text-blue-500">
+                  See All
+                </Link>
               </div>
             </div>
             <div className="mt-4 mx-2 mb-2 h-full overflow-y-scroll">
@@ -247,14 +255,19 @@ export default function Dashboard() {
               </ul>
             </div>
           </div>
-          <div className="w-full h-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between">
+          <div className="w-full h-full bg-white rounded-2xl shadow-md p-6 flex flex-col justify-between">
             <div className="flex flex-row justify-start items-center">
-              <FaRegBell className="mr-6" />
-              <div>
-                <h4 className="text-lg font-normal">Notifications</h4>
-                <p className="text-sm text-gray-500">
-                  You have 5 new notifications
-                </p>
+              <FaRegBell className="mr-6 text-xl" />
+              <div className="w-full flex flex-row justify-between items-center">
+                <div>
+                  <h4 className="text-lg font-normal">Notifications</h4>
+                  <p className="text-sm text-gray-500">
+                    You have 5 new notifications
+                  </p>
+                </div>
+                <Link href="/" className="text-sm text-blue-500">
+                  See All
+                </Link>
               </div>
             </div>
             <div className="mt-4 mx-2 mb-2 h-full overflow-y-scroll">
