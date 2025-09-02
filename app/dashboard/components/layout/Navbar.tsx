@@ -8,7 +8,7 @@ export interface INavbarProps {
 
 export default function Navbar(props: INavbarProps) {
     return (
-        <div className='w-full px-16 py-8 flex flex-row justify-between align-center'>
+        <div className='w-full px-8 pt-6 flex flex-row justify-between align-center'>
             <div>
                 <input type="text" placeholder="Search..." className='bg-white border border-gray-300 rounded-md px-4 py-1' />
                 <button className='bg-blue-500 text-white rounded-md px-4 py-1 ms-2'>Search</button>
