@@ -1,3 +1,5 @@
+"use client"
+
 import { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -5,28 +7,65 @@ import { FaCaretUp } from "react-icons/fa";
 import { GrMoney } from "react-icons/gr";
 import { FiShoppingCart } from 'react-icons/fi';
 import { FaRegBell } from "react-icons/fa6";
+import { Line } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
 
-export const metadata: Metadata = {
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
+/* export const metadata: Metadata = {
   title: "Dashboard",
   description: "User Dashboard",
+}; */
+
+export const options = {
+  responsive: true,
+  plugins: {
+    legend: {
+      position: 'top' as const,
+    },
+    title: {
+      display: true,
+      text: 'Chart.js Line Chart',
+    },
+  },
 };
 
-const chartData = {
-  options: {
-    chart: {
-      id: "basic-bar"
-    },
-    xaxis: {
-      categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998]
-    }
-  },
-  series: [
+const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+
+export const data = {
+  labels,
+  datasets: [
     {
-      name: "series-1",
-      data: [30, 40, 45, 50, 49, 60, 70, 91]
-    }
-  ]
+      label: 'Dataset 1',
+      data: labels.map(() => Math.floor(Math.random() * 1001)),
+      borderColor: 'rgb(255, 99, 132)',
+      backgroundColor: 'rgba(255, 99, 132, 0.5)',
+    },
+    {
+      label: 'Dataset 2',
+      data: labels.map(() => Math.floor(Math.random() * 1001)),
+      borderColor: 'rgb(53, 162, 235)',
+      backgroundColor: 'rgba(53, 162, 235, 0.5)',
+    },
+  ],
 };
+
 
 export default function Dashboard() {
   return (
@@ -79,7 +118,7 @@ export default function Dashboard() {
               <GrMoney className="mr-6" />
               <h4 className="text-lg font-normal">Sales</h4>
             </div>
-
+            <Line options={options} data={data} />
           </div>
           <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between">
             <div className="flex flex-row justify-start items-center">
