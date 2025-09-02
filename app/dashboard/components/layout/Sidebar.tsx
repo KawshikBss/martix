@@ -30,12 +30,12 @@ export const navItems: INavItem[] = [
   {
     icon: <BsHandbag />,
     title: "Products",
-    href: "/products",
+    href: "/dashboard/products",
     children: [
-      { title: "All Products", href: "/products" },
-      { title: "Add Product", href: "/products/add" },
-      { title: "Categories", href: "/products/categories" },
-      { title: "Import / Export", href: "/products/import-export" }, // Premium
+      { title: "All Products", href: "/dashboard/products" },
+      { title: "Add Product", href: "/dashboard/products/add" },
+      { title: "Categories", href: "/dashboard/products/categories" },
+      { title: "Import / Export", href: "/dashboard/products/import-export" }, // Premium
     ],
   },
   {
@@ -194,7 +194,7 @@ export function Sidebar(props: ISidebarProps) {
                           <FaAngleDown className={`ms-auto transition-transform ${expanded.includes(itemChild.title) ? 'rotate-180' : ''}`} />
                         </button>
                         {expanded.includes(itemChild.title) && itemChild.children && (
-                          <div className="ms-3 px-1 border-l-1 border-l-gray-400">
+                          <div className="ml-6 px-1 border-l-1 border-l-gray-400">
                             {itemChild.children.map((itemChild2) => (
                               <div key={itemChild2.title}>
                                 <Link href={itemChild2.href}>
