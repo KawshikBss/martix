@@ -2,7 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import * as React from 'react';
 import { FaAngleDown, FaRegUserCircle, FaRegUser } from "react-icons/fa";
-import { FiHome } from 'react-icons/fi';
+import { FiHome, FiShoppingCart } from 'react-icons/fi';
 import { RiDashboardHorizontalLine } from "react-icons/ri";
 import { LuStore, LuChartNoAxesCombined } from "react-icons/lu";
 import { BsBank, BsGear } from "react-icons/bs";
@@ -22,15 +22,25 @@ const navItems: INavItem[] = [
     {
         icon: <RiDashboardHorizontalLine />, title: "Dashboard", href: "/dashboard", children: [
             {
-                icon: <LuStore />, title: 'Store', href: '/dashboard/store', children: [
+                icon: <LuStore />, title: 'Stores', href: '/dashboard/stores', children: [
                     {
-                        title: 'Products', href: '/dashboard/store/products'
+                        title: 'All Stores', href: '/dashboard/stores'
                     },
                     {
-                        title: 'Add Product', href: '/dashboard/store/products/add'
+                        title: 'Add Store', href: '/dashboard/stores/add'
+                    },
+                ]
+            },
+            {
+                icon: <FiShoppingCart />, title: 'Products', href: '/dashboard/products', children: [
+                    {
+                        title: 'All Products', href: '/dashboard/products'
                     },
                     {
-                        title: 'Categories', href: '/dashboard/store/categories'
+                        title: 'Add Product', href: '/dashboard/products/add'
+                    },
+                    {
+                        title: 'Categories', href: '/dashboard/categories'
                     }
                 ]
             },
