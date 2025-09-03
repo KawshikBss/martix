@@ -34,7 +34,7 @@ export const navItems: INavItem[] = [
     children: [
       { title: "All Products", href: "/dashboard/products" },
       { title: "Add Product", href: "/dashboard/products/add" },
-      { title: "Categories", href: "/dashboard/products/categories" },
+      { title: "Categories", href: "/dashboard/categories" },
       { title: "Import / Export", href: "/dashboard/products/import-export" }, // Premium
     ],
   },
