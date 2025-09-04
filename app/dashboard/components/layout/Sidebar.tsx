@@ -41,12 +41,12 @@ export const navItems: INavItem[] = [
   {
     icon: <BsBoxes />,
     title: "Inventory",
-    href: "/inventory",
+    href: "/dashboard/inventory",
     children: [
-      { title: "Stock Levels", href: "/inventory" },
-      { title: "Stock In / Stock Out", href: "/inventory/adjust" },
-      { title: "Low Stock Alerts", href: "/inventory/alerts" },
-      { title: "Adjustment History", href: "/inventory/history" },
+      { title: "Stock Levels", href: "/dashboard/inventory/stock-levels" },
+      { title: "Stock In / Stock Out", href: "/dashboard/inventory/adjust" },
+      { title: "Low Stock Alerts", href: "/dashboard/inventory/alerts" },
+      { title: "Adjustment History", href: "/dashboard/inventory/history" },
     ],
   },
   {
@@ -135,9 +135,7 @@ export function Sidebar(props: ISidebarProps) {
 
   const handleToggle = (title: string) => {
     setExpanded((prev) =>
-      prev.includes(title)
-        ? prev.filter((t) => t !== title)
-        : [...prev, title]
+      prev.includes(title) ? prev.filter((t) => t !== title) : [...prev, title]
     );
   };
 
@@ -158,61 +156,85 @@ export function Sidebar(props: ISidebarProps) {
             {item.children && item.children.length > 0 ? (
               <button
                 type="button"
-                className={`w-full rounded-md flex flex-row justify-start items-center gap-2 px-2 py-1 text-left ${pathname.startsWith(item.href) ? 'bg-white' : ''}`}
+                className={`w-full rounded-md flex flex-row justify-start items-center gap-2 px-2 py-1 text-left ${
+                  pathname.startsWith(item.href) ? "bg-white" : ""
+                }`}
                 onClick={() => handleToggle(item.title)}
               >
                 {item.icon && item.icon}
                 {item.title}
-                <FaAngleDown className={`ms-auto transition-transform ${expanded.includes(item.title) ? 'rotate-180' : ''}`} />
+                <FaAngleDown
+                  className={`ms-auto transition-transform ${
+                    expanded.includes(item.title) ? "rotate-180" : ""
+                  }`}
+                />
               </button>
             ) : (
-              <Link href={item.href} className={`w-full rounded-md flex flex-row justify-start items-center gap-2 px-2 py-1 ${pathname === item.href ? 'bg-white' : ''}`}>
+              <Link
+                href={item.href}
+                className={`w-full rounded-md flex flex-row justify-start items-center gap-2 px-2 py-1 ${
+                  pathname === item.href ? "bg-white" : ""
+                }`}
+              >
                 {item.icon && item.icon}
                 {item.title}
               </Link>
             )}
-            {item.children && item.children.length > 0 && expanded.includes(item.title) && (
-              <div className="px-1 py-2">
-                {item.children.map((itemChild) => (
-                  <div key={itemChild.title}>
-                    {!itemChild.children ? (
-                      <Link href={itemChild.href} key={itemChild.title}>
-                        <span className={`w-full hover:bg-white rounded-md flex flex-row justify-start items-center gap-3 px-2 py-1 ${pathname === itemChild.href ? 'bg-white' : ''}`}>
-                          {itemChild.icon && itemChild.icon}
-                          {itemChild.title}
-                        </span>
-                      </Link>
-                    ) : (
-                      <>
-                        <button
-                          type="button"
-                          className="w-full hover:bg-white rounded-md flex flex-row justify-start items-center gap-3 px-2 py-1 text-left"
-                          onClick={() => handleToggle(itemChild.title)}
-                        >
-                          {itemChild.icon && itemChild.icon}
-                          {itemChild.title}
-                          <FaAngleDown className={`ms-auto transition-transform ${expanded.includes(itemChild.title) ? 'rotate-180' : ''}`} />
-                        </button>
-                        {expanded.includes(itemChild.title) && itemChild.children && (
-                          <div className="ml-6 px-1 border-l-1 border-l-gray-400">
-                            {itemChild.children.map((itemChild2) => (
-                              <div key={itemChild2.title}>
-                                <Link href={itemChild2.href}>
-                                  <span className="w-full hover:bg-white rounded-md flex flex-row justify-start items-center gap-3 ps-2 py-1">
-                                    {itemChild2.icon && itemChild2.icon}
-                                    {itemChild2.title}
-                                  </span>
-                                </Link>
+            {item.children &&
+              item.children.length > 0 &&
+              expanded.includes(item.title) && (
+                <div className="px-1 py-2">
+                  {item.children.map((itemChild) => (
+                    <div key={itemChild.title}>
+                      {!itemChild.children ? (
+                        <Link href={itemChild.href} key={itemChild.title}>
+                          <span
+                            className={`w-full hover:bg-white rounded-md flex flex-row justify-start items-center gap-3 px-2 py-1 ${
+                              pathname === itemChild.href ? "bg-white" : ""
+                            }`}
+                          >
+                            {itemChild.icon && itemChild.icon}
+                            {itemChild.title}
+                          </span>
+                        </Link>
+                      ) : (
+                        <>
+                          <button
+                            type="button"
+                            className="w-full hover:bg-white rounded-md flex flex-row justify-start items-center gap-3 px-2 py-1 text-left"
+                            onClick={() => handleToggle(itemChild.title)}
+                          >
+                            {itemChild.icon && itemChild.icon}
+                            {itemChild.title}
+                            <FaAngleDown
+                              className={`ms-auto transition-transform ${
+                                expanded.includes(itemChild.title)
+                                  ? "rotate-180"
+                                  : ""
+                              }`}
+                            />
+                          </button>
+                          {expanded.includes(itemChild.title) &&
+                            itemChild.children && (
+                              <div className="ml-6 px-1 border-l-1 border-l-gray-400">
+                                {itemChild.children.map((itemChild2) => (
+                                  <div key={itemChild2.title}>
+                                    <Link href={itemChild2.href}>
+                                      <span className="w-full hover:bg-white rounded-md flex flex-row justify-start items-center gap-3 ps-2 py-1">
+                                        {itemChild2.icon && itemChild2.icon}
+                                        {itemChild2.title}
+                                      </span>
+                                    </Link>
+                                  </div>
+                                ))}
                               </div>
-                            ))}
-                          </div>
-                        )}
-                      </>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
+                            )}
+                        </>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
           </li>
         ))}
       </ul>
