@@ -1,6 +1,7 @@
 interface Product {
   id: number;
   name: string;
+  description?: string;
   sku: string;
   category: string;
   price: number;
@@ -14,6 +15,8 @@ const productsData: Product[] = [
   {
     id: 1,
     name: "Doxiva",
+    description:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
     sku: "DOX400",
     category: "Tablet",
     price: 29.99,
@@ -25,6 +28,8 @@ const productsData: Product[] = [
   {
     id: 2,
     name: "Napa extend",
+    description:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
     sku: "NAP665",
     category: "Tablet",
     price: 39.99,
@@ -36,6 +41,8 @@ const productsData: Product[] = [
   {
     id: 3,
     name: "Angilock",
+    description:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
     sku: "ANG50",
     category: "Tablet",
     price: 49.99,
