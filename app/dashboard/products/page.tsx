@@ -72,12 +72,15 @@ export default function Products() {
           </thead>
           <tbody>
             {productsData.map((product) => (
-              <tr className="border-b border-gray-300 hover:bg-gray-50">
+              <tr
+                key={product.id}
+                className="border-b border-gray-300 hover:bg-gray-50"
+              >
                 <td className="px-2 py-4">
                   <input type="checkbox" />
                 </td>
                 <td className="px-2 py-4">
-                  <Link href={"/products/"}>
+                  <Link href={`/dashboard/products/${product.id}`}>
                     <Image
                       src={product.image}
                       alt={product.name}
@@ -88,7 +91,9 @@ export default function Products() {
                   </Link>
                 </td>
                 <td className="px-2 py-4 font-medium">
-                  <Link href={"/products/"}>{product.name}</Link>
+                  <Link href={`/dashboard/products/${product.id}`}>
+                    {product.name}
+                  </Link>
                 </td>
                 <td className="px-2 py-4">{product.sku}</td>
                 <td className="px-2 py-4">{product.category}</td>
