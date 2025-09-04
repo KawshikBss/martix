@@ -4,12 +4,8 @@ import productsData from "@/public/data/productsData";
 import Image from "next/image";
 import Link from "next/link";
 import * as React from "react";
-import {
-  FaHourglassHalf,
-  FaChartBar,
-  FaCartShopping,
-  FaCaretUp,
-} from "react-icons/fa6";
+import { FaHourglassHalf, FaChartBar, FaCaretUp } from "react-icons/fa6";
+import { GrPieChart } from "react-icons/gr";
 import { Bar, Doughnut } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -171,6 +167,7 @@ export default function StockLevels() {
         </div>
       </div>
       <div className="w-full bg-white rounded-2xl shadow-md p-6">
+        <h4 className="text-lg font-semibold mb-4">Stock Details</h4>
         <table className="w-full text-left">
           <thead>
             <tr className="border-b border-gray-300 text-gray-500">
@@ -224,16 +221,16 @@ export default function StockLevels() {
 
       <div className="w-full my-6 flex flex-row justify-between items-start gap-6">
         <div className="w-full h-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between">
-          <div className="flex flex-row justify-start items-center">
-            {/* <GrMoney className="mr-6 text-xl" /> */}
-            <h4 className="text-lg font-normal">Stock Distribution</h4>
+          <div className="mb-4 flex flex-row justify-start items-center">
+            <GrPieChart className="mr-6 text-xl" />
+            <h4 className="text-lg font-semibold">Stock Distribution</h4>
           </div>
           <Doughnut data={doughnutChartData} />
         </div>
         <div className="w-full h-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between">
-          <div className="flex flex-row justify-start items-center">
-            {/* <GrMoney className="mr-6 text-xl" /> */}
-            <h4 className="text-lg font-normal">Stock Value</h4>
+          <div className="mb-4 flex flex-row justify-start items-center">
+            <FaChartBar className="mr-6 text-xl" />
+            <h4 className="text-lg font-semibold">Stock Value</h4>
           </div>
           <Bar options={barChartOptions} data={barChartData} />
         </div>
