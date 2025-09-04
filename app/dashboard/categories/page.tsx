@@ -10,7 +10,7 @@ export default function Categories() {
         <div className="w-full flex flex-row justify-between items-center">
           <h3 className="text-2xl font-medium">Categories</h3>
           <Link
-            href="/"
+            href="/dashboard/categories/add"
             className="bg-[#615cf6] hover:bg-transparent text-white hover:text-[#615cf6] border border-[#615cf6] px-2 py-1 rounded-md"
           >
             + Add New Category
