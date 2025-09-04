@@ -4,24 +4,32 @@ import productsData from "@/public/data/productsData";
 import Image from "next/image";
 import Link from "next/link";
 import * as React from "react";
-import { FaHourglassHalf, FaChartBar, FaCaretUp } from "react-icons/fa6";
-import { GrPieChart } from "react-icons/gr";
-import { Bar, Doughnut } from "react-chartjs-2";
+import {
+  FaHourglassHalf,
+  FaChartBar,
+  FaCaretUp,
+  FaChartLine,
+} from "react-icons/fa6";
+import { Bar, Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   ArcElement,
+  PointElement,
   Tooltip,
   Legend,
   CategoryScale,
   LinearScale,
   BarElement,
   Title,
+  LineElement,
 } from "chart.js";
 import { FaBalanceScaleLeft } from "react-icons/fa";
 ChartJS.register(
   ArcElement,
+  PointElement,
   Tooltip,
   Legend,
+  LineElement,
   CategoryScale,
   LinearScale,
   BarElement,
@@ -94,11 +102,121 @@ const barChartData = {
   ],
 };
 
+const lineChartOptions = {
+  responsive: true,
+  plugins: {
+    legend: {
+      position: "top" as const,
+    },
+    title: {
+      display: true,
+      text: "Chart.js Line Chart",
+    },
+  },
+};
+
+const lineChartLabels = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+];
+
+const lineChartData = {
+  labels: lineChartLabels,
+  datasets: [
+    {
+      label: "Dataset 1",
+      data: lineChartLabels.map(() => Math.floor(Math.random() * 1001)),
+      borderColor: "rgb(255, 99, 132)",
+      backgroundColor: "rgba(255, 99, 132, 0.5)",
+    },
+    {
+      label: "Dataset 2",
+      data: lineChartLabels.map(() => Math.floor(Math.random() * 1001)),
+      borderColor: "rgb(53, 162, 235)",
+      backgroundColor: "rgba(53, 162, 235, 0.5)",
+    },
+  ],
+};
+
+const horizontalBarChartLabels = [
+  ...productsData.map((product) => product.name),
+];
+
+const horizontalBarChartData = {
+  labels: horizontalBarChartLabels,
+  datasets: [
+    {
+      label: "Dataset 1",
+      data: horizontalBarChartLabels.map(() =>
+        Math.floor(Math.random() * 1001)
+      ),
+      backgroundColor: "rgba(255, 99, 132, 0.5)",
+    },
+    {
+      label: "Dataset 2",
+      data: horizontalBarChartLabels.map(() =>
+        Math.floor(Math.random() * 1001)
+      ),
+      backgroundColor: "rgba(53, 162, 235, 0.5)",
+    },
+  ],
+};
+
 export default function InventoryAdjustStocks() {
   return (
     <main className="p-8">
       <h3 className="text-2xl font-medium my-6">Stock Levels</h3>
-
+      <div className="flex flex-row items-center justify-between mb-6 gap-4 flex-wrap">
+        {/* Filters */}
+        <div className="flex flex-row items-center gap-4 flex-wrap">
+          {/* Date Range Picker */}
+          <select className="bg-white border border-gray-300 rounded-md px-2 py-2">
+            <option>Today</option>
+            <option>Last 7 days</option>
+            <option>This Month</option>
+            <option>Custom</option>
+          </select>
+          {/* Type Filter */}
+          <select className="bg-white border border-gray-300 rounded-md px-2 py-2">
+            <option>All</option>
+            <option>Stock In</option>
+            <option>Stock Out</option>
+          </select>
+          {/* Category Filter */}
+          <select className="bg-white border border-gray-300 rounded-md px-2 py-2">
+            <option>All Categories</option>
+            <option>Medicine</option>
+            <option>Equipment</option>
+            <option>Consumables</option>
+          </select>
+          {/* Search Bar */}
+          <input
+            type="text"
+            placeholder="Search by name, SKU, or supplier"
+            className="bg-white border border-gray-300 rounded-md px-2 py-2 min-w-[300px]"
+          />
+        </div>
+        {/* Quick Actions */}
+        <div className="flex flex-row gap-2">
+          <Link
+            href="/"
+            className="bg-green-500 hover:bg-transparent text-white hover:text-green-500 border border-green-500 px-2 py-1 rounded-md"
+          >
+            + Add Stock In
+          </Link>
+          <Link
+            href="/"
+            className="bg-red-500 hover:bg-transparent text-white hover:text-red-500 border border-red-500 px-2 py-1 rounded-md"
+          >
+            - Record Stock Out
+          </Link>
+        </div>
+      </div>
       <div className="my-6 w-full flex flex-row justify-between gap-4">
         <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between">
           <div className="flex flex-row justify-between items-center">
@@ -193,11 +311,25 @@ export default function InventoryAdjustStocks() {
                     {product.name} [{product.sku}]
                   </Link>
                 </td>
-                <td className="px-2 py-4">
+                <td
+                  className={`px-2 py-4 text-${
+                    product.stockQty % 2 == 0 ? "green" : "red"
+                  }-500`}
+                >
                   {product.stockQty % 2 == 0 ? "Stock In" : "Stock Out"}
                 </td>
-                <td className="px-2 py-4">{product.stockQty}</td>
-                <td className="px-2 py-4">
+                <td
+                  className={`px-2 py-4 text-${
+                    product.stockQty % 2 == 0 ? "green" : "red"
+                  }-500`}
+                >
+                  {product.stockQty}
+                </td>
+                <td
+                  className={`px-2 py-4 text-${
+                    product.stockQty % 2 == 0 ? "green" : "red"
+                  }-500`}
+                >
                   {product.stockQty * product.price}
                 </td>
                 <td className="px-2 py-4">
@@ -228,6 +360,39 @@ export default function InventoryAdjustStocks() {
             ))}
           </tbody>
         </table>
+      </div>
+
+      <div className="w-full my-6 flex flex-row justify-between items-start gap-6">
+        <div className="w-full h-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between">
+          <div className="mb-4 flex flex-row justify-start items-center">
+            <FaChartBar className="mr-6 text-xl" />
+            <h4 className="text-lg font-semibold">
+              Daily Stock In vs Stock Out
+            </h4>
+          </div>
+          <Bar options={barChartOptions} data={barChartData} />
+        </div>
+        <div className="w-full h-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between">
+          <div className="mb-4 flex flex-row justify-start items-center">
+            <FaChartLine className="mr-6 text-xl" />
+            <h4 className="text-lg font-semibold">
+              Daily Stock In vs Stock Out
+            </h4>
+          </div>
+          <Line options={lineChartOptions} data={lineChartData} />
+        </div>
+      </div>
+      <div className="w-full h-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between">
+        <div className="mb-4 flex flex-row justify-start items-center">
+          <FaChartBar className="mr-6 text-xl" />
+          <h4 className="text-lg font-semibold">
+            Top 5 Products by Stock In/Out
+          </h4>
+        </div>
+        <Bar
+          options={{ ...barChartOptions, indexAxis: "y" }}
+          data={horizontalBarChartData}
+        />
       </div>
     </main>
   );
