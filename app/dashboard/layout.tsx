@@ -29,7 +29,7 @@ export default function RootLayout({
       className='flex flex-row h-full'
     >
       <Sidebar />
-      <div className="h-full w-9/11">
+      <div className="h-[100vh] w-9/11 overflow-y-scroll">
         <Navbar />
         {children}
       </div>
