@@ -52,79 +52,79 @@ export const navItems: INavItem[] = [
   {
     icon: <FiShoppingCart />,
     title: "Orders",
-    href: "/orders",
+    href: "/dashboard/orders",
     children: [
-      { title: "All Orders", href: "/orders" },
-      { title: "Create New Order", href: "/orders/new" },
-      { title: "Pending Orders", href: "/orders/pending" },
-      { title: "Completed Orders", href: "/orders/completed" },
+      { title: "All Orders", href: "/dashboard/orders" },
+      { title: "Create New Order", href: "/dashboard/orders/new" },
+      { title: "Pending Orders", href: "/dashboard/orders/pending" },
+      { title: "Completed Orders", href: "/dashboard/orders/completed" },
     ],
   },
   {
     icon: <MdPointOfSale />,
     title: "Sales / POS",
-    href: "/sales",
+    href: "/dashboard/sales",
     children: [
-      { title: "Quick Sale", href: "/sales/quick" },
-      { title: "Receipts / Invoices", href: "/sales/receipts" },
+      { title: "Quick Sale", href: "/dashboard/sales/quick" },
+      { title: "Receipts / Invoices", href: "/dashboard/sales/receipts" },
     ],
   },
   {
     icon: <TbReportSearch />,
     title: "Reports",
-    href: "/reports",
+    href: "/dashboard/reports",
     children: [
-      { title: "Sales Report", href: "/reports/sales" },
-      { title: "Profit / Loss Report", href: "/reports/profit-loss" }, // Premium
-      { title: "Product Performance", href: "/reports/performance" }, // Premium
-      { title: "Export Reports", href: "/reports/export" }, // Premium
+      { title: "Sales Report", href: "/dashboard/reports/sales" },
+      { title: "Profit / Loss Report", href: "/dashboard/reports/profit-loss" }, // Premium
+      { title: "Product Performance", href: "/dashboard/reports/performance" }, // Premium
+      { title: "Export Reports", href: "/dashboard/reports/export" }, // Premium
     ],
   },
   {
     icon: <MdOutlineFactory />,
     title: "Suppliers",
-    href: "/suppliers",
+    href: "/dashboard/suppliers",
     children: [
-      { title: "All Suppliers", href: "/suppliers" },
-      { title: "Purchase Orders", href: "/suppliers/orders" },
-      { title: "Supplier Payments", href: "/suppliers/payments" },
+      { title: "All Suppliers", href: "/dashboard/suppliers" },
+      { title: "Purchase Orders", href: "/dashboard/suppliers/orders" },
+      { title: "Supplier Payments", href: "/dashboard/suppliers/payments" },
     ],
   },
   {
     icon: <GrGroup />,
     title: "Customers",
-    href: "/customers",
+    href: "/dashboard/customers",
     children: [
-      { title: "Customer List", href: "/customers" },
-      { title: "Order History", href: "/customers/history" },
+      { title: "Customer List", href: "/dashboard/customers" },
+      { title: "Order History", href: "/dashboard/customers/history" },
     ],
   },
   {
     icon: <LuChartNoAxesCombined />,
     title: "Analytics / Trends",
-    href: "/analytics",
+    href: "/dashboard/analytics",
     children: [
-      { title: "Sales Forecast", href: "/analytics/forecast" },
-      { title: "Stock Suggestions", href: "/analytics/suggestions" },
+      { title: "Sales Forecast", href: "/dashboard/analytics/forecast" },
+      { title: "Stock Suggestions", href: "/dashboard/analytics/suggestions" },
     ],
   },
   {
     icon: <LuStore />,
     title: "Stores",
-    href: "/stores",
+    href: "/dashboard/stores",
     children: [
-      { title: "Branch Overview", href: "/stores" },
-      { title: "Transfer Stock", href: "/stores/transfer" },
+      { title: "Branch Overview", href: "/dashboard/stores" },
+      { title: "Transfer Stock", href: "/dashboard/stores/transfer" },
     ],
   },
   {
     icon: <BsGear />,
     title: "System",
-    href: "/system",
+    href: "/dashboard/system",
     children: [
-      { title: "Settings", href: "/system/settings" },
-      { title: "Billing / Subscription", href: "/system/billing" },
-      { title: "Help & Support", href: "/system/help" },
+      { title: "Settings", href: "/dashboard/system/settings" },
+      { title: "Billing / Subscription", href: "/dashboard/system/billing" },
+      { title: "Help & Support", href: "/dashboard/system/help" },
     ],
   },
 ];
