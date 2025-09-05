@@ -18,7 +18,7 @@ import {
   BarElement,
   Title,
   PointElement,
-  LineElement
+  LineElement,
 } from "chart.js";
 import { GrPieChart } from "react-icons/gr";
 ChartJS.register(
@@ -211,16 +211,18 @@ export default function LowStockAlerts() {
             </tr>
           </thead>
           <tbody>
-            {productsData.map((product) => (
+            {productsData.map((product, index) => (
               <tr
                 key={product.id}
-                className={`border-b border-gray-300 bg-${
-                  product.stockQty % 4 == 0
-                    ? "yellow"
-                    : product.stockQty % 2 == 0
-                    ? "red"
-                    : "orange"
-                }-500 hover:bg-gray-50`}
+                className="border-b border-gray-300"
+                style={{
+                  backgroundColor:
+                    index % 3 == 0
+                      ? "#fef3c7"
+                      : index % 2 == 0
+                      ? "#fecaca"
+                      : "#fed7aa",
+                }}
               >
                 <td className="px-2 py-4">
                   <Link href={`/dashboard/products/${product.id}`}>
@@ -243,17 +245,17 @@ export default function LowStockAlerts() {
                 <td className="px-2 py-4">{100 - product.stockQty}</td>
                 <td
                   className={`px-2 py-4 text-${
-                    product.stockQty % 4 == 0
+                    index % 3 == 0
                       ? "yellow"
-                      : product.stockQty % 2 == 0
+                      : index % 2 == 0
                       ? "red"
                       : "orange"
                   }-500`}
                 >
                   <span className="bg-white px-2 py-1 rounded-full text-sm font-medium">
-                    {product.stockQty % 4 == 0
+                    {index % 3 == 0
                       ? "Low"
-                      : product.stockQty % 2 == 0
+                      : index % 2 == 0
                       ? "Out"
                       : "Critical"}
                   </span>
