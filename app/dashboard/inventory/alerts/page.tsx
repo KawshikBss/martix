@@ -294,7 +294,7 @@ export default function LowStockAlerts() {
           </div>
           <Bar options={barChartOptions} data={barChartData} />
         </div>
-        <div className="w-full h-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between">
+        <div className="w-1/3 aspect-square bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between">
           <div className="mb-4 flex flex-row justify-start items-center">
             <GrPieChart className="mr-6 text-xl" />
             <h4 className="text-lg font-semibold">Stock Distribution</h4>
