@@ -1,4 +1,5 @@
 import productsData from "@/public/data/productsData";
+import Image from "next/image";
 import Link from "next/link";
 import * as React from "react";
 import {
@@ -33,14 +34,38 @@ export default function CompletedOrders() {
             <FaPerson className="text-2xl text-orange-500 flex flex-row justify-start items-center gap-4" />
             <h4 className="text-md font-normal text-end">Top Customers</h4>
           </div>
-          <h3 className="text-xl font-semibold text-end">+ 10,000</h3>
+          <Link
+            href="/"
+            className="flex flex-row justify-between gap-4 items-center my-2"
+          >
+            <Image
+              src="/images/user-placeholder.jpg"
+              alt="Sergel 20mg"
+              width={40}
+              height={40}
+              className="aspect-square object-cover rounded-full"
+            />
+            <h3 className="text-lg font-semibold">Rober California</h3>
+          </Link>
         </div>
         <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col items-start gap-4">
           <div className="w-full flex flex-row justify-end items-center gap-4">
             <FaTrophy className="text-2xl text-yellow-500 flex flex-row justify-start items-center gap-4" />
             <h4 className="text-md font-normal text-end">Top Sold</h4>
           </div>
-          <h3 className="text-xl font-semibold text-end">+ 10,000</h3>
+          <Link
+            href="/"
+            className="flex flex-row justify-between gap-4 items-center my-2"
+          >
+            <Image
+              src="https://globalcare.com.bd/public/uploads/all/u0KM6G8OypRGBAJ1YxNk0mbpi9zhEbRWfa1ogSm0.jpg"
+              alt="Sergel 20mg"
+              width={60}
+              height={40}
+              className="aspect-3/2 object-cover rounded-lg"
+            />
+            <h3 className="text-lg font-semibold">Sergel 20mg</h3>
+          </Link>
         </div>
       </div>
       <div className="bg-white rounded-2xl shadow-md p-6">
