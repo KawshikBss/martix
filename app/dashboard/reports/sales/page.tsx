@@ -4,12 +4,7 @@ import productsData from "@/public/data/productsData";
 import Image from "next/image";
 import Link from "next/link";
 import * as React from "react";
-import {
-  FaBox,
-  FaChartBar,
-  FaChartLine,
-  FaTrophy,
-} from "react-icons/fa";
+import { FaBox, FaChartBar, FaChartLine, FaTrophy } from "react-icons/fa";
 import { FaMoneyBill1Wave, FaPerson, FaUserGroup } from "react-icons/fa6";
 import { GrPieChart } from "react-icons/gr";
 import { Bar, Doughnut, Line } from "react-chartjs-2";
@@ -125,7 +120,7 @@ export default function SalesReport() {
             Print
           </button>
         </div>
-        <div className="my-6 flex flex-row justify-between">
+        <div className="mt-4 flex flex-row justify-between">
           <div className="flex flex-row gap-4">
             <select className="bg-white border border-gray-300 rounded-md px-2 py-2">
               <option>Today</option>
