@@ -15,28 +15,28 @@ export default function CompletedOrders() {
   return (
     <main className="p-8">
       <div className="my-6 w-full flex flex-row justify-between gap-4">
-        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col items-start gap-4">
+        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between items-start gap-4">
           <div className="w-full flex flex-row justify-end items-center gap-4">
             <FaCheck className="text-2xl text-blue-500 flex flex-row justify-start items-center gap-4" />
             <h4 className="text-md font-normal text-end">Total Completed</h4>
           </div>
           <h3 className="text-xl font-semibold text-end">+ 10,000</h3>
         </div>
-        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col items-start gap-4">
+        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between items-start gap-4">
           <div className="w-full flex flex-row justify-end items-center gap-4">
             <FaMoneyBill1Wave className="text-2xl text-green-500 flex flex-row justify-start items-center gap-4" />
             <h4 className="text-md font-normal text-end">Revenue Collected</h4>
           </div>
           <h3 className="text-xl font-semibold text-end">$ 10,000</h3>
         </div>
-        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col items-start gap-4">
+        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between items-start gap-4">
           <div className="w-full flex flex-row justify-end items-center gap-4">
             <FaPerson className="text-2xl text-orange-500 flex flex-row justify-start items-center gap-4" />
             <h4 className="text-md font-normal text-end">Top Customers</h4>
           </div>
           <Link
             href="/"
-            className="flex flex-row justify-between gap-4 items-center my-2"
+            className="flex flex-row justify-between gap-4 items-center"
           >
             <Image
               src="/images/user-placeholder.jpg"
@@ -48,14 +48,14 @@ export default function CompletedOrders() {
             <h3 className="text-lg font-semibold">Rober California</h3>
           </Link>
         </div>
-        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col items-start gap-4">
+        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between items-start gap-4">
           <div className="w-full flex flex-row justify-end items-center gap-4">
             <FaTrophy className="text-2xl text-yellow-500 flex flex-row justify-start items-center gap-4" />
             <h4 className="text-md font-normal text-end">Top Sold</h4>
           </div>
           <Link
             href="/"
-            className="flex flex-row justify-between gap-4 items-center my-2"
+            className="flex flex-row justify-between gap-4 items-center"
           >
             <Image
               src="https://globalcare.com.bd/public/uploads/all/u0KM6G8OypRGBAJ1YxNk0mbpi9zhEbRWfa1ogSm0.jpg"
