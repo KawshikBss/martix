@@ -1,6 +1,14 @@
 "use client";
 
 import * as React from "react";
+import SalesReportKpiSection from "./components/reportKpiSections/SalesReportKpiSection";
+import ProfitLossReportKpiSection from "./components/reportKpiSections/ProfitLossReportKpiSection";
+import ProductPerformanceReportKpiSection from "./components/reportKpiSections/ProductPerformanceReportKpiSection";
+import InventoryReportKpiSection from "./components/reportKpiSections/InventoryReportKpiSection";
+import PurchaseReportKpiSection from "./components/reportKpiSections/PurchaseReportKpiSection";
+import CustomerReportKpiSection from "./components/reportKpiSections/CustomerReportKpiSection";
+import SupplierReportKpiSection from "./components/reportKpiSections/SupplierReportKpiSection";
+import VatTaxReportKpiSection from "./components/reportKpiSections/VatTaxReportKpiSection";
 
 export default function ExportReports() {
   const [orderType, setOrderType] = React.useState("Sales");
@@ -29,14 +37,18 @@ export default function ExportReports() {
         </div>
         <div className="mt-4 flex flex-row justify-between gap-4">
           <select className="bg-white border border-gray-300 rounded-md px-2 py-2 w-1/6">
-            <option>Sales</option>
-            <option>Profit & Loss</option>
-            <option>Product Performance</option>
-            <option>Inventory</option>
-            <option>Purchase</option>
-            <option>Customer</option>
-            <option>Supplier</option>
-            <option>Tax/VAT</option>
+            <option onClick={() => setOrderType("Sales")}>Sales</option>
+            <option onClick={() => setOrderType("Profit & Loss")}>
+              Profit & Loss
+            </option>
+            <option onClick={() => setOrderType("Product Performance")}>
+              Product Performance
+            </option>
+            <option onClick={() => setOrderType("Inventory")}>Inventory</option>
+            <option onClick={() => setOrderType("Purchase")}>Purchase</option>
+            <option onClick={() => setOrderType("Customer")}>Customer</option>
+            <option onClick={() => setOrderType("Supplier")}>Supplier</option>
+            <option onClick={() => setOrderType("Tax/VAT")}>Tax/VAT</option>
           </select>
           <select className="bg-white border border-gray-300 rounded-md px-2 py-2 w-1/6">
             <option>Today</option>
@@ -72,7 +84,32 @@ export default function ExportReports() {
       </div>
       <div className="bg-white rounded-2xl shadow-md p-6 my-6">
         <h3 className="text-2xl font-medium">Preview</h3>
-        <div className="mt-4 p-4 border-2 border-dashed border-gray-300 rounded-md"></div>
+        <div className="mt-4 p-4 border-2 border-dashed border-gray-300 rounded-md">
+          <h3 className="text-2xl font-bold text-center border-b-2 border-gray-300 py-4 mb-6">
+            {orderType} Report - Augest
+          </h3>
+          {orderType === "Sales" ? (
+            <SalesReportKpiSection />
+          ) : orderType === "Profit & Loss" ? (
+            <ProfitLossReportKpiSection />
+          ) : orderType === "Product Performance" ? (
+            <ProductPerformanceReportKpiSection />
+          ) : orderType === "Inventory" ? (
+            <InventoryReportKpiSection />
+          ) : orderType === "Purchase" ? (
+            <PurchaseReportKpiSection />
+          ) : orderType === "Customer" ? (
+            <CustomerReportKpiSection />
+          ) : orderType === "Supplier" ? (
+            <SupplierReportKpiSection />
+          ) : orderType === "Tax/VAT" ? (
+            <VatTaxReportKpiSection />
+          ) : (
+            <div className="text-center text-gray-500">
+              Please select a valid report type.
+            </div>
+          )}
+        </div>
       </div>
     </main>
   );
