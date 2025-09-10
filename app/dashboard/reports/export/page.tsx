@@ -9,6 +9,97 @@ import PurchaseReportKpiSection from "./components/reportKpiSections/PurchaseRep
 import CustomerReportKpiSection from "./components/reportKpiSections/CustomerReportKpiSection";
 import SupplierReportKpiSection from "./components/reportKpiSections/SupplierReportKpiSection";
 import VatTaxReportKpiSection from "./components/reportKpiSections/VatTaxReportKpiSection";
+import productsData from "@/public/data/productsData";
+import { Bar, Doughnut, Line } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  PointElement,
+  LineElement,
+} from "chart.js";
+ChartJS.register(
+  ArcElement,
+  Tooltip,
+  Legend,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  PointElement,
+  LineElement,
+  Title
+);
+
+const barChartOptions = {
+  responsive: true,
+  plugins: {
+    legend: {
+      position: "top" as const,
+    },
+    title: {
+      display: true,
+      text: "Top 5 Products Sold",
+    },
+  },
+};
+
+const barChartLabels = [...productsData.map((product) => product.name)];
+
+const barChartData = {
+  labels: barChartLabels,
+  datasets: [
+    {
+      label: "Products",
+      data: barChartLabels.map(() => Math.floor(Math.random() * 1001)),
+      backgroundColor: "rgba(255, 99, 132, 0.5)",
+    },
+  ],
+};
+
+const doughnutChartData = {
+  labels: ["Red", "Yellow"],
+  datasets: [
+    {
+      label: "#",
+      data: [12, 19],
+      backgroundColor: ["rgba(255, 99, 132, 0.2)", "rgba(255, 206, 86, 0.2)"],
+      borderColor: ["rgba(255, 99, 132, 1)", "rgba(255, 206, 86, 1)"],
+      borderWidth: 1,
+    },
+  ],
+};
+
+const lineChartOptions = {
+  responsive: true,
+  plugins: {
+    legend: {
+      position: "top" as const,
+    },
+    title: {
+      display: true,
+      text: "Chart.js Line Chart",
+    },
+  },
+};
+
+const lineChartLabels = [...productsData.map((prod) => prod.name).slice(0, 7)];
+
+const lineChartData = {
+  labels: lineChartLabels,
+  datasets: [
+    {
+      label: "Dataset 1",
+      data: lineChartLabels.map(() => Math.floor(Math.random() * 1001)),
+      borderColor: "rgb(255, 99, 132)",
+      backgroundColor: "rgba(255, 99, 132, 0.5)",
+    },
+  ],
+};
 
 export default function ExportReports() {
   const [orderType, setOrderType] = React.useState("Sales");
@@ -108,6 +199,29 @@ export default function ExportReports() {
             <div className="text-center text-gray-500">
               Please select a valid report type.
             </div>
+          )}
+          {orderType === "Sales" ? (
+            <Bar options={barChartOptions} data={barChartData} />
+          ) : orderType === "Profit & Loss" ? (
+            <Bar options={barChartOptions} data={barChartData} />
+          ) : orderType === "Product Performance" ? (
+            <Bar options={barChartOptions} data={barChartData} />
+          ) : orderType === "Inventory" ? (
+            <div className="w-1/2 center mx-auto">
+              <Doughnut data={doughnutChartData} />
+            </div>
+          ) : orderType === "Purchase" ? (
+            <Line options={lineChartOptions} data={lineChartData} />
+          ) : orderType === "Customer" ? (
+            <Bar options={barChartOptions} data={barChartData} />
+          ) : orderType === "Supplier" ? (
+            <div className="w-1/2 center mx-auto">
+              <Doughnut data={doughnutChartData} />
+            </div>
+          ) : orderType === "Tax/VAT" ? (
+            <Line options={lineChartOptions} data={lineChartData} />
+          ) : (
+            ""
           )}
         </div>
       </div>
