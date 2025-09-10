@@ -17,6 +17,7 @@ import {
   BarElement,
   Title,
 } from "chart.js";
+import KpiCard from "@/components/ui/KpiCard";
 ChartJS.register(
   ArcElement,
   Tooltip,
@@ -129,42 +130,14 @@ export default function StockLevels() {
       </div>
 
       <div className="my-6 w-full flex flex-row justify-between gap-4">
-        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between">
-          <div className="flex flex-row justify-between items-center">
-            <h4 className="text-lg font-normal">Total Tracked</h4>
-          </div>
-          <h3 className="text-2xl font-semibold">+ 10,000</h3>
-          <span className="text-sm text-green-500 flex items-center">
-            <FaCaretUp /> 70%
-          </span>
-        </div>
-        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between">
-          <div className="flex flex-row justify-between items-center">
-            <h4 className="text-lg font-normal">Total Stock Units on Hand</h4>
-          </div>
-          <h3 className="text-2xl font-semibold">+ 10,000</h3>
-          <span className="text-sm text-green-500 flex items-center">
-            <FaCaretUp /> 70%
-          </span>
-        </div>
-        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between">
-          <div className="flex flex-row justify-between items-center">
-            <h4 className="text-lg font-normal">Low or Out of Stock</h4>
-          </div>
-          <h3 className="text-2xl font-semibold">+ 10,000</h3>
-          <span className="text-sm text-green-500 flex items-center">
-            <FaCaretUp /> 70%
-          </span>
-        </div>
-        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between">
-          <div className="flex flex-row justify-between items-center">
-            <h4 className="text-lg font-normal">Total Stock Value</h4>
-          </div>
-          <h3 className="text-2xl font-semibold">$ 10,000</h3>
-          <span className="text-sm text-green-500 flex items-center">
-            <FaCaretUp /> 70%
-          </span>
-        </div>
+        <KpiCard title="Total Tracked" value="+ 10,000" trend={70} />
+        <KpiCard
+          title="Total Stock Units on Hand"
+          value="+ 10,000"
+          trend={70}
+        />
+        <KpiCard title="Low or Out of Stock" value="- 10,000" trend={-70} />
+        <KpiCard title="Total Stock Value" value="$ 10,000" trend={70} />
       </div>
       <div className="w-full bg-white rounded-2xl shadow-md p-6">
         <h4 className="text-lg font-semibold mb-4">Stock Details</h4>

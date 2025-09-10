@@ -30,6 +30,7 @@ import {
 import categoriesData from "@/public/data/categoriesData";
 import { BiLineChart, BiLineChartDown } from "react-icons/bi";
 import { IoWarning } from "react-icons/io5";
+import KpiCard from "@/components/ui/KpiCard";
 ChartJS.register(
   ArcElement,
   Tooltip,
@@ -152,101 +153,51 @@ export default function ProductPerformance() {
         </div>
       </div>
       <div className="my-6 w-full flex flex-row justify-between gap-4">
-        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between items-start gap-4">
-          <div className="w-full flex flex-row justify-end items-center gap-4">
-            <FaTrophy className="text-xl text-yellow-500 flex flex-row justify-start items-center gap-4" />
-            <h4 className="text-md font-normal text-end">Top Selling</h4>
-          </div>
-          <Link
-            href="/"
-            className="flex flex-row justify-between gap-4 items-center"
-          >
-            <Image
-              src="https://globalcare.com.bd/public/uploads/all/u0KM6G8OypRGBAJ1YxNk0mbpi9zhEbRWfa1ogSm0.jpg"
-              alt="Sergel 20mg"
-              width={60}
-              height={40}
-              className="aspect-3/2 object-cover rounded-lg"
-            />
-            <h3 className="text-md font-semibold">Sergel 20mg</h3>
-          </Link>
-        </div>
-        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between items-start gap-4">
-          <div className="w-full flex flex-row justify-end items-center gap-4">
-            <FaDollarSign className="text-xl text-green-500 flex flex-row justify-start items-center gap-4" />
-            <h4 className="text-md font-normal text-end">Top Revenue</h4>
-          </div>
-          <Link
-            href="/"
-            className="flex flex-row justify-between gap-4 items-center"
-          >
-            <Image
-              src="https://globalcare.com.bd/public/uploads/all/u0KM6G8OypRGBAJ1YxNk0mbpi9zhEbRWfa1ogSm0.jpg"
-              alt="Sergel 20mg"
-              width={60}
-              height={40}
-              className="aspect-3/2 object-cover rounded-lg"
-            />
-            <h3 className="text-md font-semibold">Sergel 20mg</h3>
-          </Link>
-        </div>
-        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between items-start gap-4">
-          <div className="w-full flex flex-row justify-end items-center gap-4">
-            <FaChartLine className="text-xl text-yellow-500 flex flex-row justify-start items-center gap-4" />
-            <h4 className="text-md font-normal text-end">Top Profitable</h4>
-          </div>
-          <Link
-            href="/"
-            className="flex flex-row justify-between gap-4 items-center"
-          >
-            <Image
-              src="https://globalcare.com.bd/public/uploads/all/u0KM6G8OypRGBAJ1YxNk0mbpi9zhEbRWfa1ogSm0.jpg"
-              alt="Sergel 20mg"
-              width={60}
-              height={40}
-              className="aspect-3/2 object-cover rounded-lg"
-            />
-            <h3 className="text-md font-semibold">Sergel 20mg</h3>
-          </Link>
-        </div>
-        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between items-start gap-4">
-          <div className="w-full flex flex-row justify-end items-center gap-4">
-            <FaHourglassHalf className="text-xl text-gray-500 flex flex-row justify-start items-center gap-4" />
-            <h4 className="text-md font-normal text-end">Slowest Moving</h4>
-          </div>
-          <Link
-            href="/"
-            className="flex flex-row justify-between gap-4 items-center"
-          >
-            <Image
-              src="https://globalcare.com.bd/public/uploads/all/u0KM6G8OypRGBAJ1YxNk0mbpi9zhEbRWfa1ogSm0.jpg"
-              alt="Sergel 20mg"
-              width={60}
-              height={40}
-              className="aspect-3/2 object-cover rounded-lg"
-            />
-            <h3 className="text-md font-semibold">Sergel 20mg</h3>
-          </Link>
-        </div>
-        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between items-start gap-4">
-          <div className="w-full flex flex-row justify-end items-center gap-4">
-            <IoWarning className="text-xl text-red-500 flex flex-row justify-start items-center gap-4" />
-            <h4 className="text-md font-normal text-end">Dead Stock</h4>
-          </div>
-          <Link
-            href="/"
-            className="flex flex-row justify-between gap-4 items-center"
-          >
-            <Image
-              src="https://globalcare.com.bd/public/uploads/all/u0KM6G8OypRGBAJ1YxNk0mbpi9zhEbRWfa1ogSm0.jpg"
-              alt="Sergel 20mg"
-              width={60}
-              height={40}
-              className="aspect-3/2 object-cover rounded-lg"
-            />
-            <h3 className="text-md font-semibold">Sergel 20mg</h3>
-          </Link>
-        </div>
+        <KpiCard
+          title="Top Selling"
+          icon={<FaTrophy className="text-xl text-yellow-500" />}
+          product={{
+            name: productsData[0].name,
+            image: productsData[0].image,
+            id: productsData[0].id.toString(),
+          }}
+        />
+        <KpiCard
+          title="Top Revenue"
+          icon={<FaDollarSign className="text-lg text-green-500" />}
+          product={{
+            name: productsData[0].name,
+            image: productsData[0].image,
+            id: productsData[0].id.toString(),
+          }}
+        />
+        <KpiCard
+          title="Top Profitable"
+          icon={<FaChartLine className="text-xl text-yellow-500" />}
+          product={{
+            name: productsData[0].name,
+            image: productsData[0].image,
+            id: productsData[0].id.toString(),
+          }}
+        />
+        <KpiCard
+          title="Slowest Moving"
+          icon={<FaHourglassHalf className="text-lg text-gray-500" />}
+          product={{
+            name: productsData[0].name,
+            image: productsData[0].image,
+            id: productsData[0].id.toString(),
+          }}
+        />
+        <KpiCard
+          title="Dead Stock"
+          icon={<IoWarning className="text-xl text-red-500" />}
+          product={{
+            name: productsData[0].name,
+            image: productsData[0].image,
+            id: productsData[0].id.toString(),
+          }}
+        />
       </div>
       <div className="bg-white rounded-2xl shadow-md p-6">
         <h3 className="text-2xl font-medium">Detailed View</h3>

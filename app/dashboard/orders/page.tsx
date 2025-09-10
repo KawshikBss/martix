@@ -28,6 +28,7 @@ import {
 } from "chart.js";
 import categoriesData from "@/public/data/categoriesData";
 import { GrPieChart } from "react-icons/gr";
+import KpiCard from "@/components/ui/KpiCard";
 ChartJS.register(
   ArcElement,
   Tooltip,
@@ -120,41 +121,31 @@ export default function Orders() {
   return (
     <main className="p-8">
       <div className="my-6 w-full flex flex-row justify-between gap-4">
-        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col items-start gap-4">
-          <div className="w-full flex flex-row justify-end items-center gap-4">
-            <FaShoppingCart className="text-2xl text-blue-500 flex flex-row justify-start items-center gap-4" />
-            <h4 className="text-md font-normal text-end">Total Orders</h4>
-          </div>
-          <h3 className="text-xl font-semibold text-end">+ 10,000</h3>
-        </div>
-        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col items-start gap-4">
-          <div className="w-full flex flex-row justify-end items-center gap-4">
-            <FaMoneyBill1Wave className="text-2xl text-green-500 flex flex-row justify-start items-center gap-4" />
-            <h4 className="text-md font-normal text-end">Total Orders Value</h4>
-          </div>
-          <h3 className="text-xl font-semibold text-end">$ 10,000</h3>
-        </div>
-        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col items-start gap-4">
-          <div className="w-full flex flex-row justify-end items-center gap-4">
-            <FaHourglassHalf className="text-2xl text-yellow-500 flex flex-row justify-start items-center gap-4" />
-            <h4 className="text-md font-normal text-end">Pending</h4>
-          </div>
-          <h3 className="text-xl font-semibold text-end">+ 10,000</h3>
-        </div>
-        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col items-start gap-4">
-          <div className="w-full flex flex-row justify-end items-center gap-4">
-            <FaCheckCircle className="text-2xl text-green-500 flex flex-row justify-start items-center gap-4" />
-            <h4 className="text-md font-normal text-end">Completed</h4>
-          </div>
-          <h3 className="text-xl font-semibold text-end">+ 10,000</h3>
-        </div>
-        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col items-start gap-4">
-          <div className="w-full flex flex-row justify-end items-center gap-4">
-            <MdCancel className="text-2xl text-red-500 flex flex-row justify-start items-center gap-4" />
-            <h4 className="text-md font-normal text-end">Cancelled</h4>
-          </div>
-          <h3 className="text-xl font-semibold text-end">- 10,000</h3>
-        </div>
+        <KpiCard
+          title="Total Orders"
+          icon={<FaShoppingCart className="mr-2 text-xl text-blue-500" />}
+          value="+ 10,000"
+        />
+        <KpiCard
+          title="Total Orders Value"
+          icon={<FaMoneyBill1Wave className="mr-2 text-xl text-green-500" />}
+          value="$ 10,000"
+        />
+        <KpiCard
+          title="Pending"
+          icon={<FaHourglassHalf className="mr-2 text-xl text-yellow-500" />}
+          value="+ 10,000"
+        />
+        <KpiCard
+          title="Completed"
+          icon={<FaCheckCircle className="mr-2 text-xl text-green-500" />}
+          value="+ 10,000"
+        />
+        <KpiCard
+          title="Cancelled"
+          icon={<MdCancel className="mr-2 text-xl text-red-500" />}
+          value="- 10,000"
+        />
       </div>
       <div className="bg-white rounded-2xl shadow-md p-6">
         <div className="w-full flex flex-row justify-between items-center">

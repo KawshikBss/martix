@@ -24,6 +24,7 @@ import {
   LineElement,
 } from "chart.js";
 import { FaBalanceScaleLeft } from "react-icons/fa";
+import KpiCard from "@/components/ui/KpiCard";
 ChartJS.register(
   ArcElement,
   PointElement,
@@ -218,58 +219,34 @@ export default function InventoryAdjustStocks() {
         </div>
       </div>
       <div className="my-6 w-full flex flex-row justify-between gap-4">
-        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between">
-          <div className="flex flex-row justify-between items-center">
-            <FaChartBar className="mr-6 text-xl text-green-500" />
-            <h4 className="text-lg font-normal">Total Stock In</h4>
-          </div>
-          <h3 className="text-2xl font-semibold">+ 10,000</h3>
-          <span className="text-sm text-green-500 flex items-center">
-            <FaCaretUp /> 70%
-          </span>
-        </div>
-        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between">
-          <div className="flex flex-row justify-between items-center">
-            <FaChartBar className="mr-6 text-xl text-red-500" />
-            <h4 className="text-lg font-normal">Total Stock Out</h4>
-          </div>
-          <h3 className="text-2xl font-semibold">+ 10,000</h3>
-          <span className="text-sm text-green-500 flex items-center">
-            <FaCaretUp /> 70%
-          </span>
-        </div>
-        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between">
-          <div className="flex flex-row justify-between items-center">
-            <FaBalanceScaleLeft className="mr-6 text-xl text-yellow-500" />
-            <h4 className="text-lg font-normal">Net Movement</h4>
-          </div>
-          <h3 className="text-2xl font-semibold">+ 10,000</h3>
-          <span className="text-sm text-green-500 flex items-center">
-            <FaCaretUp /> 70%
-          </span>
-        </div>
-        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between">
-          <div className="flex flex-row justify-between items-center">
-            <FaHourglassHalf className="mr-6 text-xl text-orange-500" />
-            <h4 className="text-lg font-normal">Recent Transactions</h4>
-          </div>
-          <Link
-            href="/"
-            className="flex flex-row justify-between items-center my-2"
-          >
-            <Image
-              src="https://globalcare.com.bd/public/uploads/all/u0KM6G8OypRGBAJ1YxNk0mbpi9zhEbRWfa1ogSm0.jpg"
-              alt="Sergel 20mg"
-              width={60}
-              height={40}
-              className="aspect-3/2 object-cover rounded-lg"
-            />
-            <h3 className="text-lg font-semibold">Sergel 20mg</h3>
-          </Link>
-          <Link href="/" className="text-sm text-blue-500 flex items-center">
-            See More
-          </Link>
-        </div>
+        <KpiCard
+          title="Total Stock In"
+          icon={<FaChartBar className="mr-6 text-xl text-green-500" />}
+          value="+ 10,000"
+          trend={70}
+        />
+        <KpiCard
+          title="Total Stock Out"
+          icon={<FaChartBar className="mr-6 text-xl text-red-500" />}
+          value="- 10,000"
+          trend={-70}
+        />
+        <KpiCard
+          title="Net Movement"
+          icon={<FaBalanceScaleLeft className="mr-6 text-xl text-yellow-500" />}
+          value="+ 10,000"
+          trend={70}
+        />
+        <KpiCard
+          title="Recent Transactions"
+          icon={<FaHourglassHalf className="mr-6 text-xl text-orange-500" />}
+          product={{
+            name: productsData[0].name,
+            image: productsData[0].image,
+            id: productsData[0].id.toString(),
+          }}
+          seeMoreLink="/"
+        />
       </div>
       <div className="w-full bg-white rounded-2xl shadow-md p-6">
         <h4 className="text-lg font-semibold mb-4">Stock Details</h4>

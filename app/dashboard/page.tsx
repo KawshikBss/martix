@@ -29,6 +29,7 @@ import {
 import ordersData from "@/public/data/ordersData";
 import notificationsData from "@/public/data/notificationsData";
 import productsData from "@/public/data/productsData";
+import KpiCard from "@/components/ui/KpiCard";
 
 ChartJS.register(
   CategoryScale,
@@ -90,57 +91,21 @@ export default function Dashboard() {
         </Link>
       </div>
       <div className="my-6 w-full flex flex-row justify-between gap-4">
-        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between">
-          <div className="flex flex-row justify-between items-center">
-            <h4 className="text-lg font-normal">Todays Sales</h4>
-          </div>
-          <h3 className="text-2xl font-semibold">$10,000</h3>
-          <span className="text-sm text-green-500 flex items-center">
-            <FaCaretUp /> 70%
-          </span>
-        </div>
-        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between">
-          <div className="flex flex-row justify-between items-center">
-            <h4 className="text-lg font-normal">Todays Orders</h4>
-          </div>
-          <h3 className="text-2xl font-semibold">+ 10,000</h3>
-          <span className="text-sm text-green-500 flex items-center">
-            <FaCaretUp /> 70%
-          </span>
-        </div>
-        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between">
-          <div className="flex flex-row justify-between items-center">
-            <h4 className="text-lg font-normal">Top Product</h4>
-          </div>
-          <Link
-            href="/"
-            className="flex flex-row justify-between items-center my-2"
-          >
-            <Image
-              src="https://globalcare.com.bd/public/uploads/all/u0KM6G8OypRGBAJ1YxNk0mbpi9zhEbRWfa1ogSm0.jpg"
-              alt="Sergel 20mg"
-              width={60}
-              height={40}
-              className="aspect-3/2 object-cover rounded-lg"
-            />
-            <h3 className="text-lg font-semibold">Sergel 20mg</h3>
-          </Link>
-          <Link href="/" className="text-sm text-blue-500 flex items-center">
-            See More
-          </Link>
-        </div>
-        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between">
-          <div className="flex flex-row justify-between items-center">
-            <h4 className="text-lg font-normal">Low Stocks</h4>
-          </div>
-          <h3 className="text-2xl font-semibold">- 10,000</h3>
-          <Link href="/" className="text-sm text-blue-500 flex items-center">
-            See More
-          </Link>
-        </div>
+        <KpiCard title="Today's Sales" value="$10,000" trend={70} />
+        <KpiCard title="Today's Orders" value="+ 10,000" trend={70} />
+        <KpiCard
+          title="Top Product"
+          product={{
+            id: productsData[0].id.toString(),
+            image: productsData[0].image,
+            name: productsData[0].name,
+          }}
+          seeMoreLink="/"
+        />
+        <KpiCard title="Low Stocks" value="- 10,000" seeMoreLink="/" />
       </div>
       <div className="my-6">
-        <div className="w-full h-[40vh] flex flex-row justify-between items-start gap-6">
+        <div className="w-full h-[50vh] flex flex-row justify-between items-start gap-6">
           <div className="w-full h-full bg-white rounded-2xl shadow-md p-6 flex flex-col justify-between">
             <div className="flex flex-row justify-start items-center">
               <GrMoney className="mr-6 text-xl" />

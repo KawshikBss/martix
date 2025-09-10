@@ -27,6 +27,7 @@ import {
 } from "chart.js";
 import { GrPieChart } from "react-icons/gr";
 import { FaMoneyBill1Wave, FaPerson } from "react-icons/fa6";
+import KpiCard from "@/components/ui/KpiCard";
 ChartJS.register(
   ArcElement,
   Tooltip,
@@ -152,46 +153,30 @@ export default function AdjustmentsHistory() {
       </div>
 
       <div className="my-6 w-full flex flex-row justify-between gap-4">
-        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between">
-          <div className="flex flex-row justify-end items-center">
-            <FaChartBar className="mr-2 text-xl text-green-500" />
-            <h4 className="text-lg font-normal">Total Adjusted</h4>
-          </div>
-          <h3 className="text-2xl font-semibold">10,000</h3>
-        </div>
-        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between">
-          <div className="flex flex-row justify-end items-center">
-            <FaMoneyBill1Wave className="mr-2 text-xl text-red-500" />
-            <h4 className="text-lg font-normal">Total Value Loss</h4>
-          </div>
-          <h3 className="text-2xl font-semibold">10,000</h3>
-        </div>
-        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between">
-          <div className="flex flex-row justify-end items-center">
-            <FaTag className="mr-2 text-lg text-orange-500" />
-            <h4 className="text-lg font-normal">Most Adjusted Category</h4>
-          </div>
-          <Link
-            href="/"
-            className="flex flex-row justify-between items-center my-2"
-          >
-            <Image
-              src="https://globalcare.com.bd/public/uploads/all/u0KM6G8OypRGBAJ1YxNk0mbpi9zhEbRWfa1ogSm0.jpg"
-              alt="Sergel 20mg"
-              width={60}
-              height={40}
-              className="aspect-3/2 object-cover rounded-lg"
-            />
-            <h3 className="text-lg font-semibold">Medicine</h3>
-          </Link>
-        </div>
-        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between">
-          <div className="flex flex-row justify-end items-center">
-            <FaPerson className="mr-2 text-2xl text-blue-500" />
-            <h4 className="text-lg font-normal">Top Staff Responsible</h4>
-          </div>
-          <h3 className="text-2xl font-semibold">5</h3>
-        </div>
+        <KpiCard
+          title="Total Adjusted"
+          icon={<FaChartBar className="mr-2 text-xl text-green-500" />}
+          value="10,000"
+        />
+        <KpiCard
+          title="Total Value Loss"
+          icon={<FaMoneyBill1Wave className="mr-2 text-xl text-red-500" />}
+          value="10,000"
+        />
+        <KpiCard
+          title="Most Adjusted Category"
+          icon={<FaTag className="mr-2 text-lg text-orange-500" />}
+          product={{
+            name: productsData[0].name,
+            image: productsData[0].image,
+            id: productsData[0].id.toString(),
+          }}
+        />
+        <KpiCard
+          title="Top Staff Responsible"
+          icon={<FaPerson className="mr-2 text-2xl text-blue-500" />}
+          value={5}
+        />
       </div>
 
       <div className="w-full bg-white rounded-2xl shadow-md p-6">

@@ -22,6 +22,7 @@ import {
 } from "chart.js";
 import categoriesData from "@/public/data/categoriesData";
 import { BiLineChart, BiLineChartDown } from "react-icons/bi";
+import KpiCard from "@/components/ui/KpiCard";
 ChartJS.register(
   ArcElement,
   Tooltip,
@@ -156,74 +157,39 @@ export default function SalesReport() {
         </div>
       </div>
       <div className="my-6 w-full flex flex-row justify-between gap-4">
-        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between items-start gap-4">
-          <div className="w-full flex flex-row justify-end items-center gap-4">
-            <FaMoneyBill1Wave className="text-2xl text-green-500 flex flex-row justify-start items-center gap-4" />
-            <h4 className="text-md font-normal text-end">Total Sales</h4>
-          </div>
-          <h3 className="text-xl font-semibold text-end">$ 10,000</h3>
-        </div>
-        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between items-start gap-4">
-          <div className="w-full flex flex-row justify-end items-center gap-4">
-            <FaBox className="text-2xl text-green-500 flex flex-row justify-start items-center gap-4" />
-            <h4 className="text-md font-normal text-end">Orders Completed</h4>
-          </div>
-          <h3 className="text-xl font-semibold text-end">+ 10,000</h3>
-        </div>
-        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between items-start gap-4">
-          <div className="w-full flex flex-row justify-end items-center gap-4">
-            <FaUserGroup className="text-2xl text-blue-500 flex flex-row justify-start items-center gap-4" />
-            <h4 className="text-md font-normal text-end">Unique Customers</h4>
-          </div>
-          <h3 className="text-xl font-semibold text-end">+ 10,000</h3>
-        </div>
-        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between items-start gap-4">
-          <div className="w-full flex flex-row justify-end items-center gap-4">
-            <FaChartLine className="text-2xl text-orange-500 flex flex-row justify-start items-center gap-4" />
-            <h4 className="text-md font-normal text-end">
-              Average Order Value
-            </h4>
-          </div>
-          <h3 className="text-xl font-semibold text-end">$ 10,000</h3>
-        </div>
-        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between items-start gap-4">
-          <div className="w-full flex flex-row justify-end items-center gap-4">
-            <FaPerson className="text-2xl text-blue-500 flex flex-row justify-start items-center gap-4" />
-            <h4 className="text-md font-normal text-end">Top Customer</h4>
-          </div>
-          <Link
-            href="/"
-            className="flex flex-row justify-between gap-4 items-center"
-          >
-            <Image
-              src="/images/user-placeholder.jpg"
-              alt="Sergel 20mg"
-              width={40}
-              height={40}
-              className="aspect-square object-cover rounded-full"
-            />
-            <h3 className="text-lg font-semibold">Rober California</h3>
-          </Link>
-        </div>
-        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between items-start gap-4">
-          <div className="w-full flex flex-row justify-end items-center gap-4">
-            <FaTrophy className="text-2xl text-yellow-500 flex flex-row justify-start items-center gap-4" />
-            <h4 className="text-md font-normal text-end">Top Sold</h4>
-          </div>
-          <Link
-            href="/"
-            className="flex flex-row justify-between gap-4 items-center"
-          >
-            <Image
-              src="https://globalcare.com.bd/public/uploads/all/u0KM6G8OypRGBAJ1YxNk0mbpi9zhEbRWfa1ogSm0.jpg"
-              alt="Sergel 20mg"
-              width={60}
-              height={40}
-              className="aspect-3/2 object-cover rounded-lg"
-            />
-            <h3 className="text-lg font-semibold">Sergel 20mg</h3>
-          </Link>
-        </div>
+        <KpiCard
+          title="Total Sales"
+          icon={<FaMoneyBill1Wave className="text-xl text-green-500" />}
+          value="$ 10,000"
+        />
+        <KpiCard
+          title="Orders Completed"
+          icon={<FaBox className="text-xl text-teal-500" />}
+          value="+ 10,000"
+        />
+        <KpiCard
+          title="Average Order Value"
+          icon={<FaChartLine className="text-xl text-orange-500" />}
+          value="$ 10,000"
+        />
+        <KpiCard
+          title="Top Customer"
+          icon={<FaPerson className="text-xl text-blue-500" />}
+          user={{
+            id: "",
+            name: "Rober California",
+            image: "/images/user-placeholder.jpg",
+          }}
+        />
+        <KpiCard
+          title="Top Sold"
+          icon={<FaTrophy className="text-xl text-yellow-500" />}
+          product={{
+            name: productsData[0].name,
+            image: productsData[0].image,
+            id: productsData[0].id.toString(),
+          }}
+        />
       </div>
       <div className="bg-white rounded-2xl shadow-md p-6">
         <h3 className="text-2xl font-medium">Detailed View</h3>

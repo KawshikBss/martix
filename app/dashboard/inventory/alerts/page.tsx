@@ -21,6 +21,7 @@ import {
   LineElement,
 } from "chart.js";
 import { GrPieChart } from "react-icons/gr";
+import KpiCard from "@/components/ui/KpiCard";
 ChartJS.register(
   ArcElement,
   Tooltip,
@@ -152,46 +153,30 @@ export default function LowStockAlerts() {
       </div>
 
       <div className="my-6 w-full flex flex-row justify-between gap-4">
-        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between">
-          <div className="flex flex-row justify-end items-center">
-            <PiWarningFill className="mr-2 text-xl text-green-500" />
-            <h4 className="text-lg font-normal">Total Low Stock</h4>
-          </div>
-          <h3 className="text-2xl font-semibold">10,000</h3>
-        </div>
-        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between">
-          <div className="flex flex-row justify-end items-center">
-            <MdDangerous className="mr-2 text-2xl text-red-500" />
-            <h4 className="text-lg font-normal">Total Stock Out</h4>
-          </div>
-          <h3 className="text-2xl font-semibold">10,000</h3>
-        </div>
-        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between">
-          <div className="flex flex-row justify-end items-center">
-            <FaHourglassHalf className="mr-2 text-xl text-yellow-500" />
-            <h4 className="text-lg font-normal">Avg Days in Low Stock</h4>
-          </div>
-          <h3 className="text-2xl font-semibold">5</h3>
-        </div>
-        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between">
-          <div className="flex flex-row justify-end items-center">
-            <FaChartLine className="mr-2 text-xl text-orange-500" />
-            <h4 className="text-lg font-normal">Most Critical Category</h4>
-          </div>
-          <Link
-            href="/"
-            className="flex flex-row justify-between items-center my-2"
-          >
-            <Image
-              src="https://globalcare.com.bd/public/uploads/all/u0KM6G8OypRGBAJ1YxNk0mbpi9zhEbRWfa1ogSm0.jpg"
-              alt="Sergel 20mg"
-              width={60}
-              height={40}
-              className="aspect-3/2 object-cover rounded-lg"
-            />
-            <h3 className="text-lg font-semibold">Medicine</h3>
-          </Link>
-        </div>
+        <KpiCard
+          title="Total Low Stock"
+          icon={<PiWarningFill className="mr-2 text-xl text-green-500" />}
+          value="10,000"
+        />
+        <KpiCard
+          title="Total Stock Out"
+          icon={<MdDangerous className="mr-2 text-2xl text-red-500" />}
+          value="10,000"
+        />
+        <KpiCard
+          title="Avg Days in Low Stock"
+          icon={<FaHourglassHalf className="mr-2 text-xl text-yellow-500" />}
+          value="5"
+        />
+        <KpiCard
+          title="Most Critical Category"
+          icon={<FaChartLine className="mr-2 text-xl text-orange-500" />}
+          product={{
+            name: productsData[0].name,
+            image: productsData[0].image,
+            id: productsData[0].id.toString(),
+          }}
+        />
       </div>
 
       <div className="w-full bg-white rounded-2xl shadow-md p-6">

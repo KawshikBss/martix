@@ -1,3 +1,4 @@
+import KpiCard from "@/components/ui/KpiCard";
 import productsData from "@/public/data/productsData";
 import Link from "next/link";
 import * as React from "react";
@@ -8,36 +9,26 @@ export default function PendingOrders() {
   return (
     <main className="p-8">
       <div className="my-6 w-full flex flex-row justify-between gap-4">
-        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col items-start gap-4">
-          <div className="w-full flex flex-row justify-end items-center gap-4">
-            <FaHourglassHalf className="text-2xl text-yellow-500 flex flex-row justify-start items-center gap-4" />
-            <h4 className="text-md font-normal text-end">Total Pending</h4>
-          </div>
-          <h3 className="text-xl font-semibold text-end">+ 10,000</h3>
-        </div>
-        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col items-start gap-4">
-          <div className="w-full flex flex-row justify-end items-center gap-4">
-            <FaMoneyBill1Wave className="text-2xl text-green-500 flex flex-row justify-start items-center gap-4" />
-            <h4 className="text-md font-normal text-end">Awaiting Payment</h4>
-          </div>
-          <h3 className="text-xl font-semibold text-end">$ 10,000</h3>
-        </div>
-        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col items-start gap-4">
-          <div className="w-full flex flex-row justify-end items-center gap-4">
-            <FaBox className="text-2xl text-amber-500 flex flex-row justify-start items-center gap-4" />
-            <h4 className="text-md font-normal text-end">Awaiting Shipment</h4>
-          </div>
-          <h3 className="text-xl font-semibold text-end">+ 10,000</h3>
-        </div>
-        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col items-start gap-4">
-          <div className="w-full flex flex-row justify-end items-center gap-4">
-            <FaTruck className="text-2xl text-blue-500 flex flex-row justify-start items-center gap-4" />
-            <h4 className="text-md font-normal text-end">
-              Ready for Pickup / Delivery
-            </h4>
-          </div>
-          <h3 className="text-xl font-semibold text-end">+ 10,000</h3>
-        </div>
+        <KpiCard
+          title="Total Pending"
+          icon={<FaHourglassHalf className="text-xl text-yellow-500" />}
+          value="+ 10,000"
+        />
+        <KpiCard
+          title="Awaiting Payment"
+          icon={<FaMoneyBill1Wave className="text-xl text-green-500" />}
+          value="$ 10,000"
+        />
+        <KpiCard
+          title="Awaiting Shipment"
+          icon={<FaBox className="text-xl text-amber-500" />}
+          value="+ 10,000"
+        />
+        <KpiCard
+          title="Ready for Pickup / Delivery"
+          icon={<FaTruck className="text-xl text-blue-500" />}
+          value="+ 10,000"
+        />
       </div>
       <div className="bg-white rounded-2xl shadow-md p-6">
         <div className="w-full flex flex-row justify-between items-center">

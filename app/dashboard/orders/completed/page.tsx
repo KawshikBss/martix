@@ -1,3 +1,4 @@
+import KpiCard from "@/components/ui/KpiCard";
 import productsData from "@/public/data/productsData";
 import Image from "next/image";
 import Link from "next/link";
@@ -15,58 +16,34 @@ export default function CompletedOrders() {
   return (
     <main className="p-8">
       <div className="my-6 w-full flex flex-row justify-between gap-4">
-        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between items-start gap-4">
-          <div className="w-full flex flex-row justify-end items-center gap-4">
-            <FaCheck className="text-2xl text-blue-500 flex flex-row justify-start items-center gap-4" />
-            <h4 className="text-md font-normal text-end">Total Completed</h4>
-          </div>
-          <h3 className="text-xl font-semibold text-end">+ 10,000</h3>
-        </div>
-        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between items-start gap-4">
-          <div className="w-full flex flex-row justify-end items-center gap-4">
-            <FaMoneyBill1Wave className="text-2xl text-green-500 flex flex-row justify-start items-center gap-4" />
-            <h4 className="text-md font-normal text-end">Revenue Collected</h4>
-          </div>
-          <h3 className="text-xl font-semibold text-end">$ 10,000</h3>
-        </div>
-        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between items-start gap-4">
-          <div className="w-full flex flex-row justify-end items-center gap-4">
-            <FaPerson className="text-2xl text-orange-500 flex flex-row justify-start items-center gap-4" />
-            <h4 className="text-md font-normal text-end">Top Customers</h4>
-          </div>
-          <Link
-            href="/"
-            className="flex flex-row justify-between gap-4 items-center"
-          >
-            <Image
-              src="/images/user-placeholder.jpg"
-              alt="Sergel 20mg"
-              width={40}
-              height={40}
-              className="aspect-square object-cover rounded-full"
-            />
-            <h3 className="text-lg font-semibold">Rober California</h3>
-          </Link>
-        </div>
-        <div className="w-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between items-start gap-4">
-          <div className="w-full flex flex-row justify-end items-center gap-4">
-            <FaTrophy className="text-2xl text-yellow-500 flex flex-row justify-start items-center gap-4" />
-            <h4 className="text-md font-normal text-end">Top Sold</h4>
-          </div>
-          <Link
-            href="/"
-            className="flex flex-row justify-between gap-4 items-center"
-          >
-            <Image
-              src="https://globalcare.com.bd/public/uploads/all/u0KM6G8OypRGBAJ1YxNk0mbpi9zhEbRWfa1ogSm0.jpg"
-              alt="Sergel 20mg"
-              width={60}
-              height={40}
-              className="aspect-3/2 object-cover rounded-lg"
-            />
-            <h3 className="text-lg font-semibold">Sergel 20mg</h3>
-          </Link>
-        </div>
+        <KpiCard
+          title="Total Completed"
+          icon={<FaCheck className="text-xl text-blue-500" />}
+          value="+ 10,000"
+        />
+        <KpiCard
+          title="Revenue Collected"
+          icon={<FaMoneyBill1Wave className="text-xl text-green-500" />}
+          value="$ 10,000"
+        />
+        <KpiCard
+          title="Top Customers"
+          icon={<FaPerson className="text-xl text-orange-500" />}
+          user={{
+            id: "",
+            name: "Rober California",
+            image: "/images/user-placeholder.jpg",
+          }}
+        />
+        <KpiCard
+          title="Top Sold"
+          icon={<FaTrophy className="text-xl text-yellow-500" />}
+          product={{
+            name: productsData[0].name,
+            image: productsData[0].image,
+            id: productsData[0].id.toString(),
+          }}
+        />
       </div>
       <div className="bg-white rounded-2xl shadow-md p-6">
         <div className="w-full flex flex-row justify-between items-center">
