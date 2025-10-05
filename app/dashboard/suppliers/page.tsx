@@ -55,22 +55,42 @@ export default function AllSuppliers() {
         />
       </div>
       <div className="bg-white rounded-2xl shadow-md p-6">
-        <div className="my-6 flex flex-row justify-start gap-4">
-          <select className="bg-white border border-gray-300 rounded-md px-2 py-2">
-            <option>Active</option>
-            <option>Inactive</option>
-          </select>
-          <select className="bg-white border border-gray-300 rounded-md px-2 py-2">
-            <option>All</option>
-            {categoriesData.map((category) => (
-              <option key={category.name}>{category.name}</option>
-            ))}
-          </select>
-          <select className="bg-white border border-gray-300 rounded-md px-2 py-2">
-            <option>All</option>
-            <option>District</option>
-            <option>Division</option>
-          </select>
+        <div className="my-6 flex flex-row justify-start items-center gap-4">
+          <div className="flex flex-col">
+            <label className="mb-1 text-sm text-gray-600">Status</label>
+            <select className="bg-white border border-gray-300 rounded-md px-2 py-2">
+              <option>Active</option>
+              <option>Inactive</option>
+            </select>
+          </div>
+          <div className="flex flex-col">
+            <label className="mb-1 text-sm text-gray-600">Category</label>
+            <select className="bg-white border border-gray-300 rounded-md px-2 py-2">
+              <option>All</option>
+              {categoriesData.map((category) => (
+                <option key={category.name}>{category.name}</option>
+              ))}
+            </select>
+          </div>
+          <div className="flex flex-col">
+            <label className="mb-1 text-sm text-gray-600">Location</label>
+            <select className="bg-white border border-gray-300 rounded-md px-2 py-2">
+              <option>All</option>
+              <option>District</option>
+              <option>Division</option>
+            </select>
+          </div>
+          <div className="flex flex-col">
+            <label className="mb-1 text-sm text-gray-600">
+              Outstanding Balance (Above)
+            </label>
+            <input
+              type="number"
+              min={0}
+              placeholder="Amount"
+              className="bg-white border border-gray-300 rounded-md px-2 py-1"
+            />
+          </div>
         </div>
         <table className="w-full text-left">
           <thead>
