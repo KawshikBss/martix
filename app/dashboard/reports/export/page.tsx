@@ -23,6 +23,7 @@ import {
   PointElement,
   LineElement,
 } from "chart.js";
+import ReportTable from "./components/reportTables/ReportTable";
 ChartJS.register(
   ArcElement,
   Tooltip,
@@ -224,6 +225,163 @@ export default function ExportReports() {
             ""
           )}
         </div>
+        <ReportTable
+          headers={
+            orderType == "Sales"
+              ? ["Product", "Units Sold", "Revenue", "Profit", "Margin %"]
+              : orderType === "Profit & Loss"
+              ? ["Month", "Revenue", "COGS", "Expenses", "Profit"]
+              : orderType === "Product Performance"
+              ? ["Product", "Category", "Units Sold", "Profit", "Turnover Rate"]
+              : orderType === "Inventory"
+              ? ["Product", "Current Stock", "Min Stock", "Status"]
+              : orderType === "Purchase"
+              ? ["Supplier", "Product", "Qty Purchased", "Cost"]
+              : orderType === "Customer"
+              ? ["Customer", "Orders", "Total Spend", "Avg Order Value"]
+              : orderType === "Supplier"
+              ? [
+                  "Supplier",
+                  "Products Supplied",
+                  "Total Value",
+                  "Avg Lead Time",
+                ]
+              : orderType === "Tax/VAT"
+              ? ["Invoice", "Taxable Amount", "Tax Rate", "Tax Amount"]
+              : []
+          }
+          data={
+            orderType == "Sales"
+              ? [
+                  ...productsData.map((product) => [
+                    { value: product, type: "product" },
+                    { value: product.stockQty, type: "number" },
+                    {
+                      value: product.stockQty * product.price,
+                      type: "currency",
+                    },
+                    {
+                      value: (100 - product.stockQty) * product.price,
+                      type: "currency",
+                    },
+                    { value: "12", type: "number" },
+                  ]),
+                ]
+              : orderType == "Profit & Loss"
+              ? [
+                  ...productsData.map((product) => [
+                    { value: "April", type: "date" },
+                    {
+                      value: product.stockQty * product.price,
+                      type: "currency",
+                    },
+                    {
+                      value: product.stockQty * product.price * 1.5,
+                      type: "currency",
+                    },
+                    {
+                      value: product.stockQty * product.price * 0.5,
+                      type: "currency",
+                    },
+                    {
+                      value: product.stockQty * product.price * 0.75,
+                      type: "currency",
+                    },
+                  ]),
+                ]
+              : orderType === "Product Performance"
+              ? [
+                  ...productsData.map((product) => [
+                    { value: product, type: "product" },
+                    { value: product.category, type: "category" },
+                    { value: product.stockQty, type: "number" },
+                    {
+                      value: product.stockQty * product.price * 0.75,
+                      type: "currency",
+                    },
+                    {
+                      value: product.stockQty * product.price * 0.5,
+                      type: "currency",
+                    },
+                  ]),
+                ]
+              : orderType === "Inventory"
+              ? [
+                  ...productsData.map((product) => [
+                    { value: product, type: "product" },
+                    { value: product.stockQty, type: "number" },
+                    { value: 50 - product.stockQty, type: "number" },
+                    { value: "In Stock", type: "status" },
+                  ]),
+                ]
+              : orderType === "Purchase"
+              ? [
+                  ...productsData.map((product) => [
+                    {
+                      value: {
+                        id: 0,
+                        image: "/images/user-placeholder.jpg",
+                        name: "Robert California",
+                      },
+                      type: "user",
+                    },
+                    { value: product, type: "product" },
+                    { value: product.stockQty, type: "number" },
+                    { value: product.price, type: "currency" },
+                  ]),
+                ]
+              : orderType === "Customer"
+              ? [
+                  ...productsData.map((product) => [
+                    {
+                      value: {
+                        id: 0,
+                        image: "/images/user-placeholder.jpg",
+                        name: "Robert California",
+                      },
+                      type: "user",
+                    },
+                    { value: product.stockQty, type: "number" },
+                    { value: product.stockQty * product.price, type: "number" },
+                    { value: 30, type: "number" },
+                  ]),
+                ]
+              : orderType === "Supplier"
+              ? [
+                  ...productsData.map((product) => [
+                    {
+                      value: {
+                        id: 0,
+                        image: "/images/user-placeholder.jpg",
+                        name: "Robert California",
+                      },
+                      type: "user",
+                    },
+                    { value: product.stockQty, type: "number" },
+                    { value: product.stockQty * product.price, type: "number" },
+                    { value: 30, type: "number" },
+                  ]),
+                ]
+              : orderType === "Tax/VAT"
+              ? [
+                  ...Array(5)
+                    .fill(0)
+                    .map((_, i) => [
+                      { value: `INV-${1000 + i}`, type: "string" },
+                      {
+                        value: Math.floor(Math.random() * 10000),
+                        type: "currency",
+                      },
+                      { value: `${5 + i}%`, type: "string" },
+                      {
+                        value: Math.floor(Math.random() * 500),
+                        type: "currency",
+                      },
+                    ]),
+                ]
+              : []
+          }
+        />
       </div>
     </main>
   );
