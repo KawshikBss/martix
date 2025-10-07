@@ -13,9 +13,9 @@ export default function Navbar(props: INavbarProps) {
                 <input type="text" placeholder="Search..." className='bg-white border border-gray-300 rounded-md px-4 py-1' />
                 <button className='bg-blue-500 text-white rounded-md px-4 py-1 ms-2'>Search</button>
             </div>
-            <div className='flex flex-row align-center gap-8'>
+            <div className='flex flex-row items-center gap-8'>
                 <Link href="/notifications">
-                    <FaRegBell className='w-7 h-7 mt-1 text-gray-600 hover:text-gray-800 transition-colors duration-200' />
+                    <FaRegBell className='w-5 h-5 mt-1 text-gray-600 hover:text-gray-800 transition-colors duration-200' />
                 </Link>
                 <Link href="/profile">
                     <Image src="/images/user-placeholder.jpg" alt="Profile" className='rounded-full w-[40px] h-[40px] object-cover' width={40} height={40} />
