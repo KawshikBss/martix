@@ -99,7 +99,7 @@ export const navItems: INavItem[] = [
       { title: "Order History", href: "/dashboard/customers/history" },
     ],
   },
-  {
+  /* {
     icon: <LuChartNoAxesCombined />,
     title: "Analytics / Trends",
     href: "/dashboard/analytics",
@@ -107,7 +107,7 @@ export const navItems: INavItem[] = [
       { title: "Sales Forecast", href: "/dashboard/analytics/forecast" },
       { title: "Stock Suggestions", href: "/dashboard/analytics/suggestions" },
     ],
-  },
+  }, */
   {
     icon: <LuStore />,
     title: "Stores",
