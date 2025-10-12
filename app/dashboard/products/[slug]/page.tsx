@@ -8,6 +8,13 @@ import { PiWarningCircleFill } from "react-icons/pi";
 import { MdNumbers, MdOutlineNumbers } from "react-icons/md";
 import Link from "next/link";
 
+// Generate static params for all products
+export function generateStaticParams() {
+  return productsData.map((product) => ({
+    slug: product.sku || product.id.toString(),
+  }));
+}
+
 export default function SingleProduct() {
   const product = productsData[0];
 
