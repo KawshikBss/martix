@@ -80,7 +80,7 @@ const data = {
 
 export default function Dashboard() {
   return (
-    <main className="p-8">
+    <main className="p-4 md:p-8">
       <div className="w-full flex flex-row justify-between items-center">
         <h3 className="text-2xl font-medium">Dashboard</h3>
         <Link
@@ -90,7 +90,7 @@ export default function Dashboard() {
           + Add New Product
         </Link>
       </div>
-      <div className="my-6 w-full flex flex-row justify-between gap-4">
+      <div className="my-6 w-full flex flex-col md:flex-row justify-between gap-4">
         <KpiCard title="Today's Sales" value="$10,000" trend={70} />
         <KpiCard title="Today's Orders" value="+ 10,000" trend={70} />
         <KpiCard
@@ -105,13 +105,13 @@ export default function Dashboard() {
         <KpiCard title="Low Stocks" value="- 10,000" seeMoreLink="/" />
       </div>
       <div className="my-6">
-        <div className="w-full h-[50vh] flex flex-row justify-between items-start gap-6">
+        <div className="w-full md:h-[50vh] flex flex-col md:flex-row justify-between items-start gap-6">
           <div className="w-full h-full bg-white rounded-2xl shadow-md p-6 flex flex-col justify-between">
             <div className="flex flex-row justify-start items-center">
               <GrMoney className="mr-6 text-xl" />
               <h4 className="text-lg font-normal">Sales</h4>
             </div>
-            <Line options={options} data={data} />
+            <Line options={options} data={data} className="my-auto" />
           </div>
           <div className="w-full h-full bg-white rounded-2xl shadow-md p-6 flex flex-col justify-between">
             <div className="flex flex-row justify-start items-center">
@@ -176,7 +176,7 @@ export default function Dashboard() {
         </div>
       </div>
       <div className="my-6">
-        <div className="w-full h-[40vh] flex flex-row justify-between items-start gap-6">
+        <div className="w-full md:h-[40vh] flex flex-col md:flex-row justify-between items-start gap-6">
           <div className="w-full h-full bg-white rounded-2xl shadow-md p-6 flex flex-col justify-between">
             <div className="flex flex-row justify-start items-center">
               <FiShoppingCart className="mr-6 text-xl" />
