@@ -11,8 +11,12 @@ import { BsBoxes, BsHandbag, BsGear } from "react-icons/bs";
 import { TbReportSearch } from "react-icons/tb";
 import { MdPointOfSale, MdOutlineFactory } from "react-icons/md";
 import { GrGroup } from "react-icons/gr";
+import { IoCloseCircle } from "react-icons/io5";
 
-export interface ISidebarProps {}
+export interface ISidebarProps {
+  isSidebarOpen?: boolean;
+  closeSidebar?: () => void;
+}
 
 interface INavItem {
   icon?: React.ReactNode;
@@ -140,7 +144,15 @@ export function Sidebar(props: ISidebarProps) {
   };
 
   return (
-    <div className="w-2/11 h-[100vh] px-8 overflow-y-scroll hidden md:block">
+    <div
+      className={`w-full md:w-2/11 absolute md:static bg-[#e9eef4] h-full md:h-[100vh] px-8 overflow-y-scroll ${
+        props.isSidebarOpen ? "block" : "hidden"
+      } md:block`}
+    >
+      <IoCloseCircle
+        className="w-8 h-8 ms-auto mt-6 text-gray-600 hover:text-gray-800 transition-colors duration-200 cursor-pointer"
+        onClick={props.closeSidebar}
+      />
       <Link href="/">
         <Image
           src="/logo.png"
