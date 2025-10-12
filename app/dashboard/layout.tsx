@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "@/app/globals.css";
-import { Sidebar } from "./components/layout/Sidebar";
-import Navbar from "./components/layout/Navbar";
+import Content from "./components/layout/Content";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,14 +24,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div
-      className='flex flex-row h-full'
-    >
-      <Sidebar />
-      <div className="md:h-[100vh] w-full md:w-9/11 md:overflow-y-scroll">
-        <Navbar />
-        {children}
-      </div>
+    <div className="flex flex-row h-full">
+      <Content children={children} />
     </div>
   );
 }
