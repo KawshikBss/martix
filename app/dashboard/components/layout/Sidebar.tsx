@@ -140,7 +140,7 @@ export function Sidebar(props: ISidebarProps) {
   };
 
   return (
-    <div className="w-2/11 h-[100vh] px-8 overflow-y-scroll">
+    <div className="w-2/11 h-[100vh] px-8 overflow-y-scroll hidden md:block">
       <Link href="/">
         <Image
           src="/logo.png"
