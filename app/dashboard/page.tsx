@@ -45,7 +45,7 @@ ChartJS.register(
   description: "User Dashboard",
 }; */
 
-export const options = {
+const options = {
   responsive: true,
   plugins: {
     legend: {
@@ -60,7 +60,7 @@ export const options = {
 
 const labels = ["January", "February", "March", "April", "May", "June", "July"];
 
-export const data = {
+const data = {
   labels,
   datasets: [
     {
