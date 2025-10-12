@@ -145,12 +145,12 @@ export function Sidebar(props: ISidebarProps) {
 
   return (
     <div
-      className={`w-full md:w-2/11 absolute md:static bg-[#e9eef4] h-full md:h-[100vh] px-8 overflow-y-scroll ${
-        props.isSidebarOpen ? "block" : "hidden"
-      } md:block`}
+      className={`w-full md:w-2/11 absolute md:static inset-0 bg-[#e9eef4] md:h-[100vh] px-8 overflow-y-scroll z-50 transition-transform duration-300 ease-in-out ${
+        props.isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+      } md:translate-x-0 md:block`}
     >
       <IoCloseCircle
-        className="w-8 h-8 ms-auto mt-6 text-gray-600 hover:text-gray-800 transition-colors duration-200 cursor-pointer"
+        className="md:hidden w-8 h-8 ms-auto mt-6 text-gray-600 hover:text-gray-800 transition-colors duration-200 cursor-pointer"
         onClick={props.closeSidebar}
       />
       <Link href="/">
