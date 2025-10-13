@@ -3,8 +3,8 @@ import * as React from "react";
 export default function AddCategory() {
   return (
     <main className="p-8">
-      <div className="w-full bg-white rounded-2xl shadow-md p-6 flex flex-row justify-between items-center">
-        <h3 className="text-2xl font-medium">New Category</h3>
+      <div className="w-full bg-white rounded-2xl shadow-md p-6 flex flex-col md:flex-row justify-between items-center">
+        <h3 className="text-2xl font-medium mb-4 md:mb-0">New Category</h3>
         <div>
           <button className="bg-transparent hover:bg-red-500 text-red-500 hover:text-white border border-red-500 px-2 py-1 rounded-md cursor-pointer mr-2">
             Discard Changes

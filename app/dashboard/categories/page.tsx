@@ -7,8 +7,8 @@ export default function Categories() {
   return (
     <main className="p-8">
       <div className="bg-white rounded-2xl shadow-md p-6">
-        <div className="w-full flex flex-row justify-between items-center">
-          <h3 className="text-2xl font-medium">Categories</h3>
+        <div className="w-full flex flex-col md:flex-row justify-between items-center">
+          <h3 className="text-2xl font-medium mb-4 md:mb-0">Categories</h3>
           <Link
             href="/dashboard/categories/add"
             className="bg-[#615cf6] hover:bg-transparent text-white hover:text-[#615cf6] border border-[#615cf6] px-2 py-1 rounded-md"
@@ -20,7 +20,7 @@ export default function Categories() {
         <input
           type="text"
           placeholder="Search categories..."
-          className="border border-gray-300 rounded-md my-4 px-2 py-1 w-2/5"
+          className="border border-gray-300 rounded-md my-4 px-2 py-1 w-full md:w-2/5"
         />
 
         {categoriesData.map((category) => (
