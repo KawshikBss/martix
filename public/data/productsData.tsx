@@ -1,4 +1,4 @@
-interface Product {
+export interface IProduct {
   id: number;
   name: string;
   description?: string;
@@ -11,7 +11,7 @@ interface Product {
   inStock: boolean;
 }
 
-const productsData: Product[] = [
+const productsData: IProduct[] = [
   {
     id: 1,
     name: "Doxiva",
