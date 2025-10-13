@@ -1,7 +1,8 @@
 import productsData from "@/public/data/productsData";
-import Image from "next/image";
 import Link from "next/link";
 import * as React from "react";
+import { ProductsTable } from "./components/ProductsTable";
+import { ProductsCatalog } from "./components/ProductsCatalog";
 
 export default function Products() {
   return (
@@ -13,16 +14,16 @@ export default function Products() {
             href="/"
             className="bg-[#615cf6] hover:bg-transparent text-white hover:text-[#615cf6] border border-[#615cf6] px-2 py-1 rounded-md"
           >
-            + Add New Product
+            + New Product
           </Link>
         </div>
-        <div className="my-6 flex flex-row justify-between">
+        <div className="mt-6 md:my-6 flex flex-col md:flex-row justify-between">
           <input
             type="text"
             placeholder="Search products..."
-            className="border border-gray-300 rounded-md px-2 py-1 w-2/5"
+            className="border border-gray-300 rounded-md px-2 py-1 w-full md:w-2/5 mb-4 md:mb-0"
           />
-          <div className="flex flex-row gap-4">
+          <div className="flex flex-row gap-4 flex-wrap md:flex-nowrap">
             <select className="border border-gray-300 rounded-md px-2 py-1">
               <option value="">Category</option>
               <option value="electronics">Electronics</option>
@@ -53,72 +54,9 @@ export default function Products() {
             </div>
           </div>
         </div>
-        <table className="w-full text-left">
-          <thead>
-            <tr className="border-b border-gray-300 text-gray-500">
-              <th className="px-2 py-2">
-                <input type="checkbox" />
-              </th>
-              <th colSpan={2} className="px-2 py-2 font-normal text-center">
-                Product
-              </th>
-              <th className="px-2 py-2 font-normal">SKU / Barcode</th>
-              <th className="px-2 py-2 font-normal">Category</th>
-              <th className="px-2 py-2 font-normal">Price</th>
-              <th className="px-2 py-2 font-normal text-end">Stock Qty</th>
-              <th className="px-2 py-2 font-normal text-end">Total Sales</th>
-              <th className="px-2 py-2 font-normal text-center">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {productsData.map((product) => (
-              <tr
-                key={product.id}
-                className="border-b border-gray-300 hover:bg-gray-50"
-              >
-                <td className="px-2 py-4">
-                  <input type="checkbox" />
-                </td>
-                <td className="px-2 py-4">
-                  <Link href={`/dashboard/products/${product.id}`}>
-                    <Image
-                      src={product.image}
-                      alt={product.name}
-                      width={60}
-                      height={40}
-                      className="aspect-3/2 object-cover rounded-lg"
-                    />
-                  </Link>
-                </td>
-                <td className="px-2 py-4 font-medium">
-                  <Link href={`/dashboard/products/${product.id}`}>
-                    {product.name}
-                  </Link>
-                </td>
-                <td className="px-2 py-4">{product.sku}</td>
-                <td className="px-2 py-4">{product.category}</td>
-                <td className="px-2 py-4">${product.price}</td>
-                <td className="px-2 py-4 text-end">{product.stockQty}</td>
-                <td className="px-2 py-4 text-end">120</td>
-                <td className="px-2 py-4 flex justify-center gap-4">
-                  <Link
-                    href={"/"}
-                    className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white"
-                  >
-                    Edit
-                  </Link>
-                  <Link
-                    href={"/"}
-                    className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white"
-                  >
-                    Delete
-                  </Link>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <ProductsTable items={productsData} />
       </div>
+      <ProductsCatalog items={productsData} />
     </main>
   );
 }
