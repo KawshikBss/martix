@@ -4,9 +4,9 @@ import * as React from "react";
 export default function AddProduct() {
   return (
     <main className="p-8">
-      <div className="w-full bg-white rounded-2xl shadow-md p-6 flex flex-row justify-between items-center">
-        <h3 className="text-2xl font-medium">New Product</h3>
-        <div>
+      <div className="w-full bg-white rounded-2xl shadow-md p-6 flex flex-col md:flex-row justify-between items-center">
+        <h3 className="text-2xl font-medium mb-4 md:mb-0">New Product</h3>
+        <div className="flex flex-row gap-4">
           <button className="bg-transparent hover:bg-red-500 text-red-500 hover:text-white border border-red-500 px-2 py-1 rounded-md cursor-pointer mr-2">
             Discard Changes
           </button>
@@ -15,8 +15,8 @@ export default function AddProduct() {
           </button>
         </div>
       </div>
-      <div className="flex flex-row gap-6">
-        <div className="w-1/2 bg-white rounded-2xl shadow-md p-6 my-6">
+      <div className="flex flex-col md:flex-row md:gap-6">
+        <div className="w-full md:w-1/2 bg-white rounded-2xl shadow-md p-6 mt-6 md:my-6">
           <h3 className="text-2xl font-medium">General Information</h3>
           <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
             <div className="col-span-full">
@@ -100,7 +100,7 @@ export default function AddProduct() {
             </div>
           </div>
         </div>
-        <div className="w-1/2">
+        <div className="w-full md:w-1/2">
           <div className="w-full bg-white rounded-2xl shadow-md p-6 my-6">
             <h3 className="text-2xl font-medium">Pricing & Stock</h3>
             <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
