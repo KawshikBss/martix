@@ -187,6 +187,7 @@ export function Sidebar(props: ISidebarProps) {
                 className={`w-full rounded-md flex flex-row justify-start items-center gap-2 px-2 py-1 ${
                   pathname === item.href ? "bg-white" : ""
                 }`}
+                onClick={props.closeSidebar}
               >
                 {item.icon && item.icon}
                 {item.title}
@@ -199,7 +200,11 @@ export function Sidebar(props: ISidebarProps) {
                   {item.children.map((itemChild) => (
                     <div key={itemChild.title}>
                       {!itemChild.children ? (
-                        <Link href={itemChild.href} key={itemChild.title}>
+                        <Link
+                          href={itemChild.href}
+                          key={itemChild.title}
+                          onClick={props.closeSidebar}
+                        >
                           <span
                             className={`w-full hover:bg-white rounded-md flex flex-row justify-start items-center gap-3 px-2 py-1 ${
                               pathname === itemChild.href ? "bg-white" : ""
