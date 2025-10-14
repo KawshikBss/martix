@@ -10,7 +10,7 @@ export function StockAlertsList(props: IStockAlertsListProps) {
   return (
     <div>
       <div className="md:hidden">
-        <h4 className="text-lg font-semibold mb-2">Stock Adjustments</h4>
+        <h4 className="text-lg font-semibold mb-2">Stock Alerts</h4>
         {props.data.length === 0 && <p>No data found.</p>}
         {props.data.length > 0 && (
           <>
