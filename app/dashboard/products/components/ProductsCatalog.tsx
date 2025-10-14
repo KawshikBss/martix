@@ -10,7 +10,7 @@ export function ProductsCatalog(props: IProductsCatalogProps) {
   return (
     <div className="mt-8 md:hidden">
       {props.items && props.items.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 gap-6">
           <span className="text-center text-gray-500">
             Showing {props.items.length} products
           </span>
