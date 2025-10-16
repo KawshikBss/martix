@@ -29,6 +29,8 @@ import {
 import categoriesData from "@/public/data/categoriesData";
 import { GrPieChart } from "react-icons/gr";
 import KpiCard from "@/components/ui/KpiCard";
+import { OrdersTable } from "./components/OrdersTable";
+import { OrdersList } from "./components/OrdersList/OrdersList";
 ChartJS.register(
   ArcElement,
   Tooltip,
@@ -119,8 +121,8 @@ const lineChartData = {
 
 export default function Orders() {
   return (
-    <main className="p-8">
-      <div className="my-6 w-full flex flex-row justify-between gap-4">
+    <main className="p-4 md:p-8">
+      <div className="my-6 w-full flex flex-col md:flex-row justify-between gap-4">
         <KpiCard
           title="Total Orders"
           icon={<FaShoppingCart className="mr-2 text-xl text-blue-500" />}
@@ -157,8 +159,8 @@ export default function Orders() {
             + New Order
           </Link>
         </div>
-        <div className="my-6 flex flex-row justify-between">
-          <div className="flex flex-row gap-4">
+        <div className="mt-6 md:my-6 flex flex-col md:flex-row justify-between gap-4 md:gap-0">
+          <div className="flex flex-row flex-wrap md:flex-nowrap gap-4">
             <select className="bg-white border border-gray-300 rounded-md px-2 py-2">
               <option>Today</option>
               <option>Last 7 days</option>
@@ -194,85 +196,15 @@ export default function Orders() {
           <input
             type="text"
             placeholder="Search products..."
-            className="border border-gray-300 rounded-md px-2 py-1 w-2/5"
+            className="border border-gray-300 rounded-md px-2 py-1 w-full md:w-2/5"
           />
         </div>
-        <table className="w-full text-left">
-          <thead>
-            <tr className="border-b border-gray-300 text-gray-500">
-              <th className="px-2 py-2 font-normal">Invoice No</th>
-              <th className="px-2 py-2 font-normal">Date & Time</th>
-              <th className="px-2 py-2 font-normal">Customer / Supplier</th>
-              <th className="px-2 py-2 font-normal">Type</th>
-              <th className="px-2 py-2 font-normal text-center">Products</th>
-              <th className="px-2 py-2 font-normal">Total</th>
-              <th className="px-2 py-2 font-normal">Status</th>
-              <th className="px-2 py-2 font-normal text-end">Payment Status</th>
-              <th className="px-2 py-2 font-normal text-center">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {productsData.map((product, index) => (
-              <tr
-                key={product.id}
-                className="border-b border-gray-300 hover:bg-gray-50"
-              >
-                <td className="px-2 py-4">{product.sku}</td>
-                <td className="px-2 py-4">12 Aug, 2025</td>
-                <td className="px-2 py-4">
-                  {index % 2 == 0 ? "Customer" : "Supplier"} Name
-                </td>
-                <td className="px-2 py-4">
-                  {index % 3 == 0
-                    ? "Online"
-                    : index % 2 == 0
-                    ? "Purchase"
-                    : "Sale"}
-                </td>
-                <td className="px-2 py-4 font-medium">
-                  <Link href={`/dashboard/products/${product.id}`}>
-                    {product.name}
-                  </Link>
-                  {" X "} {product.stockQty}
-                </td>
-                <td className="px-2 py-4">{product.price}</td>
-                <td className="px-2 py-4">
-                  {index < 2 ? "Pending" : "Completed"}
-                </td>
-                <td className="px-2 py-4">{index < 2 ? "Paid" : "Unpaid"}</td>
-                <td className="px-2 py-4 flex flex-wrap justify-center gap-4">
-                  <Link
-                    href={"/"}
-                    className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white"
-                  >
-                    View
-                  </Link>
-                  <Link
-                    href={"/"}
-                    className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white"
-                  >
-                    Edit
-                  </Link>
-                  <Link
-                    href={"/"}
-                    className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white"
-                  >
-                    Cancel
-                  </Link>
-                  <Link
-                    href={"/"}
-                    className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white"
-                  >
-                    Print Invoice
-                  </Link>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <OrdersTable data={productsData} />
       </div>
 
-      <div className="w-full my-6 flex flex-row justify-between items-start gap-6">
+      <OrdersList data={productsData} />
+
+      <div className="w-full my-6 flex flex-col md:flex-row justify-between items-start gap-6">
         <div className="w-full h-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between">
           <div className="mb-4 flex flex-row justify-start items-center">
             <FaChartBar className="mr-6 text-xl" />
@@ -282,7 +214,7 @@ export default function Orders() {
           </div>
           <Bar options={barChartOptions} data={barChartData} />
         </div>
-        <div className="w-4/7 aspect-square bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between">
+        <div className="w-full md:w-4/7 aspect-square bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between">
           <div className="mb-4 flex flex-row justify-start items-center">
             <GrPieChart className="mr-6 text-xl" />
             <h4 className="text-lg font-semibold">Orders by Status</h4>
