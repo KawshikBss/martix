@@ -5,6 +5,8 @@ import Link from "next/link";
 import * as React from "react";
 import { FaCashRegister, FaMinusSquare, FaPercentage } from "react-icons/fa";
 import { PiEqualsFill } from "react-icons/pi";
+import { ProductsTable } from "./components/ProductsTable";
+import { ProductsList } from "./components/ProductsList/ProductsList";
 
 export default function NewOrder() {
   const [orderType, setOrderType] = React.useState("Sales");
@@ -168,72 +170,11 @@ export default function NewOrder() {
           </div>
         </div>
       )}
-      <div className="flex flex-row gap-6 my-6">
+      <div className="flex flex-col-reverse md:flex-row gap-6 my-6">
         <div className="w-full md:w-2/3 bg-white rounded-2xl shadow-md p-6">
           <h3 className="text-2xl font-medium">Order Details</h3>
-          <table className="w-full text-left my-4">
-            <thead>
-              <tr className="border-b border-gray-300 text-gray-500">
-                <th colSpan={2} className="px-2 py-2">
-                  <input
-                    type="text"
-                    placeholder="Search products..."
-                    className="border border-gray-300 rounded-md px-2 py-1 w-full"
-                  />
-                </th>
-                <th className="px-2 py-2 font-normal">Qty</th>
-                <th className="px-2 py-2 font-normal">Price</th>
-                <th className="px-2 py-2 font-normal text-end">Discount</th>
-                <th className="px-2 py-2 font-normal text-end">Tax</th>
-                <th className="px-2 py-2 font-normal text-center">Total</th>
-                <th className="px-2 py-2 font-normal text-center">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {productsData.map((product) => (
-                <tr
-                  key={product.id}
-                  className="border-b border-gray-300 hover:bg-gray-50"
-                >
-                  <td className="px-2 py-4">
-                    <Link href={`/dashboard/products/${product.id}`}>
-                      <Image
-                        src={product.image}
-                        alt={product.name}
-                        width={60}
-                        height={40}
-                        className="aspect-3/2 object-cover rounded-lg"
-                      />
-                    </Link>
-                  </td>
-                  <td className="px-2 py-4 font-medium">
-                    <Link href={`/dashboard/products/${product.id}`}>
-                      {product.name}
-                    </Link>
-                    [{product.sku}]
-                  </td>
-                  <td className="px-2 py-4">{product.stockQty}</td>
-                  <td className="px-2 py-4">${product.price}</td>
-                  <td className="px-2 py-4 text-end">0</td>
-                  <td className="px-2 py-4 text-end">0</td>
-                  <td className="px-2 py-4 text-end">
-                    {product.price * product.stockQty}
-                  </td>
-                  <td className="px-2 py-4 flex justify-center gap-4">
-                    <Link
-                      href={"/"}
-                      className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white"
-                    >
-                      View
-                    </Link>
-                    <button className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white">
-                      Remove
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <ProductsTable data={productsData} />
+          <ProductsList data={productsData} />
           <Link
             href="/dashboard/products/add"
             className="bg-[#615cf6] hover:bg-transparent text-white hover:text-[#615cf6] border border-[#615cf6] px-2 py-1 rounded-md"
@@ -241,7 +182,7 @@ export default function NewOrder() {
             + Add Product
           </Link>
         </div>
-        <div className="w-full md:w-1/3 h-fit aspect-square bg-white rounded-2xl shadow-md p-6 flex flex-col justify-start gap-4">
+        <div className="w-full md:w-1/3 h-fit md:aspect-square bg-white rounded-2xl shadow-md p-6 flex flex-col justify-start gap-4">
           <div className="w-full flex items-center gap-3 bg-gray-50 rounded-xl p-2 shadow-sm">
             <FaCashRegister className="text-green-500 text-2xl" />
             <div className="text-xs text-gray-500">Selling Price</div>
