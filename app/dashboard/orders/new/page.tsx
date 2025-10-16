@@ -9,15 +9,15 @@ import { PiEqualsFill } from "react-icons/pi";
 export default function NewOrder() {
   const [orderType, setOrderType] = React.useState("Sales");
   return (
-    <main className="p-8">
-      <div className="w-full bg-white rounded-2xl shadow-md p-6 flex flex-row justify-between items-center">
+    <main className="p-4 md:p-8">
+      <div className="w-full bg-white rounded-2xl shadow-md p-6 flex flex-row justify-between items-start md:items-center">
         <h3 className="text-2xl font-medium">New Order</h3>
-        <div>
+        <div className="flex flex-col md:flex-row gap-2">
           <select className="bg-white border border-gray-300 rounded-md px-2 py-2">
             <option onClick={() => setOrderType("Sales")}>Sales</option>
             <option onClick={() => setOrderType("Purchase")}>Purchase</option>
           </select>
-          <button className="bg-transparent hover:bg-red-500 text-red-500 hover:text-white border border-red-500 px-2 py-1 rounded-md cursor-pointer mx-2">
+          <button className="bg-transparent hover:bg-red-500 text-red-500 hover:text-white border border-red-500 px-2 py-1 rounded-md cursor-pointer">
             Discard Changes
           </button>
           <button className="bg-[#615cf6] hover:bg-transparent text-white hover:text-[#615cf6] border border-[#615cf6] px-2 py-1 rounded-md cursor-pointer">
@@ -169,7 +169,7 @@ export default function NewOrder() {
         </div>
       )}
       <div className="flex flex-row gap-6 my-6">
-        <div className="w-2/3 bg-white rounded-2xl shadow-md p-6">
+        <div className="w-full md:w-2/3 bg-white rounded-2xl shadow-md p-6">
           <h3 className="text-2xl font-medium">Order Details</h3>
           <table className="w-full text-left my-4">
             <thead>
@@ -241,7 +241,7 @@ export default function NewOrder() {
             + Add Product
           </Link>
         </div>
-        <div className="w-1/3 h-fit aspect-square bg-white rounded-2xl shadow-md p-6 flex flex-col justify-start gap-4">
+        <div className="w-full md:w-1/3 h-fit aspect-square bg-white rounded-2xl shadow-md p-6 flex flex-col justify-start gap-4">
           <div className="w-full flex items-center gap-3 bg-gray-50 rounded-xl p-2 shadow-sm">
             <FaCashRegister className="text-green-500 text-2xl" />
             <div className="text-xs text-gray-500">Selling Price</div>
@@ -264,8 +264,8 @@ export default function NewOrder() {
           </div>
         </div>
       </div>
-      <div className="flex flex-row gap-6 my-6">
-        <div className="w-2/3 bg-white rounded-2xl shadow-md p-6">
+      <div className="flex flex-col md:flex-row gap-6 my-6">
+        <div className="w-full md:w-2/3 bg-white rounded-2xl shadow-md p-6">
           <h3 className="text-2xl font-medium">Payment Details</h3>
           <div className="mt-4 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
             <div className="sm:col-span-2">
@@ -346,7 +346,7 @@ export default function NewOrder() {
             </div>
           </div>
         </div>
-        <div className="w-1/2 bg-white rounded-2xl shadow-md p-6">
+        <div className="w-full md:w-1/2 bg-white rounded-2xl shadow-md p-6">
           <h3 className="text-2xl font-medium">Notes & Attachments</h3>
           <div className="mt-4 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
             <div className="col-span-full">
