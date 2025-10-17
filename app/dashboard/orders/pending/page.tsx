@@ -83,8 +83,8 @@ export default function PendingOrders() {
           />
         </div>
         <PendingOrdersTable data={productsData} />
-        <PendingOrdersList data={productsData} />
       </div>
+      <PendingOrdersList data={productsData} />
     </main>
   );
 }
