@@ -4,14 +4,16 @@ import Link from "next/link";
 import * as React from "react";
 import { FaCashRegister, FaMinusSquare, FaPercentage } from "react-icons/fa";
 import { PiEqualsFill } from "react-icons/pi";
+import CartTable from "./components/CartTable";
+import { CartList } from "./components/CartList/CartList";
 
 export default function QuickSale() {
   return (
-    <main className="p-8">
+    <main className="p-4 md:p-8">
       <h3 className="text-2xl font-medium">Quick Sale</h3>
-      <div className="w-full bg-white rounded-2xl shadow-md my-6 p-6 flex flex-row justify-between items-start">
-        <div className="flex flex-col justify-between items-end gap-4">
-          <select className="bg-white border border-gray-300 rounded-md px-2 py-2">
+      <div className="w-full bg-white rounded-2xl shadow-md my-6 p-6 flex flex-col md:flex-row md:justify-between gap-4 md:gap-0 items-center md:items-start">
+        <div className="flex flex-row md:flex-col justify-between items-start md:items-end gap-4 w-full md:w-fit">
+          <select className="bg-white border border-gray-300 rounded-md px-2 py-2 w-2/5 md:w-fit">
             <option>Walk-in Customer</option>
             <option>Customer A</option>
             <option>Customer B</option>
@@ -24,8 +26,8 @@ export default function QuickSale() {
             + New Customer
           </Link>
         </div>
-        <div className="flex flex-col justify-between items-end gap-4">
-          <div className="sm:col-span-3 flex flex-row items-center gap-2">
+        <div className="flex flex-row md:flex-col justify-between items-start md:items-end gap-4">
+          <div className="sm:col-span-3 flex flex-col md:flex-row items-start md:items-center gap-2">
             <label htmlFor="type" className="block text-sm/6 font-medium">
               Sale Type
             </label>
@@ -34,7 +36,7 @@ export default function QuickSale() {
               <option>Credit Sale</option>
             </select>
           </div>
-          <div className="sm:col-span-3 flex flex-row items-center gap-2">
+          <div className="sm:col-span-3 flex flex-col md:flex-row items-start md:items-center gap-2">
             <label htmlFor="invoice" className="block text-sm/6 font-medium">
               Invoice
             </label>
@@ -47,8 +49,8 @@ export default function QuickSale() {
             />
           </div>
         </div>
-        <div className="flex flex-col justify-between items-end gap-4">
-          <div>
+        <div className="w-full md:w-auto flex flex-col-reverse md:flex-col justify-between items-start md:items-end gap-4">
+          <div className="flex flex-row items-center gap-4">
             <button className="bg-transparent hover:bg-red-500 text-red-500 hover:text-white border border-red-500 px-2 py-1 rounded-md cursor-pointer mx-2">
               Discard Changes
             </button>
@@ -70,74 +72,18 @@ export default function QuickSale() {
           </div>
         </div>
       </div>
-      <div className="w-full flex flex-row justify-between items-start gap-6 my-6">
-        <div className="bg-white rounded-2xl shadow-md p-6 w-2/3">
+      <div className="w-full flex flex-col md:flex-row justify-between items-start gap-6 my-6">
+        <div className="bg-white rounded-2xl shadow-md p-6 w-full md:w-2/3">
           <input
             type="text"
             placeholder="Search products..."
             className="border border-gray-300 rounded-md my-2 px-2 py-1 w-full"
           />
           <h4 className="text-2xl font-medium mt-6">Cart</h4>
-          <table className="w-full text-left my-2">
-            <thead>
-              <tr className="border-b border-gray-300 text-gray-500">
-                <th colSpan={2} className="px-2 py-2 font-normal text-center">
-                  Product
-                </th>
-                <th className="px-2 py-2 font-normal">Qty</th>
-                <th className="px-2 py-2 font-normal">Price</th>
-                <th className="px-2 py-2 font-normal">Discount</th>
-                <th className="px-2 py-2 font-normal">Tax</th>
-                <th className="px-2 py-2 font-normal">Total</th>
-                <th className="px-2 py-2 font-normal">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {productsData.map((product) => (
-                <tr
-                  key={product.id}
-                  className="border-b border-gray-300 hover:bg-gray-50"
-                >
-                  <td className="px-2 py-4">
-                    <Link href={`/dashboard/products/${product.id}`}>
-                      <Image
-                        src={product.image}
-                        alt={product.name}
-                        width={60}
-                        height={40}
-                        className="aspect-3/2 object-cover rounded-lg"
-                      />
-                    </Link>
-                  </td>
-                  <td className="px-2 py-4 font-medium">
-                    <Link href={`/dashboard/products/${product.id}`}>
-                      {product.name}
-                    </Link>
-                  </td>
-                  <td className="px-2 py-4">{product.stockQty}</td>
-                  <td className="px-2 py-4">${product.price}</td>
-                  <td className="px-2 py-4">$0.00</td>
-                  <td className="px-2 py-4">$0.00</td>
-                  <td className="px-2 py-4">
-                    ${product.price * product.stockQty}
-                  </td>
-                  <td className="px-2 py-4 flex justify-center gap-4">
-                    <Link
-                      href={"/"}
-                      className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white"
-                    >
-                      View
-                    </Link>
-                    <button className="bg-red-200 px-2 py-1 rounded-md hover:bg-white">
-                      Remove
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <CartTable data={productsData.slice(0, 4)} />
+          <CartList data={productsData.slice(0, 4)} />
         </div>
-        <div className="w-1/3 h-fit aspect-square bg-white rounded-2xl shadow-md p-6 flex flex-col justify-start gap-4">
+        <div className="w-full md:w-1/3 h-fit md:aspect-square bg-white rounded-2xl shadow-md p-6 flex flex-col justify-start gap-4">
           <div className="w-full flex items-center gap-3 bg-gray-50 rounded-xl p-2 shadow-sm">
             <FaCashRegister className="text-green-500 text-2xl" />
             <div className="text-xs text-gray-500">Selling Price</div>
