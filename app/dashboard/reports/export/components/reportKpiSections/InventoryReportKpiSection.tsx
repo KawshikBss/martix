@@ -15,7 +15,7 @@ export default function InventoryReportKpiSection(
   props: IInventoryReportKpiSectionProps
 ) {
   return (
-    <div className="my-6 w-full flex flex-row justify-between gap-4">
+    <div className="my-6 w-full flex flex-col md:flex-row justify-between gap-4">
       <KpiCard
         title="Total SKUs"
         icon={<FaBarcode className="text-xl" />}

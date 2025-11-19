@@ -9,7 +9,7 @@ export default function SupplierReportKpiSection(
   props: ISupplierReportKpiSectionProps
 ) {
   return (
-    <div className="my-6 w-full flex flex-row justify-between gap-4">
+    <div className="my-6 w-full flex flex-col md:flex-row justify-between gap-4">
       <KpiCard
         title="Active Suppliers"
         icon={<FaPerson className="text-xl" />}
