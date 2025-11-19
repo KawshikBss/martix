@@ -65,19 +65,6 @@ export function ReceiptsListItem(props: IReceiptsListItemProps) {
         <div className="px-4 pb-4 border-t border-gray-100">
           <div className="pt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="bg-gray-50 rounded-lg p-3">
-              <div className="flex items-center">
-                {/* {product.id % 2 == 0 ? (
-                  <FaGlobe className="w-4 h-4 text-blue-500 mr-2" />
-                ) : (
-                  <FaCashRegister className="w-4 h-4 text-green-500 mr-2" />
-                )} */}
-                <span className="text-sm font-medium text-gray-700">
-                  {product.id % 2 == 0 ? "Online" : "In Store"} Order
-                </span>
-              </div>
-            </div>
-            {/* Stock Quantity */}
-            <div className="bg-gray-50 rounded-lg p-3">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center">
                   <FaTruck className="w-4 h-4 text-orange-500 mr-2" />
