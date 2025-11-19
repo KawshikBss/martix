@@ -73,12 +73,12 @@ export function ProfitLossReportListItem(
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center">
                   <FaCashRegister className="w-4 h-4 text-orange-500 mr-2" />
-                  <span className="text-lg font-bold text-gray-700">
+                  <span className="text-sm font-medium text-gray-700">
                     Units Sold
                   </span>
                 </div>
               </div>
-              <div className={`text-sm font-medium`}>
+              <div className={`text-lg font-bold`}>
                 {product.stockQty} units
               </div>
             </div>
@@ -105,34 +105,6 @@ export function ProfitLossReportListItem(
                 </div>
               </div>
               <div className={`text-lg font-bold`}>$5000</div>
-            </div>
-
-            {/* Actions */}
-            <div className="mt-4 flex flex-wrap gap-2">
-              <Link
-                href={"/"}
-                className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white"
-              >
-                View
-              </Link>
-              <Link
-                href={"/"}
-                className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white"
-              >
-                Edit
-              </Link>
-              <Link
-                href={"/"}
-                className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white"
-              >
-                Cancel
-              </Link>
-              <Link
-                href={"/"}
-                className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white"
-              >
-                Print Invoice
-              </Link>
             </div>
           </div>
         </div>

@@ -105,34 +105,6 @@ export function SalesReportListItem(props: ISalesReportListItemProps) {
                 {product.id % 2 == 0 ? "Unpaid" : "Paid"}
               </div>
             </div>
-
-            {/* Actions */}
-            <div className="mt-4 flex flex-wrap gap-2">
-              <Link
-                href={"/"}
-                className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white"
-              >
-                View
-              </Link>
-              <Link
-                href={"/"}
-                className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white"
-              >
-                Edit
-              </Link>
-              <Link
-                href={"/"}
-                className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white"
-              >
-                Cancel
-              </Link>
-              <Link
-                href={"/"}
-                className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white"
-              >
-                Print Invoice
-              </Link>
-            </div>
           </div>
         </div>
       )}
