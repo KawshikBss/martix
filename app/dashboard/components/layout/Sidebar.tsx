@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import * as React from "react";
 import { usePathname } from "next/navigation";
-import { FaAngleDown } from "react-icons/fa";
+import { FaAngleDown, FaDoorOpen } from "react-icons/fa";
 import { FiHome, FiShoppingCart } from "react-icons/fi";
 import { LuStore, LuChartNoAxesCombined } from "react-icons/lu";
 import { BsBoxes, BsHandbag, BsGear } from "react-icons/bs";
@@ -254,6 +254,13 @@ export function Sidebar(props: ISidebarProps) {
               )}
           </li>
         ))}
+        <li
+          className="w-full rounded-md flex flex-row justify-start items-center gap-2 px-2 py-1"
+          onClick={props.closeSidebar}
+        >
+          <FaDoorOpen className="text-red-500" />
+          Logout
+        </li>
       </ul>
     </div>
   );
