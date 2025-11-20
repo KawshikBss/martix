@@ -24,6 +24,7 @@ import {
   LineElement,
 } from "chart.js";
 import ReportTable from "./components/reportTables/ReportTable";
+import { ReportList } from "./components/ReportList/ReportList";
 ChartJS.register(
   ArcElement,
   Tooltip,
@@ -105,11 +106,11 @@ const lineChartData = {
 export default function ExportReports() {
   const [orderType, setOrderType] = React.useState("Sales");
   return (
-    <main className="p-8">
+    <main className="p-4 md:p-8">
       <div className="bg-white rounded-2xl shadow-md p-6">
-        <div className="w-full flex flex-row justify-between items-center">
-          <h3 className="text-2xl font-medium">Sales Reports</h3>
-          <div className="flex flex-row gap-4">
+        <div className="w-full flex flex-col md:flex-row justify-between items-center gap-4 md:gap-0">
+          <h3 className="text-2xl font-medium self-start">Export Reports</h3>
+          <div className="flex flex-row flex-wrap gap-4">
             <select className="bg-white border border-gray-300 rounded-md px-2 py-2">
               <option>PDF</option>
               <option>Excel (XLSX)</option>
@@ -127,8 +128,8 @@ export default function ExportReports() {
             </button>
           </div>
         </div>
-        <div className="mt-4 flex flex-row justify-between gap-4">
-          <select className="bg-white border border-gray-300 rounded-md px-2 py-2 w-1/6">
+        <div className="mt-4 flex flex-wrap flex-col md:flex-row justify-between gap-4">
+          <select className="bg-white border border-gray-300 rounded-md px-2 py-2 w-full md:w-1/6">
             <option onClick={() => setOrderType("Sales")}>Sales</option>
             <option onClick={() => setOrderType("Profit & Loss")}>
               Profit & Loss
@@ -142,31 +143,31 @@ export default function ExportReports() {
             <option onClick={() => setOrderType("Supplier")}>Supplier</option>
             <option onClick={() => setOrderType("Tax/VAT")}>Tax/VAT</option>
           </select>
-          <select className="bg-white border border-gray-300 rounded-md px-2 py-2 w-1/6">
+          <select className="bg-white border border-gray-300 rounded-md px-2 py-2 w-full md:w-1/6">
             <option>Today</option>
             <option>Last 7 days</option>
             <option>This Month</option>
             <option>Custom</option>
           </select>
-          <select className="bg-white border border-gray-300 rounded-md px-2 py-2 w-1/6">
+          <select className="bg-white border border-gray-300 rounded-md px-2 py-2 w-full md:w-1/6">
             <option>All</option>
             <option>Medicine</option>
             <option>Electronics</option>
             <option>Home</option>
           </select>
-          <select className="bg-white border border-gray-300 rounded-md px-2 py-2 w-1/6">
+          <select className="bg-white border border-gray-300 rounded-md px-2 py-2 w-full md:w-1/6">
             <option>All Suppliers</option>
             <option>Supplier A</option>
             <option>Supplier B</option>
             <option>Supplier C</option>
           </select>
-          <select className="bg-white border border-gray-300 rounded-md px-2 py-2 w-1/6">
+          <select className="bg-white border border-gray-300 rounded-md px-2 py-2 w-full md:w-1/6">
             <option>All Customers</option>
             <option>Customer A</option>
             <option>Customer B</option>
             <option>Customer C</option>
           </select>
-          <select className="bg-white border border-gray-300 rounded-md px-2 py-2 w-1/6">
+          <select className="bg-white border border-gray-300 rounded-md px-2 py-2 w-full md:w-1/6">
             <option>All</option>
             <option>POS</option>
             <option>Online</option>
@@ -208,7 +209,7 @@ export default function ExportReports() {
           ) : orderType === "Product Performance" ? (
             <Bar options={barChartOptions} data={barChartData} />
           ) : orderType === "Inventory" ? (
-            <div className="w-1/2 center mx-auto">
+            <div className="w-full md:w-1/2 center mx-auto">
               <Doughnut data={doughnutChartData} />
             </div>
           ) : orderType === "Purchase" ? (
@@ -216,7 +217,7 @@ export default function ExportReports() {
           ) : orderType === "Customer" ? (
             <Bar options={barChartOptions} data={barChartData} />
           ) : orderType === "Supplier" ? (
-            <div className="w-1/2 center mx-auto">
+            <div className="w-full md:w-1/2 center mx-auto">
               <Doughnut data={doughnutChartData} />
             </div>
           ) : orderType === "Tax/VAT" ? (
@@ -270,20 +271,24 @@ export default function ExportReports() {
               : orderType == "Profit & Loss"
               ? [
                   ...productsData.map((product) => [
-                    { value: "April", type: "date" },
+                    { title: "Month", value: "April", type: "date" },
                     {
+                      title: "Revenue",
                       value: product.stockQty * product.price,
                       type: "currency",
                     },
                     {
+                      title: "COGS",
                       value: product.stockQty * product.price * 1.5,
                       type: "currency",
                     },
                     {
+                      title: "Expenses",
                       value: product.stockQty * product.price * 0.5,
                       type: "currency",
                     },
                     {
+                      title: "Profit",
                       value: product.stockQty * product.price * 0.75,
                       type: "currency",
                     },
@@ -292,14 +297,24 @@ export default function ExportReports() {
               : orderType === "Product Performance"
               ? [
                   ...productsData.map((product) => [
-                    { value: product, type: "product" },
-                    { value: product.category, type: "category" },
-                    { value: product.stockQty, type: "number" },
+                    { title: "Product", value: product, type: "product" },
                     {
+                      title: "Category",
+                      value: product.category,
+                      type: "category",
+                    },
+                    {
+                      title: "Units Sold",
+                      value: product.stockQty,
+                      type: "number",
+                    },
+                    {
+                      title: "Profit",
                       value: product.stockQty * product.price * 0.75,
                       type: "currency",
                     },
                     {
+                      title: "Turnover Rate",
                       value: product.stockQty * product.price * 0.5,
                       type: "currency",
                     },
@@ -308,16 +323,25 @@ export default function ExportReports() {
               : orderType === "Inventory"
               ? [
                   ...productsData.map((product) => [
-                    { value: product, type: "product" },
-                    { value: product.stockQty, type: "number" },
-                    { value: 50 - product.stockQty, type: "number" },
-                    { value: "In Stock", type: "status" },
+                    { title: "Product", value: product, type: "product" },
+                    {
+                      title: "Current Stock",
+                      value: product.stockQty,
+                      type: "number",
+                    },
+                    {
+                      title: "Min Stock",
+                      value: 50 - product.stockQty,
+                      type: "number",
+                    },
+                    { title: "Status", value: "In Stock", type: "status" },
                   ]),
                 ]
               : orderType === "Purchase"
               ? [
                   ...productsData.map((product) => [
                     {
+                      title: "Supplier",
                       value: {
                         id: 0,
                         image: "/images/user-placeholder.jpg",
@@ -325,15 +349,20 @@ export default function ExportReports() {
                       },
                       type: "user",
                     },
-                    { value: product, type: "product" },
-                    { value: product.stockQty, type: "number" },
-                    { value: product.price, type: "currency" },
+                    { title: "Product", value: product, type: "product" },
+                    {
+                      title: "Qty Purchased",
+                      value: product.stockQty,
+                      type: "number",
+                    },
+                    { title: "Cost", value: product.price, type: "currency" },
                   ]),
                 ]
               : orderType === "Customer"
               ? [
                   ...productsData.map((product) => [
                     {
+                      title: "Customer",
                       value: {
                         id: 0,
                         image: "/images/user-placeholder.jpg",
@@ -341,15 +370,24 @@ export default function ExportReports() {
                       },
                       type: "user",
                     },
-                    { value: product.stockQty, type: "number" },
-                    { value: product.stockQty * product.price, type: "number" },
-                    { value: 30, type: "number" },
+                    {
+                      title: "Orders",
+                      value: product.stockQty,
+                      type: "number",
+                    },
+                    {
+                      title: "Total Spend",
+                      value: product.stockQty * product.price,
+                      type: "number",
+                    },
+                    { title: "Avg Order Value", value: 30, type: "number" },
                   ]),
                 ]
               : orderType === "Supplier"
               ? [
                   ...productsData.map((product) => [
                     {
+                      title: "Supplier",
                       value: {
                         id: 0,
                         image: "/images/user-placeholder.jpg",
@@ -357,9 +395,17 @@ export default function ExportReports() {
                       },
                       type: "user",
                     },
-                    { value: product.stockQty, type: "number" },
-                    { value: product.stockQty * product.price, type: "number" },
-                    { value: 30, type: "number" },
+                    {
+                      title: "Products Supplied",
+                      value: product.stockQty,
+                      type: "number",
+                    },
+                    {
+                      title: "Total Value",
+                      value: product.stockQty * product.price,
+                      type: "number",
+                    },
+                    { title: "Avg Lead Time", value: 30, type: "number" },
                   ]),
                 ]
               : orderType === "Tax/VAT"
@@ -367,13 +413,209 @@ export default function ExportReports() {
                   ...Array(5)
                     .fill(0)
                     .map((_, i) => [
-                      { value: `INV-${1000 + i}`, type: "string" },
                       {
+                        title: "Invoice",
+                        value: `INV-${1000 + i}`,
+                        type: "string",
+                      },
+                      {
+                        title: "Taxable Amount",
                         value: Math.floor(Math.random() * 10000),
                         type: "currency",
                       },
-                      { value: `${5 + i}%`, type: "string" },
+                      { title: "Tax Rate", value: `${5 + i}%`, type: "string" },
                       {
+                        title: "Tax Amount",
+                        value: Math.floor(Math.random() * 500),
+                        type: "currency",
+                      },
+                    ]),
+                ]
+              : []
+          }
+        />
+        <ReportList
+          data={
+            orderType == "Sales"
+              ? [
+                  ...productsData.map((product) => [
+                    { title: "Product", value: product, type: "product" },
+                    {
+                      title: "Units Sold",
+                      value: product.stockQty,
+                      type: "number",
+                    },
+                    {
+                      title: "Revenue",
+                      value: product.stockQty * product.price,
+                      type: "currency",
+                    },
+                    {
+                      title: "Profit",
+                      value: (100 - product.stockQty) * product.price,
+                      type: "currency",
+                    },
+                    { title: "Margin %", value: "12", type: "number" },
+                  ]),
+                ]
+              : orderType == "Profit & Loss"
+              ? [
+                  ...productsData.map((product) => [
+                    { title: "Month", value: "April", type: "date" },
+                    {
+                      title: "Revenue",
+                      value: product.stockQty * product.price,
+                      type: "currency",
+                    },
+                    {
+                      title: "COGS",
+                      value: product.stockQty * product.price * 1.5,
+                      type: "currency",
+                    },
+                    {
+                      title: "Expenses",
+                      value: product.stockQty * product.price * 0.5,
+                      type: "currency",
+                    },
+                    {
+                      title: "Profit",
+                      value: product.stockQty * product.price * 0.75,
+                      type: "currency",
+                    },
+                  ]),
+                ]
+              : orderType === "Product Performance"
+              ? [
+                  ...productsData.map((product) => [
+                    { title: "Product", value: product, type: "product" },
+                    {
+                      title: "Category",
+                      value: product.category,
+                      type: "category",
+                    },
+                    {
+                      title: "Units Sold",
+                      value: product.stockQty,
+                      type: "number",
+                    },
+                    {
+                      title: "Profit",
+                      value: product.stockQty * product.price * 0.75,
+                      type: "currency",
+                    },
+                    {
+                      title: "Turnover Rate",
+                      value: product.stockQty * product.price * 0.5,
+                      type: "currency",
+                    },
+                  ]),
+                ]
+              : orderType === "Inventory"
+              ? [
+                  ...productsData.map((product) => [
+                    { title: "Product", value: product, type: "product" },
+                    {
+                      title: "Current Stock",
+                      value: product.stockQty,
+                      type: "number",
+                    },
+                    {
+                      title: "Min Stock",
+                      value: 50 - product.stockQty,
+                      type: "number",
+                    },
+                    { title: "Status", value: "In Stock", type: "status" },
+                  ]),
+                ]
+              : orderType === "Purchase"
+              ? [
+                  ...productsData.map((product) => [
+                    {
+                      title: "Supplier",
+                      value: {
+                        id: 0,
+                        image: "/images/user-placeholder.jpg",
+                        name: "Robert California",
+                      },
+                      type: "user",
+                    },
+                    { title: "Product", value: product, type: "product" },
+                    {
+                      title: "Qty Purchased",
+                      value: product.stockQty,
+                      type: "number",
+                    },
+                    { title: "Cost", value: product.price, type: "currency" },
+                  ]),
+                ]
+              : orderType === "Customer"
+              ? [
+                  ...productsData.map((product) => [
+                    {
+                      title: "Customer",
+                      value: {
+                        id: 0,
+                        image: "/images/user-placeholder.jpg",
+                        name: "Robert California",
+                      },
+                      type: "user",
+                    },
+                    {
+                      title: "Orders",
+                      value: product.stockQty,
+                      type: "number",
+                    },
+                    {
+                      title: "Total Spend",
+                      value: product.stockQty * product.price,
+                      type: "number",
+                    },
+                    { title: "Avg Order Value", value: 30, type: "number" },
+                  ]),
+                ]
+              : orderType === "Supplier"
+              ? [
+                  ...productsData.map((product) => [
+                    {
+                      title: "Supplier",
+                      value: {
+                        id: 0,
+                        image: "/images/user-placeholder.jpg",
+                        name: "Robert California",
+                      },
+                      type: "user",
+                    },
+                    {
+                      title: "Products Supplied",
+                      value: product.stockQty,
+                      type: "number",
+                    },
+                    {
+                      title: "Total Value",
+                      value: product.stockQty * product.price,
+                      type: "number",
+                    },
+                    { title: "Avg Lead Time", value: 30, type: "number" },
+                  ]),
+                ]
+              : orderType === "Tax/VAT"
+              ? [
+                  ...Array(5)
+                    .fill(0)
+                    .map((_, i) => [
+                      {
+                        title: "Invoice",
+                        value: `INV-${1000 + i}`,
+                        type: "string",
+                      },
+                      {
+                        title: "Taxable Amount",
+                        value: Math.floor(Math.random() * 10000),
+                        type: "currency",
+                      },
+                      { title: "Tax Rate", value: `${5 + i}%`, type: "string" },
+                      {
+                        title: "Tax Amount",
                         value: Math.floor(Math.random() * 500),
                         type: "currency",
                       },
