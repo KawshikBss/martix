@@ -37,7 +37,7 @@ export default function ProfilePage(props: IProfilePageProps) {
             className="bg-[#615cf6] hover:bg-transparent text-white hover:text-[#615cf6] border border-[#615cf6] px-2 py-1 rounded-md"
             onClick={toggleEditPersonalInfo}
           >
-            {editPersonalInfo ? "Save Data" : "Edit Profile"}
+            {editPersonalInfo ? "Save" : "Edit"}
           </button>
         </div>
         <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -106,12 +106,12 @@ export default function ProfilePage(props: IProfilePageProps) {
       <div className="my-4 bg-white rounded-2xl shadow-md p-4 md:p-6 w-full">
         <div className="flex flex-row justify-between items-center">
           <h3 className="text-2xl font-medium">Store Details</h3>
-          <Link
-            href="/"
-            className="bg-[#615cf6] hover:bg-transparent text-white hover:text-[#615cf6] border border-[#615cf6] px-2 py-1 rounded-md"
+          <button
+            className="w-fit bg-[#615cf6] hover:bg-transparent text-white hover:text-[#615cf6] border border-[#615cf6] px-2 py-1 rounded-md"
+            onClick={toggleEditStoreDetails}
           >
-            Manage Stores
-          </Link>
+            {editStoreDetails ? "Save" : "Update"} Store Info
+          </button>
         </div>
         <div className="flex flex-col w-full md:w-1/3 mt-2">
           <label className="mb-1 text-sm text-gray-600">Store</label>
@@ -235,12 +235,12 @@ export default function ProfilePage(props: IProfilePageProps) {
               <p className="text-md font-medium">john.doe@medicol.com</p>
             )}
           </div>
-          <button
+          <Link
+            href="/"
             className="w-fit bg-[#615cf6] hover:bg-transparent text-white hover:text-[#615cf6] border border-[#615cf6] px-2 py-1 rounded-md"
-            onClick={toggleEditStoreDetails}
           >
-            {editStoreDetails ? "Save" : "Update"} Store Info
-          </button>
+            Manage Stores
+          </Link>
         </div>
       </div>
       <div className="my-4 bg-white rounded-2xl shadow-md p-4 md:p-6 w-full">
