@@ -255,10 +255,10 @@ export function Sidebar(props: ISidebarProps) {
           </li>
         ))}
         <li
-          className="w-full rounded-md flex flex-row justify-start items-center gap-2 px-2 py-1"
+          className="w-full rounded-md flex flex-row justify-start items-center gap-2 px-2 py-1 text-red-400"
           onClick={props.closeSidebar}
         >
-          <FaDoorOpen className="text-red-400" />
+          <FaDoorOpen />
           Logout
         </li>
       </ul>
