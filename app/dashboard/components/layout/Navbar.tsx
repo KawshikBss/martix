@@ -29,7 +29,7 @@ export default function Navbar(props: INavbarProps) {
         <Link href="/notifications">
           <FaRegBell className="w-5 h-5 mt-1 text-gray-600 hover:text-gray-800 transition-colors duration-200" />
         </Link>
-        <Link href="/profile">
+        <Link href="/dashboard/profile">
           <Image
             src="/images/user-placeholder.jpg"
             alt="Profile"
