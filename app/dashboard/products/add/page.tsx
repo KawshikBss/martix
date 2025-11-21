@@ -3,7 +3,7 @@ import * as React from "react";
 
 export default function AddProduct() {
   return (
-    <main className="p-8">
+    <main className="p-4 md:p-8">
       <div className="w-full bg-white rounded-2xl shadow-md p-6 flex flex-col md:flex-row justify-between items-center">
         <h3 className="text-2xl font-medium mb-4 md:mb-0">New Product</h3>
         <div className="flex flex-row gap-4">
