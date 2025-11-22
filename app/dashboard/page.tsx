@@ -151,7 +151,7 @@ export default function Dashboard() {
                       {" "}
                     </span>
                     {!product.inStock ? (
-                      <span>
+                      <div className="flex flex-col md:flex-row gap-2">
                         <Link
                           href=""
                           className="bg-blue-500 text-white px-2 py-1 rounded mr-2"
@@ -164,7 +164,7 @@ export default function Dashboard() {
                         >
                           Add Order
                         </Link>
-                      </span>
+                      </div>
                     ) : (
                       <></>
                     )}
