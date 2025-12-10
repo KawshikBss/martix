@@ -6,7 +6,23 @@ import type { NextRequest } from "next/server";
 export function middleware(request: NextRequest) {
     const authToken = request.cookies.get("authToken")?.value;
     if (authToken) {
-        return NextResponse.next();
+        const authUserString = request.cookies.get("authUser")?.value;
+        const authUser = JSON.parse(authUserString || "{}") as UserInterface;
+        if (
+            (authUser &&
+                authUser.name &&
+                authUser.email &&
+                authUser.phone &&
+                authUser.image &&
+                authUser.address &&
+                authUser.nid) ||
+            request.nextUrl.pathname === "/dashboard/profile"
+        ) {
+            return NextResponse.next();
+        }
+        return NextResponse.redirect(
+            new URL("/dashboard/profile", request.url)
+        );
     }
     return NextResponse.redirect(new URL("/login", request.url));
 }
