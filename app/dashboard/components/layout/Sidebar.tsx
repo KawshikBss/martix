@@ -12,7 +12,7 @@ import { TbReportSearch } from "react-icons/tb";
 import { MdPointOfSale, MdOutlineFactory } from "react-icons/md";
 import { GrGroup } from "react-icons/gr";
 import { IoCloseCircle } from "react-icons/io5";
-import useAuth from "@/lib/useAuth";
+import useAuth from "@/lib/hooks/useAuth";
 import { useRouter } from "next/navigation";
 
 export interface ISidebarProps {
