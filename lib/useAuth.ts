@@ -1,35 +1,32 @@
-import { cookies } from "next/headers";
+import { deleteCookie, getCookie, setCookie } from "cookies-next";
 
 const useAuth = () => {
-  const login = async () => {
-    const authCookies = await cookies();
-    authCookies.set("authToken", "your-auth-token", {
-      httpOnly: true,
-      secure: true,
-      sameSite: "strict",
-      maxAge: 60 * 15,
-    });
-  };
+    const login = async (authToken: string) => {
+        console.log("Setting auth token:", authToken);
+        await setCookie("authToken", authToken, {
+            secure: false,
+            sameSite: "lax",
+            path: "/",
+        });
+    };
 
-  const logout = async () => {
-    const authCookies = await cookies();
-    authCookies.delete("authToken");
-  };
+    const logout = async () => {
+        await deleteCookie("authToken");
+    };
 
-  const isAuthenticated = async () => {
-    const authCookies = await cookies();
-    const authToken = authCookies.get("authToken");
-    if (authToken) {
-      return true;
-    }
-    return false;
-  };
+    const isAuthenticated = async () => {
+        const authToken = await getCookie("authToken");
+        if (authToken) {
+            return true;
+        }
+        return false;
+    };
 
-  return {
-    login,
-    logout,
-    isAuthenticated,
-  };
+    return {
+        login,
+        logout,
+        isAuthenticated,
+    };
 };
 
 export default useAuth;
