@@ -1,12 +1,16 @@
 "use client";
 
+import useAuth from "@/lib/hooks/useAuth";
 import Image from "next/image";
 import Link from "next/link";
 import * as React from "react";
+import { toast } from "react-toastify";
 
 export interface ISignupPageProps {}
 
 export default function SignupPage(props: ISignupPageProps) {
+    const { login } = useAuth();
+
     const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const formElements = e.currentTarget.elements;
@@ -16,17 +20,33 @@ export default function SignupPage(props: ISignupPageProps) {
         const last_name = (
             formElements.namedItem("last_name") as HTMLInputElement
         ).value;
+        if (!first_name || !last_name) {
+            toast("Please enter your full name!");
+            return;
+        }
         const name = first_name + " " + last_name;
         const email = (formElements.namedItem("email") as HTMLInputElement)
             .value;
+        if (!email) {
+            toast("Please enter your email!");
+            return;
+        }
         const phone = (formElements.namedItem("phone") as HTMLInputElement)
             .value;
+        if (!phone) {
+            toast("Please enter your phone!");
+            return;
+        }
         const password = (
             formElements.namedItem("password") as HTMLInputElement
         ).value;
         const confirm_password = (
             formElements.namedItem("confirm_password") as HTMLInputElement
         ).value;
+        if (!password || !confirm_password || password !== confirm_password) {
+            toast("Please check the passwords!");
+            return;
+        }
         const formData = new FormData();
         formData.append("name", name);
         formData.append("email", email);
@@ -42,6 +62,10 @@ export default function SignupPage(props: ISignupPageProps) {
             );
             const data = await response.json();
             console.log(data);
+            if (response.ok && data && data.token && data.user) {
+                toast.success(`Signup successful! Welcome to Martix ${name}`);
+                await login(data.token, data.user);
+            }
         } catch (error) {
             console.error("Error during signup:", error);
         }
@@ -167,7 +191,7 @@ export default function SignupPage(props: ISignupPageProps) {
                             <input
                                 id="confirm_password"
                                 name="confirm_password"
-                                type="confirm_password"
+                                type="password"
                                 autoComplete="current-confirm_password"
                                 className="block w-full rounded-md bg-gray-100 px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
                             />
