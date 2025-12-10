@@ -1,16 +1,27 @@
 import Image from "next/image";
 import Link from "next/link";
+import Form from "next/form";
 import * as React from "react";
 
 export interface ILoginPageProps {}
 
 export default function LoginPage(props: ILoginPageProps) {
+  async function hanleLogin(formData: FormData) {
+    "use server";
+    const email = formData.get("email");
+    const password = formData.get("password");
+    console.log("Email:", email);
+    console.log("Password:", password);
+  }
   return (
     <div
       className="bg-[url(https://images.unsplash.com/photo-1557264337-e8a93017fe92?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D)]
         w-[100vw] h-[100vh] bg-no-repeat bg-cover flex items-center justify-center"
     >
-      <div className="bg-white rounded-md p-8 shadow-xl md:w-1/3">
+      <Form
+        action={hanleLogin}
+        className="bg-white rounded-md p-8 shadow-xl sm:w-1/2 md:w-1/3"
+      >
         <Link href="/">
           <Image
             src="/logo.png"
@@ -93,10 +104,19 @@ export default function LoginPage(props: ILoginPageProps) {
             </label>
           </div>
         </div>
-        <button className="w-full text-center mt-6 bg-[#615cf6] hover:bg-transparent text-white hover:text-[#615cf6] border border-[#615cf6] px-2 py-1 rounded-md cursor-pointer">
+        <button
+          type="submit"
+          className="w-full text-center mt-6 bg-[#615cf6] hover:bg-transparent text-white hover:text-[#615cf6] border border-[#615cf6] px-2 py-1 rounded-md cursor-pointer"
+        >
           Login
         </button>
-      </div>
+        <p className="text-md font-medium mt-6">
+          Don't have an account?{" "}
+          <Link href="/signup" className="text-[#615cf6]">
+            Sign up
+          </Link>
+        </p>
+      </Form>
     </div>
   );
 }
