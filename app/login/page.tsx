@@ -1,12 +1,15 @@
 "use client";
 
+import useAuth from "@/lib/hooks/useAuth";
 import Image from "next/image";
 import Link from "next/link";
 import * as React from "react";
+import { toast } from "react-toastify";
 
 export interface ILoginPageProps {}
 
 export default function LoginPage(props: ILoginPageProps) {
+    const { login } = useAuth();
     const hanleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const formElements = e.currentTarget.elements;
@@ -27,7 +30,11 @@ export default function LoginPage(props: ILoginPageProps) {
                 }
             );
             const data = await response.json();
-            console.log(data);
+
+            if (response.ok && data && data.token && data.user) {
+                toast.success(`Login successful! Welcome back`);
+                await login(data.token, data.user);
+            }
         } catch (error) {
             console.error("Error during login:", error);
         }
