@@ -1,6 +1,7 @@
 "use client";
 
 import useAuth from "@/lib/hooks/useAuth";
+import { authService } from "@/lib/services/authService";
 import Image from "next/image";
 import Link from "next/link";
 import * as React from "react";
@@ -47,22 +48,9 @@ export default function SignupPage(props: ISignupPageProps) {
             toast("Please check the passwords!");
             return;
         }
-        const formData = new FormData();
-        formData.append("name", name);
-        formData.append("email", email);
-        formData.append("phone", phone);
-        formData.append("password", password);
         try {
-            const response = await fetch(
-                `${process.env.NEXT_PUBLIC_API_URL}/register`,
-                {
-                    method: "POST",
-                    body: formData,
-                }
-            );
-            const data = await response.json();
-            console.log(data);
-            if (response.ok && data && data.token && data.user) {
+            const data = await authService.signup(name, email, phone, password);
+            if (data?.token && data?.user) {
                 toast.success(`Signup successful! Welcome to Martix ${name}`);
                 await login(data.token, data.user);
             }

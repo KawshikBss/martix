@@ -1,4 +1,5 @@
 import { UserInterface } from "@/lib/interfaces/UserInterface";
+import { authService } from "@/lib/services/authService";
 import { getCookie } from "cookies-next";
 import React from "react";
 import { toast } from "react-toastify";
@@ -35,27 +36,14 @@ const SecurityInformationForm = (props: Props) => {
         const authToken = await getCookie("authToken");
 
         try {
-            const response = await fetch(
-                `${process.env.NEXT_PUBLIC_API_URL}/password-update`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${authToken}`,
-                    },
-                    body: JSON.stringify({
-                        current_password,
-                        new_password,
-                    }),
-                }
+            const data = await authService.updatePassword(
+                current_password,
+                new_password
             );
 
-            const data = await response.json();
-
-            if (response.ok && data && data.message) {
+            if (data && data.message) {
                 toast.success(data.message);
-                updateAuthUser(data);
-            } else if (response.status === 400 && data && data.error) {
+            } else if (data && data.error) {
                 toast.error(data.error);
             }
         } catch (error) {
@@ -64,27 +52,12 @@ const SecurityInformationForm = (props: Props) => {
     };
 
     const handleToggleTFA = async () => {
-        const authToken = await getCookie("authToken");
-
         try {
-            const response = await fetch(
-                `${process.env.NEXT_PUBLIC_API_URL}/user-update`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${authToken}`,
-                    },
-                    body: JSON.stringify({
-                        ...authUser,
-                        tfa_enabled: authUser ? !authUser.tfa_enabled : true,
-                    }),
-                }
-            );
+            const data = await authService.updateUser({
+                tfa_enabled: authUser ? !authUser.tfa_enabled : true,
+            });
 
-            const data = await response.json();
-
-            if (response.ok && data) {
+            if (data) {
                 toast.success(
                     `TFA ${
                         authUser?.tfa_enabled ? "disabled" : "enabled"

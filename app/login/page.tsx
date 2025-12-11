@@ -1,6 +1,7 @@
 "use client";
 
 import useAuth from "@/lib/hooks/useAuth";
+import { authService } from "@/lib/services/authService";
 import Image from "next/image";
 import Link from "next/link";
 import * as React from "react";
@@ -19,23 +20,10 @@ export default function LoginPage(props: ILoginPageProps) {
             formElements.namedItem("password") as HTMLInputElement
         ).value;
         try {
-            const response = await fetch(
-                `${process.env.NEXT_PUBLIC_API_URL}/login`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ email, password }),
-                }
-            );
-            const data = await response.json();
-
-            if (response.ok && data && data.token && data.user) {
-                toast.success(`Login successful! Welcome back`);
+            const data = await authService.login(email, password);
+            if (data?.token && data?.user) {
                 await login(data.token, data.user);
-            } else if (data && data.error) {
-                toast.error(data.error);
+                toast.success("Login successful!");
             }
         } catch (error) {
             console.error("Error during login:", error);

@@ -1,5 +1,5 @@
 import { UserInterface } from "@/lib/interfaces/UserInterface";
-import { getCookie } from "cookies-next";
+import { authService } from "@/lib/services/authService";
 import React from "react";
 import { FaEnvelope, FaIdCard, FaPhone, FaUser } from "react-icons/fa";
 import { FaLocationPin } from "react-icons/fa6";
@@ -30,24 +30,15 @@ const ProfileInformationForm = (props: Props) => {
             .value;
         const nid = (formElements.namedItem("nid") as HTMLInputElement).value;
 
-        const authToken = await getCookie("authToken");
-
         try {
-            const response = await fetch(
-                `${process.env.NEXT_PUBLIC_API_URL}/user-update`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${authToken}`,
-                    },
-                    body: JSON.stringify({ name, email, phone, address, nid }),
-                }
-            );
-
-            const data = await response.json();
-
-            if (response.ok && data) {
+            const data = await authService.updateUser({
+                name,
+                email,
+                phone,
+                address,
+                nid,
+            });
+            if (data) {
                 toast.success("Profile updated successfully!");
                 updateAuthUser(data);
             }
