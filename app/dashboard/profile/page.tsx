@@ -1,13 +1,11 @@
 "use client";
 
 import useAuth from "@/lib/hooks/useAuth";
-import { getCookie } from "cookies-next";
-import Image from "next/image";
 import Link from "next/link";
 import * as React from "react";
-import { toast } from "react-toastify";
 import ProfileInformationForm from "./components/ProfileInformationForm";
 import SecurityInformationForm from "./components/SecurityInformationForm";
+import ProfileSummary from "./components/ProfileSummary";
 
 export interface IProfilePageProps {}
 
@@ -19,28 +17,10 @@ export default function ProfilePage(props: IProfilePageProps) {
 
     return (
         <main className="p-4 md:p-8">
-            <div className="flex flex-row justify-start items-center gap-6">
-                <Image
-                    src="/images/user-placeholder.jpg"
-                    alt="Profile"
-                    className="rounded-full w-[120px] h-[120px] object-cover"
-                    width={120}
-                    height={120}
-                />
-                <div>
-                    <h2 className="text-xl font-medium">
-                        {authUser?.name ?? "N/A"}
-                    </h2>
-                    {authUser?.role && (
-                        <p className="text-sm font-bold text-gray-500">
-                            {authUser?.role.name}
-                        </p>
-                    )}
-                    <p className="bg-gray-300 px-4 py-1 rounded-lg mt-1">
-                        Active Subscription
-                    </p>
-                </div>
-            </div>
+            <ProfileSummary
+                authUser={authUser}
+                updateAuthUser={updateAuthUser}
+            />
 
             <ProfileInformationForm
                 authUser={authUser}
