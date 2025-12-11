@@ -34,6 +34,8 @@ export default function LoginPage(props: ILoginPageProps) {
             if (response.ok && data && data.token && data.user) {
                 toast.success(`Login successful! Welcome back`);
                 await login(data.token, data.user);
+            } else if (data && data.error) {
+                toast.error(data.error);
             }
         } catch (error) {
             console.error("Error during login:", error);
