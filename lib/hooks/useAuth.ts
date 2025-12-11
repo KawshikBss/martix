@@ -2,6 +2,7 @@ import { deleteCookie, getCookie, setCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { UserInterface } from "../interfaces/UserInterface";
+import { authService } from "../services/authService";
 
 const useAuth = () => {
     const [authToken, setauthToken] = useState<string | undefined>(undefined);
@@ -10,7 +11,7 @@ const useAuth = () => {
     );
 
     const { replace } = useRouter();
-    const login = async (authToken: string, authUser: object) => {
+    const login = async (authToken: string, authUser: UserInterface) => {
         await setCookie("authToken", authToken, {
             secure: false,
             sameSite: "lax",
@@ -21,6 +22,8 @@ const useAuth = () => {
             sameSite: "lax",
             path: "/",
         });
+        setauthToken(authToken);
+        setauthUser(authUser);
         replace("/dashboard");
     };
 
@@ -38,13 +41,27 @@ const useAuth = () => {
     };
 
     const getAuthToken = async () => {
-        const token = await getCookie("token");
+        const token = (await getCookie("token")) ?? undefined;
         return token;
     };
 
     const getAuthUser = async () => {
         const user = await getCookie("authUser");
-        return JSON.parse(user ?? "{}") as UserInterface;
+        if (!user) {
+            const userData = await authService.getUser();
+            await setCookie("authUser", userData, {
+                secure: false,
+                sameSite: "lax",
+                path: "/",
+            });
+            return userData;
+        }
+
+        try {
+            return JSON.parse(user) as UserInterface;
+        } catch {
+            return undefined;
+        }
     };
 
     const updateAuthUser = async (user: UserInterface) => {
