@@ -1,10 +1,16 @@
 import { deleteCookie, getCookie, setCookie } from "cookies-next";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { UserInterface } from "../interfaces/UserInterface";
 
 const useAuth = () => {
+    const [authToken, setauthToken] = useState<string | undefined>(undefined);
+    const [authUser, setauthUser] = useState<UserInterface | undefined>(
+        undefined
+    );
+
     const { replace } = useRouter();
     const login = async (authToken: string, authUser: object) => {
-        console.log("Setting auth token:", authToken);
         await setCookie("authToken", authToken, {
             secure: false,
             sameSite: "lax",
@@ -31,16 +37,44 @@ const useAuth = () => {
         return false;
     };
 
-    const getAuthUser = async () => {
-        const authUser = await getCookie("authUser");
-        return JSON.parse(authUser ?? "{}") as UserInterface;
+    const getAuthToken = async () => {
+        const token = await getCookie("token");
+        return token;
     };
+
+    const getAuthUser = async () => {
+        const user = await getCookie("authUser");
+        return JSON.parse(user ?? "{}") as UserInterface;
+    };
+
+    const updateAuthUser = async (user: UserInterface) => {
+        await setCookie("authUser", user, {
+            secure: false,
+            sameSite: "lax",
+            path: "/",
+        });
+        setauthUser(user);
+    };
+
+    useEffect(() => {
+        const fetchAuthData = async () => {
+            const token = await getAuthToken();
+            const user = await getAuthUser();
+            setauthToken(token);
+            setauthUser(user);
+        };
+        fetchAuthData();
+    }, []);
 
     return {
         login,
         logout,
+        getAuthToken,
         getAuthUser,
+        updateAuthUser,
         isAuthenticated,
+        authToken,
+        authUser,
     };
 };
 
