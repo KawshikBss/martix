@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import * as React from "react";
-import { FaRegBell, FaRegUser } from "react-icons/fa6";
+import { FaRegBell } from "react-icons/fa6";
 import { IoMdMenu } from "react-icons/io";
 import { FaTimes } from "react-icons/fa";
 import useAuth from "@/lib/hooks/useAuth";
@@ -12,18 +12,7 @@ export interface INavbarProps {
 
 export default function Navbar(props: INavbarProps) {
     const [isNotificationsOpen, setIsNotificationsOpen] = React.useState(false);
-
-    const [user, setUser] = React.useState<UserInterface | undefined>(
-        undefined
-    );
-    const { getAuthUser } = useAuth();
-    React.useEffect(() => {
-        const fetchUser = async () => {
-            const user = await getAuthUser();
-            setUser(user);
-        };
-        fetchUser();
-    }, []);
+    const { authUser } = useAuth();
 
     // Mock notifications data
     const notifications = [
@@ -196,14 +185,22 @@ export default function Navbar(props: INavbarProps) {
                     )}
                 </div>
 
-                <Link href="/dashboard/profile">
+                <Link
+                    href="/dashboard/profile"
+                    className="flex flex-row items-center gap-2"
+                >
                     <Image
-                        src={user?.image ?? "/images/user-placeholder.jpg"}
-                        alt={user?.name ?? "Profile"}
+                        src={authUser?.image ?? "/images/user-placeholder.jpg"}
+                        alt={authUser?.name ?? "Profile"}
                         className="rounded-full w-[40px] h-[40px] object-cover"
                         width={40}
                         height={40}
                     />
+                    {authUser?.name && (
+                        <span className="hidden md:inline-block ms-2 text-gray-700 font-semibold">
+                            {authUser.name}
+                        </span>
+                    )}
                 </Link>
             </div>
         </div>
