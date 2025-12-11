@@ -1,6 +1,8 @@
 import { UserInterface } from "@/lib/interfaces/UserInterface";
 import { getCookie } from "cookies-next";
 import React from "react";
+import { FaEnvelope, FaIdCard, FaPhone, FaUser } from "react-icons/fa";
+import { FaLocationPin } from "react-icons/fa6";
 import { toast } from "react-toastify";
 
 type Props = {
@@ -81,7 +83,8 @@ const ProfileInformationForm = (props: Props) => {
             </div>
             <div className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                    <h4 className="text-lg font-normal text-gray-600">
+                    <h4 className="text-lg font-normal text-gray-600 mb-1 flex items-center">
+                        <FaUser className="inline-block me-2" />
                         Full Name
                     </h4>
                     {editPersonalInfo ? (
@@ -90,7 +93,7 @@ const ProfileInformationForm = (props: Props) => {
                             name="name"
                             defaultValue={authUser?.name ?? ""}
                             placeholder="Enter full name"
-                            className="border border-gray-300 rounded-md px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-[#615cf6] focus:border-transparent"
+                            className="w-full md:w-fit border border-gray-300 rounded-md px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-[#615cf6] focus:border-transparent"
                         />
                     ) : (
                         <p className="text-md font-medium">
@@ -99,14 +102,17 @@ const ProfileInformationForm = (props: Props) => {
                     )}
                 </div>
                 <div>
-                    <h4 className="text-lg font-normal text-gray-600">Email</h4>
+                    <h4 className="text-lg font-normal text-gray-600 mb-1 flex items-center">
+                        <FaEnvelope className="inline-block me-2" />
+                        Email
+                    </h4>
                     {editPersonalInfo ? (
                         <input
                             type="text"
                             name="email"
                             defaultValue={authUser?.email ?? ""}
                             placeholder="Enter email"
-                            className="border border-gray-300 rounded-md px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-[#615cf6] focus:border-transparent"
+                            className="w-full md:w-fit border border-gray-300 rounded-md px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-[#615cf6] focus:border-transparent"
                         />
                     ) : (
                         <p className="text-md font-medium">
@@ -115,14 +121,17 @@ const ProfileInformationForm = (props: Props) => {
                     )}
                 </div>
                 <div>
-                    <h4 className="text-lg font-normal text-gray-600">Phone</h4>
+                    <h4 className="text-lg font-normal text-gray-600 mb-1 flex items-center">
+                        <FaPhone className="inline-block me-2" />
+                        Phone
+                    </h4>
                     {editPersonalInfo ? (
                         <input
                             type="text"
                             name="phone"
                             defaultValue={authUser?.phone ?? ""}
                             placeholder="Enter phone"
-                            className="border border-gray-300 rounded-md px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-[#615cf6] focus:border-transparent"
+                            className="w-full md:w-fit border border-gray-300 rounded-md px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-[#615cf6] focus:border-transparent"
                         />
                     ) : (
                         <p className="text-md font-medium">
@@ -131,7 +140,8 @@ const ProfileInformationForm = (props: Props) => {
                     )}
                 </div>
                 <div className="col-1">
-                    <h4 className="text-lg font-normal text-gray-600">
+                    <h4 className="text-lg font-normal text-gray-600 mb-1 flex items-center">
+                        <FaLocationPin className="inline-block me-2" />
                         Address
                     </h4>
                     {editPersonalInfo ? (
@@ -140,7 +150,7 @@ const ProfileInformationForm = (props: Props) => {
                             name="address"
                             defaultValue={authUser?.address ?? ""}
                             placeholder="Enter address"
-                            className="border border-gray-300 rounded-md px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-[#615cf6] focus:border-transparent"
+                            className="w-full md:w-fit border border-gray-300 rounded-md px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-[#615cf6] focus:border-transparent"
                         />
                     ) : (
                         <p className="text-md font-medium">
@@ -149,14 +159,17 @@ const ProfileInformationForm = (props: Props) => {
                     )}
                 </div>
                 <div>
-                    <h4 className="text-lg font-normal text-gray-600">NID</h4>
+                    <h4 className="text-lg font-normal text-gray-600 mb-1 flex items-center">
+                        <FaIdCard className="inline-block me-2" />
+                        NID
+                    </h4>
                     {editPersonalInfo ? (
                         <input
                             type="text"
                             name="nid"
                             defaultValue={authUser?.nid ?? ""}
                             placeholder="Enter NID"
-                            className="border border-gray-300 rounded-md px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-[#615cf6] focus:border-transparent"
+                            className="w-full md:w-fit border border-gray-300 rounded-md px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-[#615cf6] focus:border-transparent"
                         />
                     ) : (
                         <p className="text-md font-medium">
