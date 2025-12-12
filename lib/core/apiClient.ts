@@ -31,13 +31,17 @@ class FetchHttpClient implements HttpClient {
     }
 
     post<T>(url: string, body: any, options?: RequestInit): Promise<T> {
+        let headers = options?.headers || {};
+        let finalBody = body;
+
+        if (!(body instanceof FormData)) {
+            headers = { ...headers, "Content-Type": "application/json" };
+            finalBody = JSON.stringify(body);
+        }
         return this.request<T>(url, {
             method: "POST",
-            body: JSON.stringify(body),
-            headers: {
-                "Content-Type": "application/json",
-                ...(options?.headers || {}),
-            },
+            body: finalBody,
+            headers: headers,
             ...options,
         });
     }
