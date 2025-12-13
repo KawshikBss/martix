@@ -46,7 +46,7 @@ const CategoryForm = ({
         <form ref={ref} className="flex flex-col md:flex-row md:gap-6">
             <div className="w-full md:w-1/2 bg-white rounded-2xl shadow-md p-6 mt-6 md:my-6">
                 <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                    <div className="col-span-full">
+                    <div className="col-span-full h-fit md:h-auto">
                         <label
                             htmlFor="cover-photo"
                             className="block text-sm/6 font-medium text-gray-900"

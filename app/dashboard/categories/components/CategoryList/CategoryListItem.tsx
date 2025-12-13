@@ -30,7 +30,7 @@ const CategoryListItem = (props: Props) => {
                                 alt="Cat"
                                 width={20}
                                 height={20}
-                                className="rounded-md w-12 md:w-10 h-10 md:h-8 object-cover me-4 md:me-2 border border-gray-300"
+                                className="rounded-md w-12 h-10 md:size-16 object-cover me-4 md:me-2 border border-gray-300"
                             />
                         </Link>
                     )}
@@ -45,14 +45,14 @@ const CategoryListItem = (props: Props) => {
                         href={`/dashboard/categories/${category.id}/edit`}
                         className="text-sm bg-[#615cf6] hover:bg-transparent text-white hover:text-[#615cf6] border border-[#615cf6] py-0.5 px-2 ms-2 rounded-md"
                     >
-                        <FaEdit className="inline mb-1" />
+                        <FaEdit className="inline mb-1 me-1" />
                         Edit
                     </Link>
                     <span
                         onClick={handleRemoveCategory}
                         className="text-sm cursor-pointer bg-red-400 hover:bg-transparent text-white hover:text-red-400 border border-red-400 py-0.5 px-2 ms-2 rounded-md"
                     >
-                        <FaTrash className="inline mb-1" />
+                        <FaTrash className="inline mb-1 me-1" />
                         Remove
                     </span>
                 </div>
