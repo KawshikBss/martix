@@ -18,12 +18,16 @@ class FetchHttpClient implements HttpClient {
                 },
             };
         }
-        const response = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/${url}`,
-            options
-        );
-        const data = await response.json();
-        return data;
+        try {
+            const response = await fetch(
+                `${process.env.NEXT_PUBLIC_API_URL}/${url}`,
+                options
+            );
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            return undefined;
+        }
     }
 
     get<T>(url: string, options?: RequestInit): Promise<T> {
