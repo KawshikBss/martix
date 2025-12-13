@@ -8,7 +8,7 @@ export interface ICompletedOrdersTableProps {
 
 export function CompletedOrdersTable(props: ICompletedOrdersTableProps) {
   return (
-    <table className="hidden md:block w-full text-left">
+    <table className="hidden md:table w-full text-left">
       <thead>
         <tr className="border-b border-gray-300 text-gray-500">
           <th className="px-2 py-2 font-normal">Order ID</th>

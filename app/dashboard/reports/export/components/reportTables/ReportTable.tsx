@@ -14,7 +14,7 @@ export interface IReportTableProps {
 
 export default function ReportTable(props: IReportTableProps) {
   return (
-    <table className="hidden md:block w-full text-left mt-8 border border-gray-300 rounded-md">
+    <table className="hidden md:table w-full text-left mt-8 border border-gray-300 rounded-md">
       <thead>
         <tr className="border-b border-gray-300 text-gray-500">
           {props.headers.map((header, index) => (

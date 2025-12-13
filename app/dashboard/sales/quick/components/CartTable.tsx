@@ -9,7 +9,7 @@ export interface ICartTableProps {
 
 export default function CartTable(props: ICartTableProps) {
   return (
-    <table className="hidden md:block w-full text-left my-2">
+    <table className="hidden md:table w-full text-left my-2">
       <thead>
         <tr className="border-b border-gray-300 text-gray-500">
           <th colSpan={2} className="px-2 py-2 font-normal text-center">

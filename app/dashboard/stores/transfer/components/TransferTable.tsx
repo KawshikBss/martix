@@ -8,7 +8,7 @@ export interface ITransferTableProps {
 
 export function TransferTable(props: ITransferTableProps) {
   return (
-    <table className="hidden md:block w-full text-left mt-4">
+    <table className="hidden md:table w-full text-left mt-4">
       <thead>
         <tr className="border-b border-gray-300 text-gray-500">
           <th className="px-2 py-2 font-normal">Transfer ID</th>
