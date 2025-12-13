@@ -29,4 +29,8 @@ export const categoryService = {
             params.payload
         );
     },
+
+    deleteCategory: async (id?: string): Promise<any> => {
+        return await apiClient.delete(`categories/${id}`);
+    },
 };
