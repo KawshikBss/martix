@@ -10,9 +10,23 @@ export const categoryService = {
         return await apiClient.get("categories?only_parents=true");
     },
 
+    getCategory: async (id?: string): Promise<CategoryInterface> => {
+        return await apiClient.get(`categories/${id}`);
+    },
+
     createCategory: async (
         payload: FormData | object
     ): Promise<CategoryInterface> => {
         return await apiClient.post("categories", payload);
+    },
+
+    updateCategory: async (params: {
+        id?: string;
+        payload: FormData | object;
+    }): Promise<CategoryInterface> => {
+        return await apiClient.post(
+            `categories/update/${params.id}`,
+            params.payload
+        );
     },
 };
