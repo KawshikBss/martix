@@ -1,15 +1,22 @@
 import { useCategories } from "@/lib/hooks/categories/useCategories";
+import { CategoryInterface } from "@/lib/interfaces/CategoryInterface";
 import Image from "next/image";
-import React, { Ref } from "react";
+import React, { ChangeEvent, Ref, useEffect, useState } from "react";
 import { FaCamera } from "react-icons/fa";
 
 type Props = {
     ref: Ref<HTMLFormElement>;
-    imagePreview: string | null;
+    imagePreview?: string;
     setImagePreview: React.Dispatch<React.SetStateAction<string | null>>;
+    category?: CategoryInterface;
 };
 
-const CategoryForm = ({ ref, imagePreview, setImagePreview }: Props) => {
+const CategoryForm = ({
+    ref,
+    imagePreview,
+    setImagePreview,
+    category,
+}: Props) => {
     const { data: categories } = useCategories();
 
     const imageInputRef = React.useRef<HTMLInputElement | null>(null);
@@ -23,6 +30,17 @@ const CategoryForm = ({ ref, imagePreview, setImagePreview }: Props) => {
         const url = URL.createObjectURL(file);
         setImagePreview(url);
     };
+
+    const [status, setStatus] = useState(true);
+
+    useEffect(() => {
+        setStatus(
+            category ? (category?.status === "active" ? true : false) : true
+        );
+    }, [category]);
+
+    const onStatusChange = (e: ChangeEvent<HTMLInputElement>) =>
+        setStatus(e.currentTarget.checked);
 
     return (
         <form ref={ref} className="flex flex-col md:flex-row md:gap-6">
@@ -91,6 +109,7 @@ const CategoryForm = ({ ref, imagePreview, setImagePreview }: Props) => {
                             name="name"
                             type="text"
                             autoComplete="name"
+                            defaultValue={category?.name ?? ""}
                             className="block w-full rounded-md bg-gray-100 px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
                         />
                     </div>
@@ -108,6 +127,7 @@ const CategoryForm = ({ ref, imagePreview, setImagePreview }: Props) => {
                             name="sku"
                             type="text"
                             autoComplete="sku"
+                            defaultValue={category?.slug ?? ""}
                             className="block w-full rounded-md bg-gray-100 px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
                         />
                     </div>
@@ -124,12 +144,20 @@ const CategoryForm = ({ ref, imagePreview, setImagePreview }: Props) => {
                             id="parent_id"
                             name="parent_id"
                             autoComplete="parent-category"
+                            defaultValue={category?.parent_id}
                             className="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                         >
                             <option value="">None</option>
-                            {categories?.map((category) => (
-                                <option value={category.id} key={category.id}>
-                                    {category.name}
+                            {categories?.map((parentCategory) => (
+                                <option
+                                    value={parentCategory.id}
+                                    key={parentCategory.id}
+                                    selected={
+                                        category?.parent_id ===
+                                        parentCategory.id
+                                    }
+                                >
+                                    {parentCategory.name}
                                 </option>
                             ))}
                         </select>
@@ -146,7 +174,8 @@ const CategoryForm = ({ ref, imagePreview, setImagePreview }: Props) => {
                         <div className="flex h-6 shrink-0 items-center">
                             <div className="group grid size-4 grid-cols-1">
                                 <input
-                                    defaultChecked
+                                    checked={status}
+                                    onChange={onStatusChange}
                                     id="status"
                                     name="status"
                                     type="checkbox"
