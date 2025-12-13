@@ -6,7 +6,7 @@ import { FaCamera } from "react-icons/fa";
 
 type Props = {
     ref: Ref<HTMLFormElement>;
-    imagePreview?: string;
+    imagePreview?: string | null;
     setImagePreview: React.Dispatch<React.SetStateAction<string | null>>;
     category?: CategoryInterface;
 };
