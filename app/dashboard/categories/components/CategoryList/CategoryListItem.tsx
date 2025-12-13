@@ -1,8 +1,10 @@
+import { useDeleteCategory } from "@/lib/hooks/categories/useDeleteCategory";
 import { CategoryInterface } from "@/lib/interfaces/CategoryInterface";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 type Props = {
     category: CategoryInterface;
@@ -10,6 +12,13 @@ type Props = {
 
 const CategoryListItem = (props: Props) => {
     const { category } = props;
+    const { mutateAsync: deleteCategory } = useDeleteCategory();
+    const handleRemoveCategory = async () => {
+        const response = await deleteCategory(category.id);
+        if (response && response.message) {
+            toast.success(response.message);
+        }
+    };
     return (
         <div className="px-4 py-2 mt-1">
             <div className="flex flex-col md:flex-row justify-start items-start md:items-center gap-2">
@@ -39,13 +48,13 @@ const CategoryListItem = (props: Props) => {
                         <FaEdit className="inline mb-1" />
                         Edit
                     </Link>
-                    <Link
-                        href={`/dashboard/categories/${category.id}/edit`}
-                        className="text-sm bg-red-400 hover:bg-transparent text-white hover:text-red-400 border border-red-400 py-0.5 px-2 ms-2 rounded-md"
+                    <span
+                        onClick={handleRemoveCategory}
+                        className="text-sm cursor-pointer bg-red-400 hover:bg-transparent text-white hover:text-red-400 border border-red-400 py-0.5 px-2 ms-2 rounded-md"
                     >
                         <FaTrash className="inline mb-1" />
                         Remove
-                    </Link>
+                    </span>
                 </div>
             </div>
             {category.children && (
