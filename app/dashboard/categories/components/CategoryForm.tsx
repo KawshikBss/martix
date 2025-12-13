@@ -45,7 +45,7 @@ const CategoryForm = ({
     return (
         <form ref={ref} className="flex flex-col md:flex-row md:gap-6">
             <div className="w-full md:w-1/2 bg-white rounded-2xl shadow-md p-6 mt-6 md:my-6">
-                <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                     <div className="col-span-full">
                         <label
                             htmlFor="cover-photo"
@@ -55,7 +55,7 @@ const CategoryForm = ({
                         </label>
                         <div
                             onClick={handleImageClick}
-                            className="cursor-pointer relative mt-2 flex justify-center rounded-lg overflow-hidden bg-gray-100 outline-1 -outline-offset-1 outline-gray-300 px-6 py-10"
+                            className="cursor-pointer h-full relative mt-2 flex justify-center rounded-lg overflow-hidden bg-gray-100 outline-1 -outline-offset-1 outline-gray-300 px-6 py-10"
                         >
                             <div className="text-center flex flex-col items-center">
                                 <FaCamera
