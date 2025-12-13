@@ -1,13 +1,17 @@
 "use client";
 
+import Link from "next/link";
 import CategoryListItem from "./CategoryListItem";
 import { useParentCategories } from "@/lib/hooks/categories/useParentCategories";
 
 type Props = {};
 
 const CategoryList = (props: Props) => {
-    const { data: categories, isLoading: categoriesIsLoading } =
-        useParentCategories();
+    const {
+        data: categories,
+        isLoading: categoriesIsLoading,
+        isSuccess: categoriesIsSuccess,
+    } = useParentCategories();
     return (
         <div className="md:w-3/5">
             <input
@@ -17,6 +21,19 @@ const CategoryList = (props: Props) => {
             />
             {categoriesIsLoading ? (
                 <p>Loading...</p>
+            ) : !categoriesIsLoading &&
+              categoriesIsSuccess &&
+              !categories.length ? (
+                <p>
+                    No categories yet{" "}
+                    <Link
+                        href="/dashboard/categories/add"
+                        className="text-[#615cf6]"
+                    >
+                        Add new
+                    </Link>
+                    ?
+                </p>
             ) : (
                 categories?.map((category) => (
                     <CategoryListItem key={category.slug} category={category} />
