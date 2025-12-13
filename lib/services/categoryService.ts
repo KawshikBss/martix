@@ -6,6 +6,10 @@ export const categoryService = {
         return await apiClient.get("categories");
     },
 
+    getParentCategories: async (): Promise<CategoryInterface[]> => {
+        return await apiClient.get("categories?only_parents=true");
+    },
+
     createCategory: async (
         payload: FormData | object
     ): Promise<CategoryInterface> => {
