@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server";
 import { UserInterface } from "./lib/interfaces/UserInterface";
 
 // This function can be marked `async` if using `await` inside
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
     const currentPath = request.nextUrl.pathname;
     const authToken = request.cookies.get("authToken")?.value;
 
@@ -12,6 +12,7 @@ export function middleware(request: NextRequest) {
             return NextResponse.redirect(new URL("/dashboard", request.url));
         }
         const authUserString = request.cookies.get("authUser")?.value;
+        
         const authUser = JSON.parse(authUserString || "{}") as UserInterface;
         if (
             currentPath !== "/dashboard/profile" &&
