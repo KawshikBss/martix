@@ -124,17 +124,17 @@ const lineChartData = {
 };
 
 export default function BranchOverview() {
-    const { data: stores } = useStores();
+    const { data: stores, isLoading: storesIsLoading } = useStores();
 
     return (
         <main className="p-4 md:p-8">
             <div className="bg-white rounded-2xl shadow-md p-4 md:p-6 w-full flex flex-row justify-between items-center">
-                <h3 className="text-2xl font-medium">Branch Overview</h3>
+                <h3 className="text-2xl font-medium">Store Overview</h3>
                 <Link
                     href="/dashboard/stores/add"
                     className="bg-[#615cf6] hover:bg-transparent text-white hover:text-[#615cf6] border border-[#615cf6] px-2 py-1 rounded-md"
                 >
-                    Add Branch
+                    Add Store
                 </Link>
             </div>
             <div className="my-6 w-full flex flex-col md:flex-row justify-between gap-4">
@@ -178,7 +178,7 @@ export default function BranchOverview() {
                     placeholder="Search stores..."
                     className="border border-gray-300 rounded-md px-2 py-1 w-full md:w-2/5"
                 />
-                <StoresTable data={stores} />
+                <StoresTable data={stores} isLoading={storesIsLoading} />
                 <StoresList data={ordersData} />
             </div>
             <div className="w-full my-6 flex flex-col md:flex-row justify-between items-start gap-6">

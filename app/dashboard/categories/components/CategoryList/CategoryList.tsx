@@ -3,6 +3,7 @@
 import Link from "next/link";
 import CategoryListItem from "./CategoryListItem";
 import { useParentCategories } from "@/lib/hooks/categories/useParentCategories";
+import Loader from "@/components/ui/loaders/Loader";
 
 type Props = {};
 
@@ -20,7 +21,7 @@ const CategoryList = (props: Props) => {
                 className="border border-gray-300 rounded-md my-4 px-2 py-1 w-full md:w-2/5"
             />
             {categoriesIsLoading ? (
-                <p>Loading...</p>
+                <Loader />
             ) : !categoriesIsLoading &&
               categoriesIsSuccess &&
               !categories.length ? (

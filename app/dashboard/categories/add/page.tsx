@@ -5,6 +5,7 @@ import * as React from "react";
 import { toast } from "react-toastify";
 import CategoryForm from "../components/CategoryForm";
 import { useRouter } from "next/navigation";
+import Loader from "@/components/ui/loaders/Loader";
 
 export default function AddCategory() {
     const { back } = useRouter();
@@ -21,8 +22,12 @@ export default function AddCategory() {
         setImagePreview(null);
     };
 
+    const [savingCategory, setSavingCategory] = React.useState(false);
+
     const handleCategoryCreate = async () => {
         if (!categoryFormRef.current) return;
+        setSavingCategory(true);
+
         const formElements = categoryFormRef.current.elements;
         const image = (formElements.namedItem("image") as HTMLInputElement)
             .files?.[0];
@@ -51,6 +56,8 @@ export default function AddCategory() {
             }
         } catch (error) {
             console.error("Error creating category:", error);
+        } finally {
+            setSavingCategory(false);
         }
     };
 
@@ -73,12 +80,16 @@ export default function AddCategory() {
                     >
                         Discard Changes
                     </button>
-                    <button
-                        onClick={handleCategoryCreate}
-                        className="bg-[#615cf6] hover:bg-transparent text-white hover:text-[#615cf6] border border-[#615cf6] px-2 py-1 rounded-md cursor-pointer"
-                    >
-                        Save
-                    </button>
+                    {!savingCategory ? (
+                        <button
+                            onClick={handleCategoryCreate}
+                            className="bg-[#615cf6] hover:bg-transparent text-white hover:text-[#615cf6] border border-[#615cf6] px-2 py-1 rounded-md cursor-pointer"
+                        >
+                            Save
+                        </button>
+                    ) : (
+                        <Loader inline />
+                    )}
                 </div>
             </div>
             <CategoryForm

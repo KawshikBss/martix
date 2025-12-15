@@ -1,9 +1,11 @@
 "use client";
 
+import Loader from "@/components/ui/loaders/Loader";
 import useAuth from "@/lib/hooks/useAuth";
 import { authService } from "@/lib/services/authService";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import * as React from "react";
 import { toast } from "react-toastify";
 
@@ -11,22 +13,30 @@ export interface ILoginPageProps {}
 
 export default function LoginPage(props: ILoginPageProps) {
     const { login } = useAuth();
+    const [submittingForm, setSubmittingForm] = React.useState(false);
+    const { replace } = useRouter();
+
     const hanleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setSubmittingForm(true);
         const formElements = e.currentTarget.elements;
         const email = (formElements.namedItem("email") as HTMLInputElement)
             .value;
         const password = (
             formElements.namedItem("password") as HTMLInputElement
         ).value;
+
         try {
             const data = await authService.login(email, password);
             if (data?.token && data?.user) {
                 await login(data.token, data.user);
+                replace("/dashboard");
                 toast.success("Login successful!");
             }
         } catch (error) {
             console.error("Error during login:", error);
+        } finally {
+            setSubmittingForm(false);
         }
     };
     return (
@@ -131,12 +141,16 @@ export default function LoginPage(props: ILoginPageProps) {
                         </label>
                     </div>
                 </div>
-                <button
-                    type="submit"
-                    className="w-full text-center mt-6 bg-[#615cf6] hover:bg-transparent text-white hover:text-[#615cf6] border border-[#615cf6] px-2 py-1 rounded-md cursor-pointer"
-                >
-                    Login
-                </button>
+                {!submittingForm ? (
+                    <button
+                        type="submit"
+                        className="w-full text-center mt-6 bg-[#615cf6] hover:bg-transparent text-white hover:text-[#615cf6] border border-[#615cf6] px-2 py-1 rounded-md cursor-pointer"
+                    >
+                        Login
+                    </button>
+                ) : (
+                    <Loader />
+                )}
                 <p className="text-md font-medium mt-6">
                     Don't have an account?{" "}
                     <Link href="/signup" className="text-[#615cf6]">
