@@ -16,4 +16,6 @@ export const storeService = {
         payload: FormData | object;
     }): Promise<StoreInterface> =>
         await apiClient.post(`stores/update/${params.id}`, params.payload),
+    toggleStoreStatus: async (id?: string): Promise<any> =>
+        await apiClient.get(`stores/toggle-status/${id}`),
 };

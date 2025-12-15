@@ -1,7 +1,9 @@
+"use client";
+
 import Loader from "@/components/ui/loaders/Loader";
+import { useToggleStoreStatus } from "@/lib/hooks/stores/useToggleStoreStatus";
 import { StoreInterface } from "@/lib/interfaces/StoreIntefrace";
 import Link from "next/link";
-import * as React from "react";
 
 export interface IStoresTableProps {
     data: StoreInterface[] | undefined;
@@ -9,6 +11,7 @@ export interface IStoresTableProps {
 }
 
 export function StoresTable(props: IStoresTableProps) {
+    const { mutateAsync: toggleStoreStatusMutation } = useToggleStoreStatus();
     return !props.isLoading ? (
         <table className="hidden md:table w-full text-left mt-4">
             <thead>
@@ -55,12 +58,14 @@ export function StoresTable(props: IStoresTableProps) {
                             >
                                 Update
                             </Link>
-                            <Link
-                                href={"/"}
-                                className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white"
+                            <span
+                                onClick={() =>
+                                    toggleStoreStatusMutation(item.id)
+                                }
+                                className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white cursor-pointer"
                             >
-                                Disable
-                            </Link>
+                                {item.is_active ? "Disable" : "Enable"}
+                            </span>
                         </td>
                     </tr>
                 ))}
