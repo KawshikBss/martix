@@ -5,6 +5,7 @@ import StoreForm from "../components/StoreForm";
 import { useCreateStore } from "@/lib/hooks/stores/useCreateStore";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import Loader from "@/components/ui/loaders/Loader";
 
 type Props = {};
 
@@ -21,7 +22,9 @@ interface StaffRecord {
 const AddStore = (props: Props) => {
     const { back } = useRouter();
 
-    const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const [imagePreview, setImagePreview] = useState<string | undefined | null>(
+        null
+    );
     const storeFormRef = useRef<HTMLFormElement>(null);
 
     const [staffList, setStaffList] = useState<StaffRecord[]>([]);
@@ -71,8 +74,12 @@ const AddStore = (props: Props) => {
         setStaffList([]);
     };
 
+    const [savingStore, setSavingStore] = useState(false);
+
     const handleStoreCreate = async () => {
         if (!storeFormRef.current) return;
+        setSavingStore(true);
+
         const elements = storeFormRef.current?.elements;
         const image = (elements?.namedItem("image") as HTMLInputElement)
             .files?.[0];
@@ -128,15 +135,15 @@ const AddStore = (props: Props) => {
             }
         } catch (error) {
             console.error("Error creating category:", error);
+        } finally {
+            setSavingStore(false);
         }
     };
 
     return (
         <main className="p-4 md:p-8">
             <div className="w-full bg-white rounded-2xl shadow-md p-6 flex flex-col md:flex-row justify-between items-center">
-                <h3 className="text-2xl font-medium mb-4 md:mb-0">
-                    New Branch
-                </h3>
+                <h3 className="text-2xl font-medium mb-4 md:mb-0">New Store</h3>
                 <div className="flex flex-row gap-4">
                     <button
                         onClick={back}
@@ -150,12 +157,16 @@ const AddStore = (props: Props) => {
                     >
                         Discard Changes
                     </button>
-                    <button
-                        onClick={handleStoreCreate}
-                        className="bg-[#615cf6] hover:bg-transparent text-white hover:text-[#615cf6] border border-[#615cf6] px-2 py-1 rounded-md cursor-pointer"
-                    >
-                        Save
-                    </button>
+                    {!savingStore ? (
+                        <button
+                            onClick={handleStoreCreate}
+                            className="bg-[#615cf6] hover:bg-transparent text-white hover:text-[#615cf6] border border-[#615cf6] px-2 py-1 rounded-md cursor-pointer"
+                        >
+                            Save
+                        </button>
+                    ) : (
+                        <Loader inline />
+                    )}
                 </div>
             </div>
             <StoreForm
