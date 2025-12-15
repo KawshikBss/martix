@@ -1,5 +1,7 @@
 import { useCategories } from "@/lib/hooks/categories/useCategories";
+import { useStores } from "@/lib/hooks/stores/useStores";
 import { CategoryInterface } from "@/lib/interfaces/CategoryInterface";
+import { StoreInterface } from "@/lib/interfaces/StoreIntefrace";
 import Image from "next/image";
 import React, { ChangeEvent, Ref, useEffect, useState } from "react";
 import { FaCamera } from "react-icons/fa";
@@ -9,6 +11,9 @@ type Props = {
     imagePreview?: string | null;
     setImagePreview: React.Dispatch<React.SetStateAction<string | null>>;
     category?: CategoryInterface;
+    selectedStores?: StoreInterface[];
+    addToSelectedStores?: (store: StoreInterface) => void;
+    removeFromSelectedStores?: (store: StoreInterface) => void;
 };
 
 const CategoryForm = ({
@@ -16,6 +21,9 @@ const CategoryForm = ({
     imagePreview,
     setImagePreview,
     category,
+    selectedStores,
+    addToSelectedStores,
+    removeFromSelectedStores,
 }: Props) => {
     const { data: categories } = useCategories();
 
@@ -42,11 +50,13 @@ const CategoryForm = ({
     const onStatusChange = (e: ChangeEvent<HTMLInputElement>) =>
         setStatus(e.currentTarget.checked);
 
+    const { data: stores } = useStores();
+
     return (
         <form ref={ref} className="flex flex-col md:flex-row md:gap-6">
             <div className="w-full md:w-1/2 bg-white rounded-2xl shadow-md p-6 mt-6 md:my-6">
                 <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                    <div className="col-span-full h-fit md:h-auto">
+                    <div className="col-span-full h-fit md:h-auto mb-1">
                         <label
                             htmlFor="cover-photo"
                             className="block text-sm/6 font-medium text-gray-900"
@@ -93,45 +103,45 @@ const CategoryForm = ({
                             )}
                         </div>
                     </div>
+                    <div className="sm:col-span-3">
+                        <label
+                            htmlFor="name"
+                            className="block text-sm/6 font-medium"
+                        >
+                            Category Name
+                        </label>
+                        <div className="mt-2">
+                            <input
+                                id="name"
+                                name="name"
+                                type="text"
+                                autoComplete="name"
+                                defaultValue={category?.name ?? ""}
+                                className="block w-full rounded-md bg-gray-100 px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+                            />
+                        </div>
+                    </div>
+                    <div className="sm:col-span-3">
+                        <label
+                            htmlFor="sku"
+                            className="block text-sm/6 font-medium"
+                        >
+                            Slug / Code
+                        </label>
+                        <div className="mt-2">
+                            <input
+                                id="sku"
+                                name="sku"
+                                type="text"
+                                autoComplete="sku"
+                                defaultValue={category?.slug ?? ""}
+                                className="block w-full rounded-md bg-gray-100 px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
             <div className="w-full md:w-1/2 bg-white rounded-2xl shadow-md p-6 mt-6 md:my-6">
-                <div className="sm:col-span-3">
-                    <label
-                        htmlFor="name"
-                        className="block text-sm/6 font-medium"
-                    >
-                        Category Name
-                    </label>
-                    <div className="mt-2">
-                        <input
-                            id="name"
-                            name="name"
-                            type="text"
-                            autoComplete="name"
-                            defaultValue={category?.name ?? ""}
-                            className="block w-full rounded-md bg-gray-100 px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
-                        />
-                    </div>
-                </div>
-                <div className="sm:col-span-3">
-                    <label
-                        htmlFor="sku"
-                        className="block text-sm/6 font-medium"
-                    >
-                        Slug / Code
-                    </label>
-                    <div className="mt-2">
-                        <input
-                            id="sku"
-                            name="sku"
-                            type="text"
-                            autoComplete="sku"
-                            defaultValue={category?.slug ?? ""}
-                            className="block w-full rounded-md bg-gray-100 px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
-                        />
-                    </div>
-                </div>
                 <div className="sm:col-span-3">
                     <label
                         htmlFor="parent_id"
@@ -163,7 +173,7 @@ const CategoryForm = ({
                         </select>
                     </div>
                 </div>
-                <div className="sm:col-span-3">
+                <div className="sm:col-span-3 mt-1">
                     <label
                         htmlFor="status"
                         className="block text-sm/6 font-medium"
@@ -213,6 +223,57 @@ const CategoryForm = ({
                             </label>
                         </div>
                     </div>
+                </div>
+
+                <div className="sm:col-span-3 mt-1">
+                    <label
+                        htmlFor="visible_stores"
+                        className="block text-sm/6 font-medium"
+                    >
+                        Visibility
+                    </label>
+                    {!selectedStores?.length ? (
+                        <div className="col-span-full">
+                            Add Stores where category will be visible
+                        </div>
+                    ) : (
+                        selectedStores?.map((store) => (
+                            <div
+                                key={store.id}
+                                className="mt-2 grid grid-cols-6"
+                            >
+                                <div className="col-span-5 me-1">
+                                    {store.name}
+                                </div>
+                                <div
+                                    className="col-span-1"
+                                    onClick={() =>
+                                        removeFromSelectedStores?.(store)
+                                    }
+                                >
+                                    <div className="ms-auto h-full w-fit bg-red-400 hover:bg-transparent text-white hover:text-red-400 border border-red-400 px-2 py-1 rounded-md cursor-pointer">
+                                        Remove
+                                    </div>
+                                </div>
+                            </div>
+                        ))
+                    )}
+                    <select
+                        id="visible_stores"
+                        name="visible_stores"
+                        autoComplete="visible_stores"
+                        className="col-span-full mt-2 col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                    >
+                        <option value="">All</option>
+                        {stores?.map((store) => (
+                            <option
+                                key={store.id}
+                                onClick={() => addToSelectedStores?.(store)}
+                            >
+                                {store.name}
+                            </option>
+                        ))}
+                    </select>
                 </div>
             </div>
         </form>

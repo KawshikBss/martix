@@ -7,6 +7,8 @@ import CategoryForm from "../../components/CategoryForm";
 import { useCategory } from "@/lib/hooks/categories/useCategory";
 import { useUpdateCategory } from "@/lib/hooks/categories/useUpdateCategory";
 import Loader from "@/components/ui/loaders/Loader";
+import { StoreInterface } from "@/lib/interfaces/StoreIntefrace";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function UpdateCategory() {
     const { categoryId } = useParams();
@@ -20,14 +22,28 @@ export default function UpdateCategory() {
     const categoryFormRef = React.useRef<HTMLFormElement>(null);
 
     const [imagePreview, setImagePreview] = React.useState<string | null>(null);
+    const [selectedStores, setSelectedStores] = React.useState<
+        StoreInterface[]
+    >([]);
+
+    const addToSelectedStores = (store: StoreInterface) => {
+        setSelectedStores((prev) => [...prev, store]);
+    };
+
+    const removeFromSelectedStores = (store: StoreInterface) => {
+        setSelectedStores((prev) => prev.filter((item) => item.id != store.id));
+    };
 
     const resetForm = () => {
         if (!categoryFormRef.current) return;
         categoryFormRef.current.reset();
         setImagePreview(null);
+        setSelectedStores(category?.visible_to_stores ?? []);
     };
 
     const [updatingCategory, setUpdatingCategory] = React.useState(false);
+
+    const queryClient = useQueryClient();
 
     const handleCategoryUpdate = async () => {
         if (!categoryFormRef.current) return;
@@ -51,6 +67,11 @@ export default function UpdateCategory() {
             formData.append("slug", slug);
             if (parentId) formData.append("parent_id", parentId);
             formData.append("status", status ? "active" : "inactive");
+            if (selectedStores.length) {
+                selectedStores.forEach((item, index) => {
+                    formData.append(`visible_stores[${index}]`, item.id);
+                });
+            }
 
             const response = await updateCategoryMutation({
                 id: category?.id,
@@ -63,8 +84,17 @@ export default function UpdateCategory() {
             console.error("Error creating category:", error);
         } finally {
             setUpdatingCategory(false);
+            queryClient.invalidateQueries({
+                queryKey: ["category", category?.id],
+            });
         }
     };
+
+    React.useEffect(() => {
+        if (category && !selectedStores.length) {
+            setSelectedStores(category?.visible_to_stores ?? []);
+        }
+    }, [category]);
 
     return (
         <main className="p-8">
@@ -102,6 +132,9 @@ export default function UpdateCategory() {
                 imagePreview={imagePreview ?? category?.image_url}
                 setImagePreview={setImagePreview}
                 category={category}
+                selectedStores={selectedStores}
+                addToSelectedStores={addToSelectedStores}
+                removeFromSelectedStores={removeFromSelectedStores}
             />
         </main>
     );

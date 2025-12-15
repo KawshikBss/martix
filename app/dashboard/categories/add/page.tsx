@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import CategoryForm from "../components/CategoryForm";
 import { useRouter } from "next/navigation";
 import Loader from "@/components/ui/loaders/Loader";
+import { StoreInterface } from "@/lib/interfaces/StoreIntefrace";
 
 export default function AddCategory() {
     const { back } = useRouter();
@@ -15,11 +16,23 @@ export default function AddCategory() {
     const categoryFormRef = React.useRef<HTMLFormElement>(null);
 
     const [imagePreview, setImagePreview] = React.useState<string | null>(null);
+    const [selectedStores, setSelectedStores] = React.useState<
+        StoreInterface[]
+    >([]);
+
+    const addToSelectedStores = (store: StoreInterface) => {
+        setSelectedStores((prev) => [...prev, store]);
+    };
+
+    const removeFromSelectedStores = (store: StoreInterface) => {
+        setSelectedStores((prev) => prev.filter((item) => item.id != store.id));
+    };
 
     const resetForm = () => {
         if (!categoryFormRef.current) return;
         categoryFormRef.current.reset();
         setImagePreview(null);
+        setSelectedStores([]);
     };
 
     const [savingCategory, setSavingCategory] = React.useState(false);
@@ -46,6 +59,11 @@ export default function AddCategory() {
             formData.append("slug", slug);
             if (parentId) formData.append("parent_id", parentId);
             formData.append("status", status ? "active" : "inactive");
+            if (selectedStores.length) {
+                selectedStores.forEach((item, index) => {
+                    formData.append(`visible_stores[${index}]`, item.id);
+                });
+            }
 
             const response = await createCategoryMutation(formData);
             console.log("Category created:", response);
@@ -96,6 +114,9 @@ export default function AddCategory() {
                 ref={categoryFormRef}
                 imagePreview={imagePreview}
                 setImagePreview={setImagePreview}
+                selectedStores={selectedStores}
+                addToSelectedStores={addToSelectedStores}
+                removeFromSelectedStores={removeFromSelectedStores}
             />
         </main>
     );
