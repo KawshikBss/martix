@@ -1,3 +1,4 @@
+import { RoleInterface } from "./RoleInterface";
 import { UserInterface } from "./UserInterface";
 
 export interface StoreInterface {
@@ -8,6 +9,7 @@ export interface StoreInterface {
     unique_id: string;
     branch: string;
     type: string;
+    description: string;
     email: string;
     phone: string;
     address: string;
@@ -18,4 +20,8 @@ export interface StoreInterface {
     manager_id: string;
     manager: UserInterface;
     owner: UserInterface;
+    staff: {
+        role: RoleInterface;
+        user: UserInterface;
+    }[];
 }
