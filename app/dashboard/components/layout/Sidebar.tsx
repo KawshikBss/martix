@@ -34,6 +34,16 @@ export const navItems: INavItem[] = [
         href: "/dashboard",
     },
     {
+        icon: <LuStore />,
+        title: "Stores",
+        href: "/dashboard/stores",
+        children: [
+            { title: "Store Overview", href: "/dashboard/stores" },
+            { title: "Add Store", href: "/dashboard/stores/add" },
+            { title: "Transfer Stock", href: "/dashboard/stores/transfer" },
+        ],
+    },
+    {
         icon: <BsHandbag />,
         title: "Products",
         href: "/dashboard/products",
@@ -135,15 +145,6 @@ export const navItems: INavItem[] = [
       { title: "Stock Suggestions", href: "/dashboard/analytics/suggestions" },
     ],
   }, */
-    {
-        icon: <LuStore />,
-        title: "Stores",
-        href: "/dashboard/stores",
-        children: [
-            { title: "Branch Overview", href: "/dashboard/stores" },
-            { title: "Transfer Stock", href: "/dashboard/stores/transfer" },
-        ],
-    },
     {
         icon: <BsGear />,
         title: "System",
