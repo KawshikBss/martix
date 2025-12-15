@@ -6,6 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 import CategoryForm from "../../components/CategoryForm";
 import { useCategory } from "@/lib/hooks/categories/useCategory";
 import { useUpdateCategory } from "@/lib/hooks/categories/useUpdateCategory";
+import Loader from "@/components/ui/loaders/Loader";
 
 export default function UpdateCategory() {
     const { categoryId } = useParams();
@@ -26,8 +27,12 @@ export default function UpdateCategory() {
         setImagePreview(null);
     };
 
+    const [updatingCategory, setUpdatingCategory] = React.useState(false);
+
     const handleCategoryUpdate = async () => {
         if (!categoryFormRef.current) return;
+        setUpdatingCategory(true);
+
         const formElements = categoryFormRef.current.elements;
         const image = (formElements.namedItem("image") as HTMLInputElement)
             .files?.[0];
@@ -56,6 +61,8 @@ export default function UpdateCategory() {
             }
         } catch (error) {
             console.error("Error creating category:", error);
+        } finally {
+            setUpdatingCategory(false);
         }
     };
 
@@ -78,12 +85,16 @@ export default function UpdateCategory() {
                     >
                         Discard Changes
                     </button>
-                    <button
-                        onClick={handleCategoryUpdate}
-                        className="bg-[#615cf6] hover:bg-transparent text-white hover:text-[#615cf6] border border-[#615cf6] px-2 py-1 rounded-md cursor-pointer"
-                    >
-                        Update
-                    </button>
+                    {!updatingCategory ? (
+                        <button
+                            onClick={handleCategoryUpdate}
+                            className="bg-[#615cf6] hover:bg-transparent text-white hover:text-[#615cf6] border border-[#615cf6] px-2 py-1 rounded-md cursor-pointer"
+                        >
+                            Update
+                        </button>
+                    ) : (
+                        <Loader inline />
+                    )}
                 </div>
             </div>
             <CategoryForm
