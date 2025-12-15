@@ -2,6 +2,7 @@
 
 import { useRoles } from "@/lib/hooks/roles/useRoles";
 import { useUsers } from "@/lib/hooks/users/useUsers";
+import { StoreInterface } from "@/lib/interfaces/StoreIntefrace";
 import Image from "next/image";
 import Link from "next/link";
 import React, {
@@ -17,8 +18,9 @@ import { toast } from "react-toastify";
 
 type Props = {
     ref: Ref<HTMLFormElement>;
-    imagePreview?: string | null;
-    setImagePreview: Dispatch<SetStateAction<string | null>>;
+    store?: StoreInterface;
+    imagePreview?: string | undefined | null;
+    setImagePreview: Dispatch<SetStateAction<string | undefined | null>>;
     staffList: StaffRecord[];
     setSelectedStaff: Dispatch<SetStateAction<RecordInterface | null>>;
     setSelectedRole: Dispatch<SetStateAction<RecordInterface | null>>;
@@ -40,6 +42,7 @@ interface StaffRecord {
 
 const StoreForm = ({
     ref,
+    store,
     imagePreview,
     setImagePreview,
     staffList,
@@ -127,6 +130,7 @@ const StoreForm = ({
                             <input
                                 id="name"
                                 name="name"
+                                defaultValue={store?.name ?? ""}
                                 type="text"
                                 autoComplete="name"
                                 className="block w-full rounded-md bg-gray-100 px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
@@ -144,6 +148,7 @@ const StoreForm = ({
                             <input
                                 id="branch"
                                 name="branch"
+                                defaultValue={store?.branch ?? ""}
                                 type="text"
                                 autoComplete="branch"
                                 className="block w-full rounded-md bg-gray-100 px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
@@ -161,6 +166,7 @@ const StoreForm = ({
                             <input
                                 id="unique_id"
                                 name="unique_id"
+                                defaultValue={store?.unique_id ?? ""}
                                 type="text"
                                 autoComplete="unique_id"
                                 className="block w-full rounded-md bg-gray-100 px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
@@ -178,6 +184,7 @@ const StoreForm = ({
                             <input
                                 id="type"
                                 name="type"
+                                defaultValue={store?.type ?? ""}
                                 type="text"
                                 autoComplete="type"
                                 className="block w-full rounded-md bg-gray-100 px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
@@ -195,9 +202,9 @@ const StoreForm = ({
                             <textarea
                                 id="description"
                                 name="description"
+                                defaultValue={store?.description ?? ""}
                                 rows={3}
                                 className="block w-full rounded-md bg-gray-100 px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                                defaultValue={""}
                             />
                         </div>
                         <p className="mt-3 text-sm/6 text-gray-600">
@@ -223,6 +230,7 @@ const StoreForm = ({
                                 <input
                                     id="email"
                                     name="email"
+                                    defaultValue={store?.email ?? ""}
                                     type="text"
                                     autoComplete="email"
                                     className="block w-full rounded-md bg-gray-100 px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
@@ -240,6 +248,7 @@ const StoreForm = ({
                                 <input
                                     id="phone"
                                     name="phone"
+                                    defaultValue={store?.phone ?? ""}
                                     type="text"
                                     autoComplete="phone"
                                     className="block w-full rounded-md bg-gray-100 px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
@@ -257,6 +266,7 @@ const StoreForm = ({
                                 <input
                                     id="address"
                                     name="address"
+                                    defaultValue={store?.address ?? ""}
                                     type="text"
                                     autoComplete="address"
                                     className="block w-full rounded-md bg-gray-100 px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
@@ -274,6 +284,7 @@ const StoreForm = ({
                                 <input
                                     id="address_line_2"
                                     name="address_line_2"
+                                    defaultValue={store?.address_2 ?? ""}
                                     type="text"
                                     autoComplete="address_line_2"
                                     className="block w-full rounded-md bg-gray-100 px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
@@ -297,11 +308,18 @@ const StoreForm = ({
                                     id="manager"
                                     name="manager"
                                     autoComplete="manager"
+                                    defaultValue={store?.manager_id ?? ""}
                                     className="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                                 >
                                     <option>None</option>
                                     {users?.map((user) => (
-                                        <option key={user.id} value={user.id}>
+                                        <option
+                                            key={user.id}
+                                            value={user.id}
+                                            selected={
+                                                user.id === store?.manager_id
+                                            }
+                                        >
                                             {user.name}
                                         </option>
                                     ))}
@@ -327,7 +345,7 @@ const StoreForm = ({
                                     <div className="sm:col-span-3">
                                         [ {staffRecord.role.name} ]
                                     </div>
-                                    <button
+                                    <span
                                         onClick={() =>
                                             removeFromStaffList(
                                                 staffRecord.staff.id
@@ -336,7 +354,7 @@ const StoreForm = ({
                                         className="sm:col-span-1 bg-red-400 hover:bg-transparent text-white hover:text-red-400 border border-red-400 px-2 py-1 rounded-md cursor-pointer"
                                     >
                                         Remove
-                                    </button>
+                                    </span>
                                 </React.Fragment>
                             ))
                         )}
