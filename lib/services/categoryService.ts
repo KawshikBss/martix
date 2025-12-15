@@ -6,8 +6,12 @@ export const categoryService = {
         return await apiClient.get("categories");
     },
 
-    getParentCategories: async (): Promise<CategoryInterface[]> => {
-        return await apiClient.get("categories?only_parents=true");
+    getParentCategories: async (
+        query?: string
+    ): Promise<CategoryInterface[]> => {
+        return await apiClient.get(
+            `categories?only_parents=true${query ? `&query=${query}` : ""}`
+        );
     },
 
     getCategory: async (id?: string): Promise<CategoryInterface> => {

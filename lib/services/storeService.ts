@@ -2,8 +2,8 @@ import { apiClient } from "../core/apiClient";
 import { StoreInterface } from "../interfaces/StoreIntefrace";
 
 export const storeService = {
-    getStores: async (): Promise<StoreInterface[]> =>
-        await apiClient.get("stores"),
+    getStores: async (query?: string): Promise<StoreInterface[]> =>
+        await apiClient.get(`stores${query ? `?query=${query}` : ""}`),
 
     getStore: async (id?: string): Promise<StoreInterface> =>
         await apiClient.get(`stores/${id}`),

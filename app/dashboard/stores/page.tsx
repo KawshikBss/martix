@@ -124,7 +124,11 @@ const lineChartData = {
 };
 
 export default function BranchOverview() {
-    const { data: stores, isLoading: storesIsLoading } = useStores();
+    const [query, setQuery] = React.useState<string | undefined>(undefined);
+    const onQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setQuery(e.target.value);
+    };
+    const { data: stores, isLoading: storesIsLoading } = useStores(query);
 
     return (
         <main className="p-4 md:p-8">
@@ -176,6 +180,7 @@ export default function BranchOverview() {
                 <input
                     type="text"
                     placeholder="Search stores..."
+                    onChange={onQueryChange}
                     className="border border-gray-300 rounded-md px-2 py-1 w-full md:w-2/5"
                 />
                 <StoresTable data={stores} isLoading={storesIsLoading} />
