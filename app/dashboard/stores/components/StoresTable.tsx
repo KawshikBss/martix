@@ -1,13 +1,15 @@
+import Loader from "@/components/ui/loaders/Loader";
 import { StoreInterface } from "@/lib/interfaces/StoreIntefrace";
 import Link from "next/link";
 import * as React from "react";
 
 export interface IStoresTableProps {
     data: StoreInterface[] | undefined;
+    isLoading: boolean;
 }
 
 export function StoresTable(props: IStoresTableProps) {
-    return (
+    return !props.isLoading ? (
         <table className="hidden md:table w-full text-left mt-4">
             <thead>
                 <tr className="border-b border-gray-300 text-gray-500">
@@ -24,7 +26,7 @@ export function StoresTable(props: IStoresTableProps) {
                 </tr>
             </thead>
             <tbody>
-                {props?.data?.map((item, index) => (
+                {props.data?.map((item, index) => (
                     <tr
                         key={item.id}
                         className="border-b border-gray-300 hover:bg-gray-50"
@@ -48,7 +50,7 @@ export function StoresTable(props: IStoresTableProps) {
                                 View
                             </Link>
                             <Link
-                                href={"/"}
+                                href={`/dashboard/stores/${item.id}/edit`}
                                 className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white"
                             >
                                 Update
@@ -64,5 +66,7 @@ export function StoresTable(props: IStoresTableProps) {
                 ))}
             </tbody>
         </table>
+    ) : (
+        <Loader />
     );
 }
