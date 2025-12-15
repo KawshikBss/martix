@@ -160,7 +160,7 @@ const UpdateStore = (props: Props) => {
             });
             console.log(response);
             if (response) {
-                toast.success("Store created successfully!");
+                toast.success("Store updated successfully!");
                 resetForm();
             }
         } catch (error) {
