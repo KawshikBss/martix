@@ -65,9 +65,9 @@ const CategoryForm = ({
                         </label>
                         <div
                             onClick={handleImageClick}
-                            className="cursor-pointer h-full relative mt-2 flex justify-center rounded-lg overflow-hidden bg-gray-100 outline-1 -outline-offset-1 outline-gray-300 px-6 py-10"
+                            className="cursor-pointer relative aspect-video overflow-hidden mt-2 flex justify-center rounded-lg bg-gray-100 outline-1 -outline-offset-1 outline-gray-300 px-6 py-10"
                         >
-                            <div className="text-center flex flex-col items-center">
+                            <div className="text-center flex flex-col justify-center items-center">
                                 <FaCamera
                                     aria-hidden="true"
                                     className="mx-auto size-12 text-gray-300"
