@@ -10,6 +10,11 @@ import * as React from "react";
 import { FaCamera } from "react-icons/fa";
 import { toast } from "react-toastify";
 
+interface ProductVariation {
+    option: string;
+    values: string[];
+}
+
 export default function AddProduct() {
     const productFormRef = React.useRef<HTMLFormElement | null>(null);
 
@@ -19,6 +24,57 @@ export default function AddProduct() {
     const toggleEnableTax = (e: React.ChangeEvent<HTMLInputElement>) => {
         const checked = e.currentTarget.checked;
         setEnableTax(checked);
+    };
+
+    const [enableVariations, setEnableVariations] =
+        React.useState<boolean>(false);
+    const toggleEnableVariations = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const checked = e.currentTarget.checked;
+        setEnableVariations(checked);
+    };
+
+    const [productVariations, setProductVariations] = React.useState<
+        ProductVariation[]
+    >([]);
+
+    const addToProductVariations = () => {
+        if (!productFormRef || !enableVariations) return;
+
+        const formElements = productFormRef.current?.elements;
+        const option = (
+            formElements?.namedItem("variation_option") as HTMLInputElement
+        ).value;
+        const value = (
+            formElements?.namedItem("variation_value") as HTMLInputElement
+        ).value;
+        setProductVariations((prev) => {
+            if (prev.filter((item) => item.option == option).length) {
+                return prev.map((item) =>
+                    item.option != option
+                        ? item
+                        : { option, values: [...item.values, value] }
+                );
+            }
+            return [...prev, { option, values: [value] }];
+        });
+    };
+
+    const removeFromProductVariations = (option: string, value: string) => {
+        setProductVariations((prev) => {
+            const newVariations = prev.map((variation) =>
+                variation.option != option
+                    ? variation
+                    : {
+                          option,
+                          values: variation.values.filter(
+                              (item) => item != value
+                          ),
+                      }
+            );
+            return newVariations.filter(
+                (variation) => variation.values.length > 0
+            );
+        });
     };
 
     const imageInputRef = React.useRef<HTMLInputElement | null>(null);
@@ -87,8 +143,25 @@ export default function AddProduct() {
             formData.append("brand", brand);
             formData.append("tags", tags);
             formData.append("description", description);
-            formData.append("tax_type", tax_type);
-            formData.append("tax_rate", tax_rate);
+            if (enableTax) {
+                formData.append("tax_type", tax_type);
+                formData.append("tax_rate", tax_rate);
+            }
+            if (enableVariations && productVariations.length) {
+                productVariations.forEach((variation, index) => {
+                    formData.append(
+                        `variations[${index}][option]`,
+                        variation.option
+                    );
+                    variation.values.forEach((value, valueIndex) =>
+                        formData.append(
+                            `variations[${index}][values][${valueIndex}]`,
+                            value
+                        )
+                    );
+                });
+            }
+
             const response = await createProductMutation(formData);
             console.log(response);
 
@@ -244,7 +317,7 @@ export default function AddProduct() {
                         </div>
                     </div>
                     <div className="w-full md:w-1/2 flex flex-col">
-                        <div className="w-full bg-white rounded-2xl shadow-md p-6">
+                        <div className="w-full md:h-1/2 bg-white rounded-2xl shadow-md p-6">
                             <h3 className="text-2xl font-medium">
                                 Pricing & Tax Information
                             </h3>
@@ -362,7 +435,7 @@ export default function AddProduct() {
                                 </div>
                             </div>
                         </div>
-                        <div className="w-full bg-white rounded-2xl shadow-md p-6 my-6">
+                        <div className="w-full md:h-1/2 bg-white rounded-2xl shadow-md p-6 my-6 md:mb-0">
                             <h3 className="text-2xl font-medium">
                                 Categorization
                             </h3>
@@ -439,176 +512,268 @@ export default function AddProduct() {
                         </div>
                     </div>
                 </div>
-                <div className="w-full bg-white rounded-2xl shadow-md p-6 mb-6">
-                    <h3 className="text-2xl font-medium">Advance</h3>
-                    <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                        <div className="sm:col-span-3">
-                            <label
-                                htmlFor="Variation"
-                                className="block text-sm/6 font-medium"
-                            >
-                                Variations
-                            </label>
-                            <div className="flex gap-3">
-                                <div className="flex h-6 shrink-0 items-center">
-                                    <div className="group grid size-4 grid-cols-1">
-                                        <input
-                                            defaultChecked
-                                            id="enable_variations"
-                                            name="enable_variations"
-                                            type="checkbox"
-                                            aria-describedby="enable_variations-description"
-                                            className="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto"
-                                        />
-                                        <svg
-                                            fill="none"
-                                            viewBox="0 0 14 14"
-                                            className="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-disabled:stroke-gray-950/25"
-                                        >
-                                            <path
-                                                d="M3 8L6 11L11 3.5"
-                                                strokeWidth={2}
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                className="opacity-0 group-has-checked:opacity-100"
-                                            />
-                                            <path
-                                                d="M3 7H11"
-                                                strokeWidth={2}
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                className="opacity-0 group-has-indeterminate:opacity-100"
-                                            />
-                                        </svg>
-                                    </div>
-                                </div>
-                                <div className="text-sm/6">
-                                    <label
-                                        htmlFor="enable_variations"
-                                        className="font-medium text-gray-900"
-                                    >
-                                        Enable Variations
-                                    </label>
-                                </div>
-                            </div>
-                            <div className="mt-2 grid grid-cols-1">
+                <div className="flex flex-col md:flex-row gap-6 md:my-6">
+                    <div className="w-full md:w-2/3 bg-white rounded-2xl shadow-md p-6">
+                        <h3 className="text-2xl font-medium">
+                            Stock & Inventory Information
+                        </h3>
+                        <div className="mt-4 grid grid-rows-1 gap-x-6 gap-y-8 sm:grid-cols-6 border border-gray-300 bg-gray-50 p-4 rounded-lg">
+                            <div className="sm:col-span-2">
                                 <label
-                                    htmlFor="custom_barcode"
+                                    htmlFor="tax_type"
                                     className="block text-sm/6 font-medium"
                                 >
-                                    Add Variation Attributes
+                                    Store
                                 </label>
-                                <div className="border border-gray-300 rounded-lg mt-2 p-4 bg-gray-50">
-                                    <div className="grid grid-cols-2 gap-4 items-center">
-                                        <div>
-                                            <label
-                                                htmlFor="variation_attribute"
-                                                className="block text-sm font-medium text-gray-700"
-                                            >
-                                                Attribute
-                                            </label>
-                                            <input
-                                                id="variation_attribute"
-                                                name="variation_attribute"
-                                                type="text"
-                                                placeholder="e.g., Size, Color, Weight"
-                                                className="mt-1 block w-full rounded-md bg-white px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm"
-                                            />
-                                        </div>
-                                        <div>
-                                            <label
-                                                htmlFor="variation_values"
-                                                className="block text-sm font-medium text-gray-700"
-                                            >
-                                                Values
-                                            </label>
-                                            <input
-                                                id="variation_values"
-                                                name="variation_values"
-                                                type="text"
-                                                placeholder="Comma-separated or add chips"
-                                                className="mt-1 block w-full rounded-md bg-white px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm"
-                                            />
-                                        </div>
-                                    </div>
-                                    <button className="bg-[#615cf6] hover:bg-transparent text-sm text-white hover:text-[#615cf6] border border-[#615cf6] mt-4 px-2 py-1 rounded-md cursor-pointer">
-                                        Add Attribute
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="sm:col-span-3">
-                            <label
-                                htmlFor="auto_generate_barcode"
-                                className="block text-sm/6 font-medium"
-                            >
-                                Barcode
-                            </label>
-                            <div className="flex gap-3">
-                                <div className="flex h-6 shrink-0 items-center">
-                                    <div className="group grid size-4 grid-cols-1">
-                                        <input
-                                            defaultChecked
-                                            id="auto_generate_barcode"
-                                            name="auto_generate_barcode"
-                                            type="checkbox"
-                                            aria-describedby="auto_generate_barcode-description"
-                                            className="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto"
-                                        />
-                                        <svg
-                                            fill="none"
-                                            viewBox="0 0 14 14"
-                                            className="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-disabled:stroke-gray-950/25"
-                                        >
-                                            <path
-                                                d="M3 8L6 11L11 3.5"
-                                                strokeWidth={2}
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                className="opacity-0 group-has-checked:opacity-100"
-                                            />
-                                            <path
-                                                d="M3 7H11"
-                                                strokeWidth={2}
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                className="opacity-0 group-has-indeterminate:opacity-100"
-                                            />
-                                        </svg>
-                                    </div>
-                                </div>
-                                <div className="text-sm/6">
-                                    <label
-                                        htmlFor="auto_generate_barcode"
-                                        className="font-medium text-gray-900"
+                                <div className="mt-2 grid grid-cols-1">
+                                    <select
+                                        id="tax_type"
+                                        name="tax_type"
+                                        autoComplete="tax-type"
+                                        className="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                                     >
-                                        Auto-generate Barcode
-                                    </label>
+                                        <option value="none">None</option>
+                                        <option value="GST">GST</option>
+                                        <option value="VAT">VAT</option>
+                                        <option value="Sales Tax">
+                                            Sales Tax
+                                        </option>
+                                    </select>
                                 </div>
                             </div>
-                            <div className="mt-2 grid grid-cols-1">
+                            <div className="sm:col-span-2">
                                 <label
-                                    htmlFor="custom_barcode"
+                                    htmlFor="quantity"
                                     className="block text-sm/6 font-medium"
                                 >
-                                    Custom Barcode
+                                    Quantity
                                 </label>
                                 <div className="mt-2 flex gap-2">
                                     <input
-                                        id="custom_barcode"
-                                        name="custom_barcode"
+                                        id="quantity"
+                                        name="quantity"
                                         type="text"
                                         autoComplete="off"
                                         className="block w-full rounded-md bg-gray-100 px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
-                                        placeholder="Enter custom barcode"
+                                        placeholder="Enter tax rate"
                                     />
-                                    <button
-                                        type="button"
-                                        className="bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-md text-sm font-medium"
+                                </div>
+                            </div>
+                            <div className="sm:col-span-2">
+                                <label
+                                    htmlFor="reorder_level"
+                                    className="block text-sm/6 font-medium"
+                                >
+                                    Reorder Level
+                                </label>
+                                <div className="mt-2 flex gap-2">
+                                    <input
+                                        id="reorder_level"
+                                        name="reorder_level"
+                                        type="text"
+                                        autoComplete="off"
+                                        className="block w-full rounded-md bg-gray-100 px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+                                        placeholder="Enter tax rate"
+                                    />
+                                </div>
+                            </div>
+                            <div className="sm:col-span-2">
+                                <label
+                                    htmlFor="selling_price"
+                                    className="block text-sm/6 font-medium"
+                                >
+                                    Selling Price
+                                </label>
+                                <div className="mt-2 flex gap-2">
+                                    <input
+                                        id="selling_price"
+                                        name="selling_price"
+                                        type="text"
+                                        autoComplete="off"
+                                        className="block w-full rounded-md bg-gray-100 px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+                                        placeholder="Enter tax rate"
+                                    />
+                                </div>
+                            </div>
+                            <div className="sm:col-span-2">
+                                <label
+                                    htmlFor="barcode"
+                                    className="block text-sm/6 font-medium"
+                                >
+                                    Barcode
+                                </label>
+                                <div className="mt-2 flex gap-2">
+                                    <input
+                                        id="barcode"
+                                        name="barcode"
+                                        type="text"
+                                        autoComplete="off"
+                                        className="block w-full rounded-md bg-gray-100 px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+                                        placeholder="Enter tax rate"
+                                    />
+                                </div>
+                            </div>
+                            <div className="sm:col-span-2">
+                                <label
+                                    htmlFor="expiry_date"
+                                    className="block text-sm/6 font-medium"
+                                >
+                                    Expiry Date
+                                </label>
+                                <div className="mt-2 flex gap-2">
+                                    <input
+                                        id="expiry_date"
+                                        name="expiry_date"
+                                        type="date"
+                                        autoComplete="off"
+                                        className="block w-full rounded-md bg-gray-100 px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+                                        placeholder="Enter tax rate"
+                                    />
+                                </div>
+                            </div>
+                            <div className="col-span-5" />
+                            <div className="col-span-1 text-sm border text-center px-2 py-1 rounded-md bg-[#615cf6] text-white hover:bg-transparent hover:text-[#615cf6] border-[#615cf6] cursor-pointer">
+                                Add Stock
+                            </div>
+                        </div>
+                    </div>
+                    <div className="w-full md:w-1/3 bg-white rounded-2xl shadow-md p-6">
+                        <h3 className="text-2xl font-medium">Advance</h3>
+                        <div className="mt-4 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                            <div className="col-span-full">
+                                <label
+                                    htmlFor="Variation"
+                                    className="block text-sm/6 font-medium"
+                                >
+                                    Variations
+                                </label>
+                                <div className="flex gap-3">
+                                    <div className="flex h-6 shrink-0 items-center">
+                                        <div className="group grid size-4 grid-cols-1">
+                                            <input
+                                                checked={enableVariations}
+                                                onChange={
+                                                    toggleEnableVariations
+                                                }
+                                                id="enable_variations"
+                                                name="enable_variations"
+                                                type="checkbox"
+                                                aria-describedby="enable_variations-description"
+                                                className="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto"
+                                            />
+                                            <svg
+                                                fill="none"
+                                                viewBox="0 0 14 14"
+                                                className="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-disabled:stroke-gray-950/25"
+                                            >
+                                                <path
+                                                    d="M3 8L6 11L11 3.5"
+                                                    strokeWidth={2}
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    className="opacity-0 group-has-checked:opacity-100"
+                                                />
+                                                <path
+                                                    d="M3 7H11"
+                                                    strokeWidth={2}
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    className="opacity-0 group-has-indeterminate:opacity-100"
+                                                />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <div className="text-sm/6">
+                                        <label
+                                            htmlFor="enable_variations"
+                                            className="font-medium text-gray-900"
+                                        >
+                                            Enable Variations
+                                        </label>
+                                    </div>
+                                </div>
+                                {productVariations.map((variation) =>
+                                    variation.values.map((value) => (
+                                        <div
+                                            className="grid grid-cols-5 my-2"
+                                            key={`${variation.option}-${value}`}
+                                        >
+                                            <div className="block text-sm font-medium text-gray-700 sm:col-span-2">
+                                                {variation.option}
+                                            </div>
+                                            <div className="block text-sm font-medium text-gray-700 sm:col-span-2">
+                                                {value}
+                                            </div>
+                                            <div
+                                                onClick={() =>
+                                                    removeFromProductVariations(
+                                                        variation.option,
+                                                        value
+                                                    )
+                                                }
+                                                className="sm:col-span-1 text-sm border text-center px-2 py-1 rounded-md bg-red-400 text-white hover:bg-transparent hover:text-red-400 border-red-400 cursor-pointer"
+                                            >
+                                                Remove
+                                            </div>
+                                        </div>
+                                    ))
+                                )}
+                                <div className="mt-2 grid grid-cols-1">
+                                    <label className="block text-sm/6 font-medium">
+                                        Add Variation Option
+                                    </label>
+                                    <div
+                                        className={`border border-gray-300 rounded-lg mt-2 p-4 ${
+                                            enableVariations
+                                                ? "bg-gray-50"
+                                                : "bg-gray-200"
+                                        }`}
                                     >
-                                        Generate
-                                    </button>
+                                        <div className="grid grid-cols-2 gap-4 items-center">
+                                            <div>
+                                                <label
+                                                    htmlFor="variation_option"
+                                                    className="block text-sm font-medium text-gray-700"
+                                                >
+                                                    Option
+                                                </label>
+                                                <input
+                                                    disabled={!enableVariations}
+                                                    id="variation_option"
+                                                    name="variation_option"
+                                                    type="text"
+                                                    placeholder="e.g., Size, Color, Weight"
+                                                    className="mt-1 block w-full rounded-md bg-white px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label
+                                                    htmlFor="variation_value"
+                                                    className="block text-sm font-medium text-gray-700"
+                                                >
+                                                    Value
+                                                </label>
+                                                <input
+                                                    disabled={!enableVariations}
+                                                    id="variation_value"
+                                                    name="variation_value"
+                                                    type="text"
+                                                    placeholder="e.g., XL, Red, 200g"
+                                                    className="mt-1 block w-full rounded-md bg-white px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div
+                                            onClick={addToProductVariations}
+                                            className={`text-sm border w-fit mt-4 ms-auto px-2 py-1 rounded-md ${
+                                                enableVariations
+                                                    ? "bg-[#615cf6] text-white hover:bg-transparent hover:text-[#615cf6] border-[#615cf6] cursor-pointer"
+                                                    : "bg-gray-500 border-gray-500 cursor-not-allowed"
+                                            }`}
+                                        >
+                                            Add Attribute
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
