@@ -66,9 +66,13 @@ export function ProductsTable(props: IProductsTableProps) {
                                 {product.name}
                             </Link>
                         </td>
-                        <td className="px-2 py-4">{product.sku}</td>
-                        <td className="px-2 py-4">{product.category.name}</td>
-                        <td className="px-2 py-4">${product.cost_price}</td>
+                        <td className="px-2 py-4">{product?.sku ?? "N/A"}</td>
+                        <td className="px-2 py-4">
+                            {product?.category?.name ?? "N/A"}
+                        </td>
+                        <td className="px-2 py-4">
+                            ${product?.cost_price ?? "N/A"}
+                        </td>
                         <td className="px-2 py-4 text-end">10</td>
                         <td className="px-2 py-4 text-end">120</td>
                         <td className="px-2 py-4 flex justify-center gap-4">
