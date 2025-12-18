@@ -1,7 +1,7 @@
 import productsData from "@/public/data/productsData";
 import Link from "next/link";
 import * as React from "react";
-import { ProductsTable } from "./components/ProductsTable";
+import { ProductsTable } from "./components/ProductsTable/ProductsTable";
 import { ProductsCatalog } from "./components/ProductsCatalog";
 
 export default function Products() {
