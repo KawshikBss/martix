@@ -4,6 +4,7 @@ export interface ProductInterface {
     id: string;
     image_url: string;
     name: string;
+    variation_meta: string;
     sku: string;
     category: CategoryInterface;
     description: string;
