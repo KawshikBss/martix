@@ -33,6 +33,12 @@ const ProductsTableItem = ({ product }: Props) => {
                 <td className="px-2 py-4 font-medium">
                     <Link href={`/dashboard/products/${product.id}`}>
                         {product.name}
+                        {product.variation_meta && (
+                            <>
+                                <br />
+                                {product.variation_meta.toLocaleUpperCase()}
+                            </>
+                        )}
                     </Link>
                 </td>
                 <td className="px-2 py-4">{product?.sku ?? "N/A"}</td>
