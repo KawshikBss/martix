@@ -7,10 +7,12 @@ export interface ProductInterface {
     sku: string;
     category: CategoryInterface;
     description: string;
+    current_stock_quantity: number;
     cost_price: number;
     tax_type: string;
     tax_rate: number;
     category_id: string;
     brand: string;
     tags: string;
+    variants: ProductInterface[];
 }
