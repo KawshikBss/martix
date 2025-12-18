@@ -11,7 +11,7 @@ export default function Products() {
                 <div className="w-full flex flex-row justify-between items-center">
                     <h3 className="text-2xl font-medium">Products</h3>
                     <Link
-                        href="/"
+                        href="/dashboard/products/add"
                         className="bg-[#615cf6] hover:bg-transparent text-white hover:text-[#615cf6] border border-[#615cf6] px-2 py-1 rounded-md"
                     >
                         + New Product
