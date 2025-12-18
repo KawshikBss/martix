@@ -1,10 +1,11 @@
 import { CategoryInterface } from "./CategoryInterface";
+import { InventoryInterface } from "./InventoryInterface";
 
 export interface ProductInterface {
     id: string;
     image_url: string;
     name: string;
-    variation_meta: string;
+    variation_meta: { option: string; value: string };
     sku: string;
     category: CategoryInterface;
     description: string;
@@ -16,4 +17,5 @@ export interface ProductInterface {
     brand: string;
     tags: string;
     variants: ProductInterface[];
+    inventories: InventoryInterface[];
 }

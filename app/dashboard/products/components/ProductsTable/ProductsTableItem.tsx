@@ -36,7 +36,8 @@ const ProductsTableItem = ({ product }: Props) => {
                         {product.variation_meta && (
                             <>
                                 <br />
-                                {product.variation_meta.toLocaleUpperCase()}
+                                {product.variation_meta.option.toLocaleUpperCase()}
+                                : {product.variation_meta.value}
                             </>
                         )}
                     </Link>
