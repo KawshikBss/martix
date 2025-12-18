@@ -1,5 +1,6 @@
 import { useCategories } from "@/lib/hooks/categories/useCategories";
 import { useStores } from "@/lib/hooks/stores/useStores";
+import { ProductInterface } from "@/lib/interfaces/ProductInterface";
 import { StoreInterface } from "@/lib/interfaces/StoreIntefrace";
 import Image from "next/image";
 import Link from "next/link";
@@ -23,6 +24,7 @@ interface ProductStock {
 
 type Props = {
     ref: RefObject<HTMLFormElement | null>;
+    product?: ProductInterface;
     imagePreview: string | undefined | null;
     setImagePreview: React.Dispatch<React.SetStateAction<string | null>>;
     enableTax: boolean;
@@ -39,6 +41,7 @@ type Props = {
 
 const ProductForm = ({
     ref,
+    product,
     imagePreview,
     setImagePreview,
     enableTax,
@@ -202,6 +205,7 @@ const ProductForm = ({
                             </label>
                             <div className="mt-2">
                                 <input
+                                    defaultValue={product?.name ?? ""}
                                     id="name"
                                     name="name"
                                     type="text"
@@ -219,6 +223,7 @@ const ProductForm = ({
                             </label>
                             <div className="mt-2">
                                 <input
+                                    defaultValue={product?.sku ?? ""}
                                     id="sku"
                                     name="sku"
                                     type="text"
@@ -236,6 +241,7 @@ const ProductForm = ({
                             </label>
                             <div className="mt-2">
                                 <textarea
+                                    defaultValue={product?.description ?? ""}
                                     id="description"
                                     name="description"
                                     rows={3}
@@ -263,6 +269,7 @@ const ProductForm = ({
                                 </label>
                                 <div className="mt-2">
                                     <input
+                                        defaultValue={product?.cost_price ?? ""}
                                         id="cost_price"
                                         name="cost_price"
                                         type="text"
@@ -355,6 +362,7 @@ const ProductForm = ({
                                 </label>
                                 <div className="mt-2 flex gap-2">
                                     <input
+                                        defaultValue={product?.tax_rate ?? ""}
                                         disabled={!enableTax}
                                         id="tax_rate"
                                         name="tax_rate"
@@ -389,6 +397,10 @@ const ProductForm = ({
                                             <option
                                                 value={category.id}
                                                 key={category.id}
+                                                selected={
+                                                    category.id ==
+                                                    product?.category_id
+                                                }
                                             >
                                                 {category.name}
                                             </option>
@@ -413,6 +425,7 @@ const ProductForm = ({
                                 </label>
                                 <div className="mt-2">
                                     <input
+                                        defaultValue={product?.brand ?? ""}
                                         id="brand"
                                         name="brand"
                                         type="text"
@@ -430,6 +443,7 @@ const ProductForm = ({
                                 </label>
                                 <div className="mt-2">
                                     <input
+                                        defaultValue={product?.tags ?? ""}
                                         id="tags"
                                         name="tags"
                                         type="text"
