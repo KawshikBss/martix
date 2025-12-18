@@ -3,6 +3,8 @@
 import Loader from "@/components/ui/loaders/Loader";
 import { useCategories } from "@/lib/hooks/categories/useCategories";
 import { useCreateProduct } from "@/lib/hooks/products/useCreateProduct";
+import { useStores } from "@/lib/hooks/stores/useStores";
+import { StoreInterface } from "@/lib/interfaces/StoreIntefrace";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -12,7 +14,17 @@ import { toast } from "react-toastify";
 
 interface ProductVariation {
     option: string;
-    values: string[];
+    value: string;
+}
+
+interface ProductStock {
+    store: StoreInterface;
+    variant: ProductVariation | null;
+    barcode: string;
+    selling_price: number;
+    quantity: number;
+    reorder_level: number;
+    expiry_date: string;
 }
 
 export default function AddProduct() {
@@ -24,6 +36,52 @@ export default function AddProduct() {
     const toggleEnableTax = (e: React.ChangeEvent<HTMLInputElement>) => {
         const checked = e.currentTarget.checked;
         setEnableTax(checked);
+    };
+
+    const { data: stores } = useStores();
+
+    const [selectedStore, setSelectedStore] = React.useState<
+        StoreInterface | undefined | null
+    >(null);
+
+    const [selectedVariation, setSelectedVariation] =
+        React.useState<ProductVariation | null>(null);
+
+    const [productStocks, setProductStocks] = React.useState<ProductStock[]>(
+        []
+    );
+
+    const addToProductStocks = () => {
+        if (!productFormRef || !selectedStore) return;
+
+        const formElements = productFormRef.current?.elements;
+        const quantity = (
+            formElements?.namedItem("quantity") as HTMLInputElement
+        ).value;
+        const reorder_level = (
+            formElements?.namedItem("reorder_level") as HTMLInputElement
+        ).value;
+        const selling_price = (
+            formElements?.namedItem("selling_price") as HTMLInputElement
+        ).value;
+        const barcode = (formElements?.namedItem("barcode") as HTMLInputElement)
+            .value;
+        const expiry_date = (
+            formElements?.namedItem("expiry_date") as HTMLInputElement
+        ).value;
+
+        setProductStocks((prev) => [
+            ...prev,
+            {
+                store: selectedStore,
+                variant: selectedVariation,
+                quantity: Number(quantity),
+                reorder_level: Number(reorder_level),
+                selling_price: Number(selling_price),
+                barcode,
+                expiry_date,
+            },
+        ]);
     };
 
     const [enableVariations, setEnableVariations] =
@@ -47,34 +105,17 @@ export default function AddProduct() {
         const value = (
             formElements?.namedItem("variation_value") as HTMLInputElement
         ).value;
-        setProductVariations((prev) => {
-            if (prev.filter((item) => item.option == option).length) {
-                return prev.map((item) =>
-                    item.option != option
-                        ? item
-                        : { option, values: [...item.values, value] }
-                );
-            }
-            return [...prev, { option, values: [value] }];
-        });
+        setProductVariations((prev) => [...prev, { option, value }]);
     };
 
-    const removeFromProductVariations = (option: string, value: string) => {
-        setProductVariations((prev) => {
-            const newVariations = prev.map((variation) =>
-                variation.option != option
-                    ? variation
-                    : {
-                          option,
-                          values: variation.values.filter(
-                              (item) => item != value
-                          ),
-                      }
-            );
-            return newVariations.filter(
-                (variation) => variation.values.length > 0
-            );
-        });
+    const removeFromProductVariations = (variant: ProductVariation) => {
+        setProductVariations((prev) =>
+            prev.filter(
+                (variation) =>
+                    variation.option != variant.option &&
+                    variation.value != variant.value
+            )
+        );
     };
 
     const imageInputRef = React.useRef<HTMLInputElement | null>(null);
@@ -153,11 +194,47 @@ export default function AddProduct() {
                         `variations[${index}][option]`,
                         variation.option
                     );
-                    variation.values.forEach((value, valueIndex) =>
+                    formData.append(
+                        `variations[${index}][value]`,
+                        variation.value
+                    );
+                });
+            }
+            if (productStocks.length) {
+                productStocks.forEach((stock, index) => {
+                    formData.append(
+                        `product_stocks[${index}][store]`,
+                        stock.store.id
+                    );
+                    if (stock.variant) {
                         formData.append(
-                            `variations[${index}][values][${valueIndex}]`,
-                            value
-                        )
+                            `product_stocks[${index}][variant][option]`,
+                            stock.variant?.option
+                        );
+                        formData.append(
+                            `product_stocks[${index}][variant][value]`,
+                            stock.variant?.value
+                        );
+                    }
+                    formData.append(
+                        `product_stocks[${index}][barcode]`,
+                        stock.barcode
+                    );
+                    formData.append(
+                        `product_stocks[${index}][selling_price]`,
+                        stock.selling_price.toFixed(2)
+                    );
+                    formData.append(
+                        `product_stocks[${index}][quantity]`,
+                        stock.quantity.toFixed(2)
+                    );
+                    formData.append(
+                        `product_stocks[${index}][reorder_level]`,
+                        stock.reorder_level.toFixed(2)
+                    );
+                    formData.append(
+                        `product_stocks[${index}][expiry_date]`,
+                        stock.expiry_date
                     );
                 });
             }
@@ -213,7 +290,7 @@ export default function AddProduct() {
                         <h3 className="text-2xl font-medium">
                             General Information
                         </h3>
-                        <div className="mt-4 grid grid-rows-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                        <div className="mt-4 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                             <div className="col-span-full">
                                 <label
                                     htmlFor="cover-photo"
@@ -321,7 +398,7 @@ export default function AddProduct() {
                             <h3 className="text-2xl font-medium">
                                 Pricing & Tax Information
                             </h3>
-                            <div className="mt-4 grid grid-rows-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                            <div className="mt-4 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                                 <div className="sm:col-span-3">
                                     <label
                                         htmlFor="cost_price"
@@ -439,7 +516,7 @@ export default function AddProduct() {
                             <h3 className="text-2xl font-medium">
                                 Categorization
                             </h3>
-                            <div className="mt-4 grid grid-rows-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                            <div className="mt-4 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                                 <div className="sm:col-span-3">
                                     <label
                                         htmlFor="category"
@@ -514,31 +591,131 @@ export default function AddProduct() {
                 </div>
                 <div className="flex flex-col md:flex-row gap-6 md:my-6">
                     <div className="w-full md:w-2/3 bg-white rounded-2xl shadow-md p-6">
-                        <h3 className="text-2xl font-medium">
+                        <h3 className="text-2xl font-medium mb-4">
                             Stock & Inventory Information
                         </h3>
-                        <div className="mt-4 grid grid-rows-1 gap-x-6 gap-y-8 sm:grid-cols-6 border border-gray-300 bg-gray-50 p-4 rounded-lg">
+                        {productStocks.map((stock) => (
+                            <div className="grid grid-cols-5 my-4 items-center border border-purple-300 bg-purple-100 py-1 px-2 rounded-lg">
+                                <div className="col-span-1 text-sm/6 font-medium">
+                                    {stock.store.name}
+                                </div>
+                                <div className="col-span-1 text-sm/6 font-medium">
+                                    {stock.variant
+                                        ? `${stock.variant.option.toLocaleUpperCase()}: ${
+                                              stock.variant.value
+                                          }`
+                                        : "Main"}
+                                </div>
+                                <div className="col-span-1 text-sm/6 font-medium">
+                                    {stock.quantity} units
+                                </div>
+                                <div className="col-span-1 text-sm/6 font-medium">
+                                    ${stock.selling_price}
+                                </div>
+                                <div className="sm:col-span-1 text-sm border text-center px-2 py-1 rounded-md bg-red-400 text-white hover:bg-transparent hover:text-red-400 border-red-400 cursor-pointer">
+                                    Remove
+                                </div>
+                            </div>
+                        ))}
+                        <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-8 border border-gray-300 bg-gray-50 p-4 rounded-lg">
                             <div className="sm:col-span-2">
                                 <label
-                                    htmlFor="tax_type"
+                                    htmlFor="store"
                                     className="block text-sm/6 font-medium"
                                 >
                                     Store
                                 </label>
                                 <div className="mt-2 grid grid-cols-1">
                                     <select
-                                        id="tax_type"
-                                        name="tax_type"
+                                        id="store"
+                                        name="store"
                                         autoComplete="tax-type"
                                         className="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                                     >
-                                        <option value="none">None</option>
-                                        <option value="GST">GST</option>
-                                        <option value="VAT">VAT</option>
-                                        <option value="Sales Tax">
-                                            Sales Tax
-                                        </option>
+                                        {stores?.map((store) => (
+                                            <option
+                                                key={store.id}
+                                                onClick={() =>
+                                                    setSelectedStore(store)
+                                                }
+                                            >
+                                                {store.name}
+                                            </option>
+                                        ))}
                                     </select>
+                                </div>
+                            </div>
+                            <div className="sm:col-span-2">
+                                <label
+                                    htmlFor="stock_variant"
+                                    className="block text-sm/6 font-medium"
+                                >
+                                    Variant
+                                </label>
+                                <div className="mt-2 grid grid-cols-1">
+                                    <select
+                                        id="stock_variant"
+                                        name="stock_variant"
+                                        autoComplete="tax-type"
+                                        className="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                                    >
+                                        <option
+                                            onClick={() =>
+                                                setSelectedVariation(null)
+                                            }
+                                        >
+                                            Main
+                                        </option>
+                                        {productVariations?.map((variation) => (
+                                            <option
+                                                key={`${variation.option}-${variation.value}`}
+                                                onClick={() =>
+                                                    setSelectedVariation(
+                                                        variation
+                                                    )
+                                                }
+                                            >
+                                                {variation.option.toLocaleUpperCase()}
+                                                : {variation.value}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            </div>
+                            <div className="sm:col-span-2">
+                                <label
+                                    htmlFor="barcode"
+                                    className="block text-sm/6 font-medium"
+                                >
+                                    Barcode
+                                </label>
+                                <div className="mt-2 flex gap-2">
+                                    <input
+                                        id="barcode"
+                                        name="barcode"
+                                        type="text"
+                                        autoComplete="off"
+                                        className="block w-full rounded-md bg-gray-100 px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+                                        placeholder="Enter tax rate"
+                                    />
+                                </div>
+                            </div>
+                            <div className="sm:col-span-2">
+                                <label
+                                    htmlFor="selling_price"
+                                    className="block text-sm/6 font-medium"
+                                >
+                                    Selling Price
+                                </label>
+                                <div className="mt-2 flex gap-2">
+                                    <input
+                                        id="selling_price"
+                                        name="selling_price"
+                                        type="text"
+                                        autoComplete="off"
+                                        className="block w-full rounded-md bg-gray-100 px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+                                        placeholder="Enter tax rate"
+                                    />
                                 </div>
                             </div>
                             <div className="sm:col-span-2">
@@ -579,42 +756,6 @@ export default function AddProduct() {
                             </div>
                             <div className="sm:col-span-2">
                                 <label
-                                    htmlFor="selling_price"
-                                    className="block text-sm/6 font-medium"
-                                >
-                                    Selling Price
-                                </label>
-                                <div className="mt-2 flex gap-2">
-                                    <input
-                                        id="selling_price"
-                                        name="selling_price"
-                                        type="text"
-                                        autoComplete="off"
-                                        className="block w-full rounded-md bg-gray-100 px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
-                                        placeholder="Enter tax rate"
-                                    />
-                                </div>
-                            </div>
-                            <div className="sm:col-span-2">
-                                <label
-                                    htmlFor="barcode"
-                                    className="block text-sm/6 font-medium"
-                                >
-                                    Barcode
-                                </label>
-                                <div className="mt-2 flex gap-2">
-                                    <input
-                                        id="barcode"
-                                        name="barcode"
-                                        type="text"
-                                        autoComplete="off"
-                                        className="block w-full rounded-md bg-gray-100 px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
-                                        placeholder="Enter tax rate"
-                                    />
-                                </div>
-                            </div>
-                            <div className="sm:col-span-2">
-                                <label
                                     htmlFor="expiry_date"
                                     className="block text-sm/6 font-medium"
                                 >
@@ -631,8 +772,10 @@ export default function AddProduct() {
                                     />
                                 </div>
                             </div>
-                            <div className="col-span-5" />
-                            <div className="col-span-1 text-sm border text-center px-2 py-1 rounded-md bg-[#615cf6] text-white hover:bg-transparent hover:text-[#615cf6] border-[#615cf6] cursor-pointer">
+                            <div
+                                onClick={addToProductStocks}
+                                className="col-span-2 text-sm h-fit mt-auto border text-center px-2 py-1 rounded-md bg-[#615cf6] text-white hover:bg-transparent hover:text-[#615cf6] border-[#615cf6] cursor-pointer"
+                            >
                                 Add Stock
                             </div>
                         </div>
@@ -692,32 +835,29 @@ export default function AddProduct() {
                                         </label>
                                     </div>
                                 </div>
-                                {productVariations.map((variation) =>
-                                    variation.values.map((value) => (
-                                        <div
-                                            className="grid grid-cols-5 my-2"
-                                            key={`${variation.option}-${value}`}
-                                        >
-                                            <div className="block text-sm font-medium text-gray-700 sm:col-span-2">
-                                                {variation.option}
-                                            </div>
-                                            <div className="block text-sm font-medium text-gray-700 sm:col-span-2">
-                                                {value}
-                                            </div>
-                                            <div
-                                                onClick={() =>
-                                                    removeFromProductVariations(
-                                                        variation.option,
-                                                        value
-                                                    )
-                                                }
-                                                className="sm:col-span-1 text-sm border text-center px-2 py-1 rounded-md bg-red-400 text-white hover:bg-transparent hover:text-red-400 border-red-400 cursor-pointer"
-                                            >
-                                                Remove
-                                            </div>
+                                {productVariations.map((variation) => (
+                                    <div
+                                        className="grid grid-cols-5 my-2"
+                                        key={`${variation.option}-${variation.value}`}
+                                    >
+                                        <div className="block text-sm font-medium text-gray-700 sm:col-span-2">
+                                            {variation.option}
                                         </div>
-                                    ))
-                                )}
+                                        <div className="block text-sm font-medium text-gray-700 sm:col-span-2">
+                                            {variation.value}
+                                        </div>
+                                        <div
+                                            onClick={() =>
+                                                removeFromProductVariations(
+                                                    variation
+                                                )
+                                            }
+                                            className="sm:col-span-1 text-sm border text-center px-2 py-1 rounded-md bg-red-400 text-white hover:bg-transparent hover:text-red-400 border-red-400 cursor-pointer"
+                                        >
+                                            Remove
+                                        </div>
+                                    </div>
+                                ))}
                                 <div className="mt-2 grid grid-cols-1">
                                     <label className="block text-sm/6 font-medium">
                                         Add Variation Option
