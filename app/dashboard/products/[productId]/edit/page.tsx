@@ -88,9 +88,6 @@ const EditProduct = (props: Props) => {
         setDefaultVariations();
     }, [product]);
 
-    console.log(product);
-    console.log(productVariations);
-
     const resetForm = () => {
         if (!productFormRef) return;
         productFormRef.current?.reset();
@@ -98,11 +95,11 @@ const EditProduct = (props: Props) => {
         setEnableTax(false);
     };
 
-    const [creatingProduct, setCreatingProduct] = React.useState(false);
+    const [updatingProduct, setUpdatingProduct] = React.useState(false);
 
-    const handleProductCreate = async () => {
+    const handleProductUpdate = async () => {
         if (!productFormRef) return;
-        setCreatingProduct(true);
+        setUpdatingProduct(true);
 
         const formElements = productFormRef.current?.elements;
         const image = (formElements?.namedItem("image") as HTMLInputElement)
@@ -178,15 +175,15 @@ const EditProduct = (props: Props) => {
                     );
                     formData.append(
                         `product_stocks[${index}][selling_price]`,
-                        stock.selling_price.toFixed(2)
+                        `${stock.selling_price}`
                     );
                     formData.append(
                         `product_stocks[${index}][quantity]`,
-                        stock.quantity.toFixed(2)
+                        `${stock.quantity}`
                     );
                     formData.append(
                         `product_stocks[${index}][reorder_level]`,
-                        stock.reorder_level.toFixed(2)
+                        `${stock.reorder_level}`
                     );
                     formData.append(
                         `product_stocks[${index}][expiry_date]`,
@@ -202,15 +199,16 @@ const EditProduct = (props: Props) => {
             console.log(response);
 
             if (response) {
-                toast.success("Product created successfully!");
+                toast.success("Product updated successfully!");
                 resetForm();
             }
         } catch (error) {
             console.error(error);
         } finally {
-            setCreatingProduct(false);
+            setUpdatingProduct(false);
         }
     };
+    
     return (
         <main className="p-4 md:p-8">
             <div className="w-full bg-white rounded-2xl shadow-md p-6 flex flex-col md:flex-row justify-between items-center">
@@ -230,9 +228,9 @@ const EditProduct = (props: Props) => {
                     >
                         Discard Changes
                     </button>
-                    {!creatingProduct ? (
+                    {!updatingProduct ? (
                         <button
-                            onClick={handleProductCreate}
+                            onClick={handleProductUpdate}
                             className="bg-[#615cf6] hover:bg-transparent text-white hover:text-[#615cf6] border border-[#615cf6] px-2 py-1 rounded-md cursor-pointer"
                         >
                             Update
