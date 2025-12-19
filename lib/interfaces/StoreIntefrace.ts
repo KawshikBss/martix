@@ -14,6 +14,8 @@ export interface StoreInterface {
     phone: string;
     address: string;
     address_2: string;
+    current_inventory_value: number;
+    low_stock_items_count: number;
     is_active: boolean;
     created_at: string;
     updated_at: string;
