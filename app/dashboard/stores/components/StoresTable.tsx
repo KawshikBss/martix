@@ -42,8 +42,12 @@ export function StoresTable(props: IStoresTableProps) {
                         </td>
                         <td className="px-2 py-4">{1000}</td>
                         <td className="px-2 py-4">{1000}</td>
-                        <td className="px-2 py-4">{2000}</td>
-                        <td className="px-2 py-4">{(index + 1) * 20}</td>
+                        <td className="px-2 py-4">
+                            ${item.current_inventory_value}
+                        </td>
+                        <td className="px-2 py-4">
+                            {item.low_stock_items_count}
+                        </td>
                         <td className="px-2 py-4">{item.updated_at}</td>
                         <td className="px-2 py-4 flex flex-wrap gap-2">
                             <Link
