@@ -16,5 +16,5 @@ export const productService = {
         id?: string;
         payload: FormData | object;
     }): Promise<ProductInterface> =>
-        await apiClient.post(`products/${params.id}`, params.payload),
+        await apiClient.post(`products/update/${params.id}`, params.payload),
 };
