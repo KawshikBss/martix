@@ -1,3 +1,4 @@
+import { ProductInterface } from "./ProductInterface";
 import { StoreInterface } from "./StoreIntefrace";
 
 export interface InventoryInterface {
@@ -9,4 +10,5 @@ export interface InventoryInterface {
     selling_price: number;
     expiry_date: string;
     store: StoreInterface;
+    product: ProductInterface;
 }
