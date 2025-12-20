@@ -34,7 +34,9 @@ export function StoresTable(props: IStoresTableProps) {
                         key={item.id}
                         className="border-b border-gray-300 hover:bg-gray-50"
                     >
-                        <td className="px-2 py-4">{item.name}</td>
+                        <td className="px-2 py-4">
+                            {item.name} - {item.branch}
+                        </td>
                         <td className="px-2 py-4">{item.manager.name}</td>
                         <td className="px-2 py-4">{item.address}</td>
                         <td className="px-2 py-4">
@@ -51,7 +53,7 @@ export function StoresTable(props: IStoresTableProps) {
                         <td className="px-2 py-4">{item.updated_at}</td>
                         <td className="px-2 py-4 flex flex-wrap gap-2">
                             <Link
-                                href={"/"}
+                                href={`/dashboard/stores/${item.id}`}
                                 className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white"
                             >
                                 View
