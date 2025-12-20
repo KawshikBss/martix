@@ -1,3 +1,4 @@
+import { InventoryInterface } from "./InventoryInterface";
 import { RoleInterface } from "./RoleInterface";
 import { UserInterface } from "./UserInterface";
 
@@ -14,6 +15,7 @@ export interface StoreInterface {
     phone: string;
     address: string;
     address_2: string;
+    current_inventory_count: number;
     current_inventory_value: number;
     low_stock_items_count: number;
     is_active: boolean;
@@ -26,4 +28,5 @@ export interface StoreInterface {
         role: RoleInterface;
         user: UserInterface;
     }[];
+    inventories: InventoryInterface[];
 }
