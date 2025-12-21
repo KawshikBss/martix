@@ -1,5 +1,6 @@
 import { CategoryInterface } from "./CategoryInterface";
 import { InventoryInterface } from "./InventoryInterface";
+import { UserInterface } from "./UserInterface";
 
 export interface ProductInterface {
     id: string;
@@ -18,4 +19,8 @@ export interface ProductInterface {
     tags: string;
     variants: ProductInterface[];
     inventories: InventoryInterface[];
+    is_active: boolean;
+    owner: UserInterface;
+    created_at: string;
+    updated_at: string;
 }
