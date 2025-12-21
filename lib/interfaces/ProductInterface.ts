@@ -12,6 +12,8 @@ export interface ProductInterface {
     description: string;
     current_stock_quantity: number;
     cost_price: number;
+    min_selling_price: number;
+    max_selling_price: number;
     tax_type: string;
     tax_rate: number;
     category_id: string;
