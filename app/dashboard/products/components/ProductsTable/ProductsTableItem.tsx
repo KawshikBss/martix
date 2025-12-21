@@ -46,7 +46,14 @@ const ProductsTableItem = ({ product }: Props) => {
                 <td className="px-2 py-4">
                     {product?.category?.name ?? "N/A"}
                 </td>
-                <td className="px-2 py-4">${product?.cost_price ?? "N/A"}</td>
+                <td className="px-2 py-4">
+                    {product?.min_selling_price && product?.max_selling_price
+                        ? `৳${product?.min_selling_price} - ৳${product?.max_selling_price}`
+                        : "৳" +
+                          (product?.min_selling_price ??
+                              product?.max_selling_price ??
+                              "0")}
+                </td>
                 <td className="px-2 py-4 text-end">
                     {product?.current_stock_quantity ?? "N/A"}
                 </td>

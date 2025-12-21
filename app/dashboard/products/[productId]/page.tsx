@@ -154,10 +154,16 @@ export default function SingleProduct() {
                         <div className="flex items-center gap-6 bg-gray-50 rounded-xl p-4 shadow-sm">
                             <FaMoneyBill1Wave className="text-green-500 text-3xl" />
                             <div className="text-sm font-semibold text-gray-500">
-                                Cost Price:
+                                Price:
                             </div>
                             <div className="text-lg text-gray-900">
-                                ৳{product?.cost_price ?? "N/A"}
+                                {product?.min_selling_price &&
+                                product?.max_selling_price
+                                    ? `৳${product?.min_selling_price} - ৳${product?.max_selling_price}`
+                                    : "৳" +
+                                      (product?.min_selling_price ??
+                                          product?.max_selling_price ??
+                                          "0")}
                             </div>
                         </div>
                         <div className="flex items-center gap-6 bg-gray-50 rounded-xl p-4 shadow-sm">
