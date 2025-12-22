@@ -4,17 +4,31 @@ import { ProductInterface } from "../interfaces/ProductInterface";
 export const productService = {
     getProducts: async (params: {
         query?: string;
-        category?: string;
-        stockStatus?: string;
-        minPrice?: string;
-        maxPrice?: string;
+        filters?: {
+            category: string;
+            product_type: string;
+            min_price: string;
+            max_price: string;
+            stock_level: string;
+            status: string;
+            brand: string;
+            tag: string;
+            has_expiry_date: string;
+            expiring_soon: string;
+            has_barcode: string;
+            has_variants: string;
+            min_create_date: string;
+            max_create_date: string;
+            min_update_date: string;
+            max_update_date: string;
+        };
     }): Promise<ProductInterface[]> =>
         await apiClient.get(
-            `products?query=${params?.query ?? ""}&category=${
-                params.category ?? ""
-            }&stock_status=${params.stockStatus ?? ""}&min_price=${
-                params.minPrice ?? ""
-            }&max_price=${params.maxPrice ?? ""}`
+            `products?query=${params?.query ?? ""}&${Object.entries(
+                params?.filters ?? {}
+            )
+                .map((item) => (item[1].length ? `${item[0]}=${item[1]}` : ""))
+                .join("&")}`
         ),
 
     getProduct: async (id?: string): Promise<ProductInterface> =>
