@@ -6,7 +6,9 @@ import * as React from "react";
 import { ProductsTable } from "./components/ProductsTable/ProductsTable";
 import { ProductsCatalog } from "./components/ProductsCatalog";
 import { useProducts } from "@/lib/hooks/products/useProducts";
-import { useCategories } from "@/lib/hooks/categories/useCategories";
+import ProductsFilterModal from "./components/ProductsFilterModal";
+import { FaFilter } from "react-icons/fa";
+import { useSearchParams } from "next/navigation";
 
 export default function Products() {
     const [query, setQuery] = React.useState<string | undefined>(undefined);
@@ -14,41 +16,38 @@ export default function Products() {
         setQuery(e.target.value);
     };
 
-    const [category, setCategory] = React.useState<string | undefined>(
-        undefined
-    );
-    const onCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setCategory(e.target.value);
-    };
+    const [showFilterModal, setShowFilterModal] =
+        React.useState<boolean>(false);
 
-    const [stockStatus, setStockStatus] = React.useState<string | undefined>(
-        undefined
-    );
-    const onStockStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setStockStatus(e.target.value);
-    };
+    const openFilterModal = () => setShowFilterModal(true);
+    const closeFilterModal = () => setShowFilterModal(false);
 
-    const [minPrice, setMinPrice] = React.useState<string | undefined>(
-        undefined
-    );
-    const onMinPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setMinPrice(e.target.value);
-    };
+    const searchParams = useSearchParams();
 
-    const [maxPrice, setMaxPrice] = React.useState<string | undefined>(
-        undefined
-    );
-    const onMaxPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setMaxPrice(e.target.value);
+    const filters = {
+        category: searchParams.get("category") ?? "",
+        product_type: searchParams.get("product_type") ?? "",
+        min_price: searchParams.get("min_price") ?? "",
+        max_price: searchParams.get("max_price") ?? "",
+        stock_level: searchParams.get("stock_level") ?? "",
+        status: searchParams.get("status") ?? "",
+        brand: searchParams.get("brand") ?? "",
+        tag: searchParams.get("tag") ?? "",
+        has_expiry_date: searchParams.get("has_expiry_date") ?? "false",
+        expiring_soon: searchParams.get("expiring_soon") ?? "false",
+        has_barcode: searchParams.get("has_barcode") ?? "false",
+        has_variants: searchParams.get("has_variants") ?? "false",
+        min_create_date: searchParams.get("min_create_date") ?? "",
+        max_create_date: searchParams.get("max_create_date") ?? "",
+        min_update_date: searchParams.get("min_update_date") ?? "",
+        max_update_date: searchParams.get("max_update_date") ?? "",
     };
 
     const {
         data: products,
         isLoading: productsIsLoading,
         isSuccess: productsIsSuccess,
-    } = useProducts({ query, category, stockStatus, minPrice, maxPrice });
-
-    const { data: categories } = useCategories();
+    } = useProducts({ query, filters });
 
     return (
         <main className="p-8">
@@ -67,60 +66,27 @@ export default function Products() {
                         onChange={onQueryChange}
                         type="text"
                         placeholder="Search products..."
-                        className="border border-gray-300 rounded-md px-2 py-1 w-full md:w-2/5 mb-4 md:mb-0"
+                        className="border border-gray-300 rounded-md px-2 py-1 w-full mb-4 md:mb-0"
                     />
-                    <div className="flex flex-row gap-4 flex-wrap md:flex-nowrap">
-                        <select
-                            onChange={onCategoryChange}
-                            className="border border-gray-300 rounded-md px-2 py-1"
-                        >
-                            <option value="">Category</option>
-                            {categories?.map((category) => (
-                                <option key={category.id} value={category.id}>
-                                    {category.name}
-                                </option>
-                            ))}
-                        </select>
-                        <select
-                            onChange={onStockStatusChange}
-                            className="border border-gray-300 rounded-md px-2 py-1"
-                        >
-                            <option value="">Stock Status</option>
-                            <option value="in_stock">In Stock</option>
-                            <option value="low_stock">Low Stock</option>
-                            <option value="out_of_stock">Out of Stock</option>
-                        </select>
-                        <div className="flex flex-row items-center gap-2">
-                            <input
-                                onChange={onMinPriceChange}
-                                type="number"
-                                min="0"
-                                placeholder="Min Price"
-                                className="border border-gray-300 rounded-md px-2 py-1 w-24"
-                            />
-                            <span>-</span>
-                            <input
-                                onChange={onMaxPriceChange}
-                                type="number"
-                                min="0"
-                                placeholder="Max Price"
-                                className="border border-gray-300 rounded-md px-2 py-1 w-24"
-                            />
-                        </div>
-                    </div>
+                    <button
+                        onClick={openFilterModal}
+                        className="ms-6 bg-[#615cf6] hover:bg-transparent text-white hover:text-[#615cf6] border border-[#615cf6] px-2 py-1 rounded-md"
+                    >
+                        <FaFilter />
+                    </button>
                 </div>
                 <ProductsTable
                     data={products}
                     isLoading={productsIsLoading}
                     isSuccess={productsIsSuccess}
                     query={query}
-                    category={category}
-                    stockStatus={stockStatus}
-                    minPrice={minPrice}
-                    maxPrice={maxPrice}
                 />
             </div>
             <ProductsCatalog items={productsData} />
+            <ProductsFilterModal
+                show={showFilterModal}
+                onClose={closeFilterModal}
+            />
         </main>
     );
 }
