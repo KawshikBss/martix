@@ -17,9 +17,6 @@ const ProductsTableItem = ({ product }: Props) => {
         <Fragment>
             <tr className="border-b border-gray-300 hover:bg-gray-50">
                 <td className="px-2 py-4">
-                    <input type="checkbox" />
-                </td>
-                <td className="px-2 py-4">
                     <Link href={`/dashboard/products/${product.id}`}>
                         <Image
                             src={product.image_url}
