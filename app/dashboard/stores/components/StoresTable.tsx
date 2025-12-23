@@ -1,45 +1,17 @@
 "use client";
 
-import Loader from "@/components/ui/loaders/Loader";
 import { useToggleStoreStatus } from "@/lib/hooks/stores/useToggleStoreStatus";
 import { StoreInterface } from "@/lib/interfaces/StoreIntefrace";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
 
 export interface IStoresTableProps {
-    data?: StoreInterface[] | undefined;
-    isLoading: boolean;
-    isSuccess: boolean;
-    query?: string;
+    data?: StoreInterface[];
 }
 
-export function StoresTable({
-    data,
-    isLoading,
-    isSuccess,
-    query,
-}: IStoresTableProps) {
+export function StoresTable({ data }: IStoresTableProps) {
     const { mutateAsync: toggleStoreStatusMutation } = useToggleStoreStatus();
 
-    const searchParams = useSearchParams();
-    const filters = {
-        manager: searchParams.get("manager") ?? "",
-        branch: searchParams.get("branch") ?? "",
-        location: searchParams.get("location") ?? "",
-        status: searchParams.get("status") ?? "",
-        stock_level: searchParams.get("stock_level") ?? "",
-        type: searchParams.get("type") ?? "",
-        min_inventory_value: searchParams.get("min_inventory_value") ?? "",
-        max_inventory_value: searchParams.get("max_inventory_value") ?? "",
-        has_staff: searchParams.get("has_staff") ?? "false",
-        has_expired_products:
-            searchParams.get("has_expired_products") ?? "false",
-        min_create_date: searchParams.get("min_create_date") ?? "",
-        max_create_date: searchParams.get("max_create_date") ?? "",
-        min_update_date: searchParams.get("min_update_date") ?? "",
-        max_update_date: searchParams.get("max_update_date") ?? "",
-    };
-    return !isLoading && isSuccess && data?.length ? (
+    return data?.length ? (
         <table className="hidden md:table w-full text-left mt-4">
             <thead>
                 <tr className="border-b border-gray-300 text-gray-500">
@@ -104,53 +76,7 @@ export function StoresTable({
                 ))}
             </tbody>
         </table>
-    ) : !isLoading && isSuccess && !data?.length ? (
-        <p>
-            No products{query?.length ? ` matching "${query}"` : ""}
-            {filters?.manager?.length ? " managed by that user" : ""}
-            {filters?.branch?.length
-                ? ` with a "${filters?.branch}" branch`
-                : ""}
-            {filters?.location?.length ? ` in "${filters?.location}"` : ""}
-            {filters?.status?.length ? ` currently "${filters?.status}"` : ""}
-            {filters?.stock_level?.length
-                ? ` with ${filters?.stock_level?.replaceAll("_", " ")}`
-                : ""}
-            {filters?.type?.length ? ` that is "${filters?.type}"` : ""}
-            {filters?.min_inventory_value?.length &&
-            filters?.max_inventory_value?.length
-                ? ` with stock value between $${filters?.min_inventory_value} and $${filters?.max_inventory_value}`
-                : filters?.min_inventory_value?.length
-                ? ` with stock value more than $${filters?.min_inventory_value}`
-                : filters?.max_inventory_value?.length
-                ? ` with stock value less than $${filters?.max_inventory_value}`
-                : ""}
-            {filters?.has_staff == "true" ? " has staffs" : ""}
-            {filters?.has_expired_products == "true"
-                ? " has expired products"
-                : ""}
-            {filters?.min_create_date?.length &&
-            filters?.max_create_date?.length
-                ? ` created between ${filters?.min_create_date} and ${filters?.max_create_date}`
-                : filters?.min_create_date?.length
-                ? ` created after ${filters?.min_create_date}`
-                : filters?.max_create_date?.length
-                ? ` created before ${filters?.max_create_date}`
-                : ""}
-            {filters?.min_update_date?.length &&
-            filters?.max_update_date?.length
-                ? ` updated between ${filters?.min_update_date} and ${filters?.max_update_date}`
-                : filters?.min_update_date?.length
-                ? ` updated after ${filters?.min_update_date}`
-                : filters?.max_update_date?.length
-                ? ` updated before ${filters?.max_update_date}`
-                : ""}{" "}
-            <Link href="/dashboard/stores/add" className="text-[#615cf6]">
-                Add new
-            </Link>
-            ?
-        </p>
     ) : (
-        <Loader />
+        ""
     );
 }

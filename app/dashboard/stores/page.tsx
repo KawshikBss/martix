@@ -1,6 +1,5 @@
 "use client";
 import KpiCard from "@/components/ui/KpiCard";
-import ordersData from "@/public/data/ordersData";
 import * as React from "react";
 import {
     FaChartBar,
@@ -32,6 +31,7 @@ import { useStores } from "@/lib/hooks/stores/useStores";
 import StoresFilterModal from "./components/StoresFilterModal";
 import { useSearchParams } from "next/navigation";
 import { MdClear } from "react-icons/md";
+import Loader from "@/components/ui/loaders/Loader";
 ChartJS.register(
     ArcElement,
     PointElement,
@@ -216,7 +216,7 @@ export default function BranchOverview() {
             </div>
             <div className="bg-white rounded-2xl shadow-md p-6">
                 <h3 className="text-2xl font-medium">Stores</h3>
-                <div className="mt-6 md:my-6 flex flex-row justify-between">
+                <div className="my-6 flex flex-row justify-between">
                     <input
                         value={query}
                         onChange={onQueryChange}
@@ -241,13 +241,73 @@ export default function BranchOverview() {
                         <FaFilter />
                     </button>
                 </div>
-                <StoresTable
-                    data={stores}
-                    isLoading={storesIsLoading}
-                    isSuccess={storesIsSuccess}
-                    query={query}
-                />
-                <StoresList data={ordersData} />
+                <StoresTable data={stores} />
+                <StoresList data={stores} />
+                {storesIsLoading ? (
+                    <Loader />
+                ) : !storesIsLoading && storesIsSuccess && !stores?.length ? (
+                    <p>
+                        No stores{query?.length ? ` matching "${query}"` : ""}
+                        {filters?.manager?.length
+                            ? " managed by that user"
+                            : ""}
+                        {filters?.branch?.length
+                            ? ` with a "${filters?.branch}" branch`
+                            : ""}
+                        {filters?.location?.length
+                            ? ` in "${filters?.location}"`
+                            : ""}
+                        {filters?.status?.length
+                            ? ` currently "${filters?.status}"`
+                            : ""}
+                        {filters?.stock_level?.length
+                            ? ` with ${filters?.stock_level?.replaceAll(
+                                  "_",
+                                  " "
+                              )}`
+                            : ""}
+                        {filters?.type?.length
+                            ? ` that is "${filters?.type}"`
+                            : ""}
+                        {filters?.min_inventory_value?.length &&
+                        filters?.max_inventory_value?.length
+                            ? ` with stock value between $${filters?.min_inventory_value} and $${filters?.max_inventory_value}`
+                            : filters?.min_inventory_value?.length
+                            ? ` with stock value more than $${filters?.min_inventory_value}`
+                            : filters?.max_inventory_value?.length
+                            ? ` with stock value less than $${filters?.max_inventory_value}`
+                            : ""}
+                        {filters?.has_staff == "true" ? " has staffs" : ""}
+                        {filters?.has_expired_products == "true"
+                            ? " has expired products"
+                            : ""}
+                        {filters?.min_create_date?.length &&
+                        filters?.max_create_date?.length
+                            ? ` created between ${filters?.min_create_date} and ${filters?.max_create_date}`
+                            : filters?.min_create_date?.length
+                            ? ` created after ${filters?.min_create_date}`
+                            : filters?.max_create_date?.length
+                            ? ` created before ${filters?.max_create_date}`
+                            : ""}
+                        {filters?.min_update_date?.length &&
+                        filters?.max_update_date?.length
+                            ? ` updated between ${filters?.min_update_date} and ${filters?.max_update_date}`
+                            : filters?.min_update_date?.length
+                            ? ` updated after ${filters?.min_update_date}`
+                            : filters?.max_update_date?.length
+                            ? ` updated before ${filters?.max_update_date}`
+                            : ""}{" "}
+                        <Link
+                            href="/dashboard/stores/add"
+                            className="text-[#615cf6]"
+                        >
+                            Add new
+                        </Link>
+                        ?
+                    </p>
+                ) : (
+                    ""
+                )}
             </div>
             <div className="w-full my-6 flex flex-col md:flex-row justify-between items-start gap-6">
                 <div className="w-full h-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between">
