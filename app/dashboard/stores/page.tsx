@@ -5,6 +5,7 @@ import * as React from "react";
 import {
     FaChartBar,
     FaChartLine,
+    FaFilter,
     FaHourglassHalf,
     FaStore,
 } from "react-icons/fa";
@@ -28,6 +29,9 @@ import { StoresList } from "./components/StoresList/StoresList";
 import { StoresTable } from "./components/StoresTable";
 import Link from "next/link";
 import { useStores } from "@/lib/hooks/stores/useStores";
+import StoresFilterModal from "./components/StoresFilterModal";
+import { useSearchParams } from "next/navigation";
+import { MdClear } from "react-icons/md";
 ChartJS.register(
     ArcElement,
     PointElement,
@@ -124,11 +128,45 @@ const lineChartData = {
 };
 
 export default function BranchOverview() {
-    const [query, setQuery] = React.useState<string | undefined>(undefined);
+    const [query, setQuery] = React.useState<string>("");
     const onQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setQuery(e.target.value);
     };
-    const { data: stores, isLoading: storesIsLoading } = useStores(query);
+    const clearQuery = () => setQuery("");
+
+    const searchParams = useSearchParams();
+    const filters = {
+        manager: searchParams.get("manager") ?? "",
+        branch: searchParams.get("branch") ?? "",
+        location: searchParams.get("location") ?? "",
+        status: searchParams.get("status") ?? "",
+        stock_level: searchParams.get("stock_level") ?? "",
+        type: searchParams.get("type") ?? "",
+        min_inventory_value: searchParams.get("min_inventory_value") ?? "",
+        max_inventory_value: searchParams.get("max_inventory_value") ?? "",
+        has_staff: searchParams.get("has_staff") ?? "false",
+        has_expired_products:
+            searchParams.get("has_expired_products") ?? "false",
+        min_create_date: searchParams.get("min_create_date") ?? "",
+        max_create_date: searchParams.get("max_create_date") ?? "",
+        min_update_date: searchParams.get("min_update_date") ?? "",
+        max_update_date: searchParams.get("max_update_date") ?? "",
+    };
+
+    const {
+        data: stores,
+        isLoading: storesIsLoading,
+        isSuccess: storesIsSuccess,
+    } = useStores({
+        query,
+        filters,
+    });
+
+    const [showFilterModal, setShowFilterModal] =
+        React.useState<boolean>(false);
+
+    const openFilterModal = () => setShowFilterModal(true);
+    const closeFilterModal = () => setShowFilterModal(false);
 
     return (
         <main className="p-4 md:p-8">
@@ -177,13 +215,38 @@ export default function BranchOverview() {
                 />
             </div>
             <div className="bg-white rounded-2xl shadow-md p-6">
-                <input
-                    type="text"
-                    placeholder="Search stores..."
-                    onChange={onQueryChange}
-                    className="border border-gray-300 rounded-md px-2 py-1 w-full md:w-2/5"
+                <h3 className="text-2xl font-medium">Stores</h3>
+                <div className="mt-6 md:my-6 flex flex-row justify-between">
+                    <input
+                        value={query}
+                        onChange={onQueryChange}
+                        type="text"
+                        placeholder="Search products..."
+                        className="border border-gray-300 rounded-md px-2 py-1 w-full"
+                    />
+                    {query?.length ? (
+                        <button
+                            onClick={clearQuery}
+                            className="ms-2 md:ms-4 bg-red-400 hover:bg-transparent text-white hover:text-red-400 border border-red-400 px-2 py-1 rounded-md"
+                        >
+                            <MdClear />
+                        </button>
+                    ) : (
+                        ""
+                    )}
+                    <button
+                        onClick={openFilterModal}
+                        className="ms-2 md:ms-4 bg-[#615cf6] hover:bg-transparent text-white hover:text-[#615cf6] border border-[#615cf6] px-2 py-1 rounded-md"
+                    >
+                        <FaFilter />
+                    </button>
+                </div>
+                <StoresTable
+                    data={stores}
+                    isLoading={storesIsLoading}
+                    isSuccess={storesIsSuccess}
+                    query={query}
                 />
-                <StoresTable data={stores} isLoading={storesIsLoading} />
                 <StoresList data={ordersData} />
             </div>
             <div className="w-full my-6 flex flex-col md:flex-row justify-between items-start gap-6">
@@ -213,6 +276,10 @@ export default function BranchOverview() {
                 </div>
                 <Line options={lineChartOptions} data={lineChartData} />
             </div>
+            <StoresFilterModal
+                show={showFilterModal}
+                onClose={closeFilterModal}
+            />
         </main>
     );
 }
