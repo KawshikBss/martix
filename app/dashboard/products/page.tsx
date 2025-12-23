@@ -50,8 +50,8 @@ export default function Products() {
     } = useProducts({ query, filters });
 
     return (
-        <main className="p-8">
-            <div className="bg-white rounded-2xl shadow-md p-6">
+        <main className="p-4 md:p-8">
+            <div className="bg-white rounded-2xl shadow-md p-4 md:p-6">
                 <div className="w-full flex flex-row justify-between items-center">
                     <h3 className="text-2xl font-medium">Products</h3>
                     <Link
@@ -61,16 +61,16 @@ export default function Products() {
                         + New Product
                     </Link>
                 </div>
-                <div className="mt-6 md:my-6 flex flex-col md:flex-row justify-between">
+                <div className="mt-6 md:my-6 flex flex-row justify-between">
                     <input
                         onChange={onQueryChange}
                         type="text"
                         placeholder="Search products..."
-                        className="border border-gray-300 rounded-md px-2 py-1 w-full mb-4 md:mb-0"
+                        className="border border-gray-300 rounded-md px-2 py-1 w-full"
                     />
                     <button
                         onClick={openFilterModal}
-                        className="ms-6 bg-[#615cf6] hover:bg-transparent text-white hover:text-[#615cf6] border border-[#615cf6] px-2 py-1 rounded-md"
+                        className="ms-4 md:ms-6 bg-[#615cf6] hover:bg-transparent text-white hover:text-[#615cf6] border border-[#615cf6] px-2 py-1 rounded-md"
                     >
                         <FaFilter />
                     </button>
