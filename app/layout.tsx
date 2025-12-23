@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Bounce, ToastContainer } from "react-toastify";
+import { Suspense } from "react";
+import PageLoader from "@/components/ui/loaders/PageLoader";
 
 const geistSans = Geist({
     variable: "--font-geist-sans",
@@ -28,7 +30,7 @@ export default function RootLayout({
             <body
                 className={`${geistSans.variable} ${geistMono.variable} antialiased`}
             >
-                {children}
+                <Suspense fallback={<PageLoader />}>{children}</Suspense>
                 <ToastContainer
                     position="top-right"
                     autoClose={5000}
