@@ -1,6 +1,5 @@
 "use client";
 
-import productsData from "@/public/data/productsData";
 import Link from "next/link";
 import * as React from "react";
 import { ProductsTable } from "./components/ProductsTable/ProductsTable";
@@ -9,12 +8,15 @@ import { useProducts } from "@/lib/hooks/products/useProducts";
 import ProductsFilterModal from "./components/ProductsFilterModal";
 import { FaFilter } from "react-icons/fa";
 import { useSearchParams } from "next/navigation";
+import { MdClear } from "react-icons/md";
+import Loader from "@/components/ui/loaders/Loader";
 
 export default function Products() {
-    const [query, setQuery] = React.useState<string | undefined>(undefined);
+    const [query, setQuery] = React.useState<string>("");
     const onQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setQuery(e.target.value);
     };
+    const clearQuery = () => setQuery("");
 
     const [showFilterModal, setShowFilterModal] =
         React.useState<boolean>(false);
@@ -61,28 +63,101 @@ export default function Products() {
                         + New Product
                     </Link>
                 </div>
-                <div className="mt-6 md:my-6 flex flex-row justify-between">
+                <div className="my-6 flex flex-row justify-between">
                     <input
+                        value={query}
                         onChange={onQueryChange}
                         type="text"
                         placeholder="Search products..."
                         className="border border-gray-300 rounded-md px-2 py-1 w-full"
                     />
+                    {query?.length ? (
+                        <button
+                            onClick={clearQuery}
+                            className="ms-2 md:ms-4 bg-red-400 hover:bg-transparent text-white hover:text-red-400 border border-red-400 px-2 py-1 rounded-md"
+                        >
+                            <MdClear />
+                        </button>
+                    ) : (
+                        ""
+                    )}
                     <button
                         onClick={openFilterModal}
-                        className="ms-4 md:ms-6 bg-[#615cf6] hover:bg-transparent text-white hover:text-[#615cf6] border border-[#615cf6] px-2 py-1 rounded-md"
+                        className="ms-2 md:ms-4 bg-[#615cf6] hover:bg-transparent text-white hover:text-[#615cf6] border border-[#615cf6] px-2 py-1 rounded-md"
                     >
                         <FaFilter />
                     </button>
                 </div>
-                <ProductsTable
-                    data={products}
-                    isLoading={productsIsLoading}
-                    isSuccess={productsIsSuccess}
-                    query={query}
-                />
+                <ProductsTable data={products} />
+                <ProductsCatalog data={products} />
+                {productsIsLoading ? (
+                    <Loader />
+                ) : !productsIsLoading &&
+                  productsIsSuccess &&
+                  !products?.length ? (
+                    <p>
+                        No products{query?.length ? ` matching "${query}"` : ""}
+                        {filters?.category?.length ? " in that category" : ""}
+                        {filters?.product_type?.length
+                            ? ` with "${filters?.product_type?.replaceAll(
+                                  "_",
+                                  " "
+                              )}"`
+                            : ""}
+                        {filters?.min_price?.length
+                            ? ` more than $${filters?.min_price}`
+                            : ""}
+                        {filters?.max_price?.length
+                            ? ` less than $${filters?.max_price}`
+                            : ""}
+                        {filters?.stock_level?.length
+                            ? ` "${filters?.stock_level?.replaceAll("_", " ")}"`
+                            : ""}
+                        {filters?.status?.length
+                            ? ` currently "${filters?.status}"`
+                            : ""}
+                        {filters?.brand?.length
+                            ? ` from "${filters?.brand}" brand`
+                            : ""}
+                        {filters?.tag?.length
+                            ? ` with "${filters?.tag}" in tags`
+                            : ""}
+                        {filters?.has_expiry_date == "true"
+                            ? " has expiry date"
+                            : ""}
+                        {filters?.expiring_soon == "true"
+                            ? " will be expiring soon"
+                            : ""}
+                        {filters?.has_barcode == "true" ? " has barcode" : ""}
+                        {filters?.has_variants == "true" ? " has variants" : ""}
+                        {filters?.min_create_date?.length &&
+                        filters?.max_create_date?.length
+                            ? ` created between ${filters?.min_create_date} and ${filters?.max_create_date}`
+                            : filters?.min_create_date?.length
+                            ? ` created after ${filters?.min_create_date}`
+                            : filters?.max_create_date?.length
+                            ? ` created before ${filters?.max_create_date}`
+                            : ""}
+                        {filters?.min_update_date?.length &&
+                        filters?.max_update_date?.length
+                            ? ` updated between ${filters?.min_update_date} and ${filters?.max_update_date}`
+                            : filters?.min_update_date?.length
+                            ? ` updated after ${filters?.min_update_date}`
+                            : filters?.max_update_date?.length
+                            ? ` updated before ${filters?.max_update_date}`
+                            : ""}{" "}
+                        <Link
+                            href="/dashboard/products/add"
+                            className="text-[#615cf6]"
+                        >
+                            Add new
+                        </Link>
+                        ?
+                    </p>
+                ) : (
+                    ""
+                )}
             </div>
-            <ProductsCatalog items={productsData} />
             <ProductsFilterModal
                 show={showFilterModal}
                 onClose={closeFilterModal}

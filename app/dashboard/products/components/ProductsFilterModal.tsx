@@ -526,7 +526,7 @@ const ProductsFilterModal = ({ show, onClose }: Props) => {
                     </div>
                 </div>
             </div>
-            <div className="grid grid-cols-4 md:grid-cols-5 gap-4 mt-4">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mt-4">
                 {Object.keys(filters).map((item) => {
                     var value = filters[item as keyof typeof filters];
 
@@ -537,7 +537,7 @@ const ProductsFilterModal = ({ show, onClose }: Props) => {
                         <button
                             onClick={() => resetSingleFilter(item)}
                             key={item}
-                            className="px-4 py-1 rounded-xl text-white text-sm bg-[#615cf6] flex items-center justify-between"
+                            className="px-2 md:px-4 py-1 rounded-xl text-white text-xs md:text-sm bg-[#615cf6] flex items-center justify-between"
                         >
                             {item.replaceAll("_", " ").toLocaleUpperCase()}
                             {typeof value !== "boolean" ? `: ${value}` : ""}
