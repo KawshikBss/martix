@@ -1,38 +1,27 @@
+import DashboardAccordion from "@/components/ui/accordions/DashboardAccordion";
+import { useToggleStoreStatus } from "@/lib/hooks/stores/useToggleStoreStatus";
 import { StoreInterface } from "@/lib/interfaces/StoreIntefrace";
+import Image from "next/image";
 import Link from "next/link";
-import * as React from "react";
 import { BiPackage } from "react-icons/bi";
-import {
-    FaCashRegister,
-    FaChevronDown,
-    FaChevronUp,
-    FaCreditCard,
-    FaGlobe,
-} from "react-icons/fa";
-import {
-    FaCartShopping,
-    FaClockRotateLeft,
-    FaRegCalendarDays,
-    FaShop,
-} from "react-icons/fa6";
+import { FaCashRegister, FaCrown, FaUser } from "react-icons/fa";
+import { FaClockRotateLeft, FaRegCalendarDays, FaShop } from "react-icons/fa6";
 import { IoWarning } from "react-icons/io5";
+import { toast } from "react-toastify";
 
 export interface IStoresListItemProps {
     store: StoreInterface;
 }
 
 export function StoresListItem({ store }: IStoresListItemProps) {
-    const [isExpanded, setIsExpanded] = React.useState(false);
-    const toggleExpanded = () => {
-        setIsExpanded(!isExpanded);
+    const { mutateAsync: toggleStoreStatusMutation } = useToggleStoreStatus();
+    const onToggleStoreStatus = (id: string) => {
+        toggleStoreStatusMutation(id);
+        toast.success(`Store status updated!`);
     };
     return (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-3">
-            {/* Collapsed View */}
-            <div
-                className="flex items-center p-4 cursor-pointer hover:bg-gray-50 transition-colors"
-                onClick={toggleExpanded}
-            >
+        <DashboardAccordion.Container>
+            <DashboardAccordion.Header>
                 <FaShop className="flex-shrink-0 w-6 h-6 text-gray-400" />
                 <div className="flex-1 ml-4">
                     <div className="flex items-center justify-between">
@@ -49,123 +38,121 @@ export function StoresListItem({ store }: IStoresListItemProps) {
                             <div
                                 className={`text-xs font-bold ${
                                     store?.is_active
-                                        ? "text-red-600"
-                                        : "text-green-600"
+                                        ? "text-green-600"
+                                        : "text-red-600"
                                 }`}
                             >
-                                {store?.is_active ? "Inactive" : "Active"}
-                            </div>
-                            <div className="text-xs text-gray-400">
-                                {store?.manager?.name}
+                                {store?.is_active ? "Active" : "Inactive"}
                             </div>
                         </div>
                     </div>
                 </div>
+            </DashboardAccordion.Header>
+            <DashboardAccordion.Expanded>
+                <DashboardAccordion.Section
+                    icon={<FaCrown className="w-4 h-4 text-amber-500 mr-2" />}
+                    title="Owned By"
+                >
+                    <Link
+                        href="/dashboard/profile"
+                        className="flex flex-row items-center gap-4"
+                    >
+                        <Image
+                            src={
+                                store?.owner?.image_url ??
+                                "/images/user-placeholder.jpg"
+                            }
+                            alt={store?.owner?.name ?? "Profile"}
+                            className="rounded-full w-[40px] h-[40px] border object-cover"
+                            width={40}
+                            height={40}
+                        />
+                        <span className="text-gray-700">
+                            {store?.owner?.name ?? "N/A"}
+                        </span>
+                    </Link>
+                </DashboardAccordion.Section>
+                <DashboardAccordion.Section
+                    icon={<FaUser className="w-4 h-4 text-blue-500 mr-2" />}
+                    title="Managed By"
+                >
+                    <Link
+                        href="/dashboard/profile"
+                        className="flex flex-row items-center gap-4"
+                    >
+                        <Image
+                            src={
+                                store?.manager?.image_url ??
+                                "/images/user-placeholder.jpg"
+                            }
+                            alt={store?.manager?.name ?? "Profile"}
+                            className="rounded-full w-[40px] h-[40px] border object-cover"
+                            width={40}
+                            height={40}
+                        />
+                        <span className="text-gray-700">
+                            {store?.manager?.name ?? "N/A"}
+                        </span>
+                    </Link>
+                </DashboardAccordion.Section>
+                <DashboardAccordion.Section
+                    icon={
+                        <FaCashRegister className="w-4 h-4 text-green-500 mr-2" />
+                    }
+                    title="Today's Sales"
+                >
+                    ${1000}
+                </DashboardAccordion.Section>
+                <DashboardAccordion.Section
+                    icon={
+                        <FaRegCalendarDays className="w-4 h-4 text-orange-500 mr-2" />
+                    }
+                    title="Monthly Sales"
+                >
+                    ${1000}
+                </DashboardAccordion.Section>
+                <DashboardAccordion.Section
+                    icon={<BiPackage className="w-4 h-4 text-blue-500 mr-2" />}
+                    title="Inventory Value"
+                >
+                    ${store?.current_inventory_value}
+                </DashboardAccordion.Section>
+                <DashboardAccordion.Section
+                    icon={<IoWarning className="w-4 h-4 text-red-500 mr-2" />}
+                    title="Low Stock Items"
+                >
+                    {store?.low_stock_items_count}
+                </DashboardAccordion.Section>
+                <DashboardAccordion.Section
+                    icon={
+                        <FaClockRotateLeft className="w-4 h-4 text-gray-500 mr-2" />
+                    }
+                    title="Last Updated"
+                >
+                    {store?.updated_at}
+                </DashboardAccordion.Section>
 
-                {/* Expand Icon */}
-                <button className="flex-shrink-0 p-2 hover:bg-gray-100 rounded-full transition-colors">
-                    {isExpanded ? (
-                        <FaChevronUp className="w-4 h-4 text-gray-400" />
-                    ) : (
-                        <FaChevronDown className="w-4 h-4 text-gray-400" />
-                    )}
-                </button>
-            </div>
-
-            {/* Expanded View */}
-            {isExpanded && (
-                <div className="px-4 pb-4 border-t border-gray-100">
-                    <div className="pt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div className="bg-gray-50 rounded-lg p-3">
-                            <div className="flex items-center justify-between mb-2">
-                                <div className="flex items-center">
-                                    <FaCashRegister className="w-4 h-4 text-green-500 mr-2" />
-                                    <span className="text-lg font-bold text-gray-700">
-                                        Today's Sales
-                                    </span>
-                                </div>
-                            </div>
-                            <div className={`text-sm font-medium`}>${1000}</div>
-                        </div>
-
-                        <div className="bg-gray-50 rounded-lg p-3">
-                            <div className="flex items-center justify-between mb-2">
-                                <div className="flex items-center">
-                                    <FaRegCalendarDays className="w-4 h-4 text-orange-500 mr-2" />
-                                    <span className="text-lg font-bold text-gray-700">
-                                        Monthly Sales
-                                    </span>
-                                </div>
-                            </div>
-                            <div className={`text-sm font-medium`}>${1000}</div>
-                        </div>
-
-                        <div className="bg-gray-50 rounded-lg p-3">
-                            <div className="flex items-center justify-between mb-2">
-                                <div className="flex items-center">
-                                    <BiPackage className="w-4 h-4 text-blue-500 mr-2" />
-                                    <span className="text-sm font-medium text-gray-700">
-                                        Inventory Value
-                                    </span>
-                                </div>
-                            </div>
-                            <div className={`text-lg font-bold`}>
-                                ${store?.current_inventory_value}
-                            </div>
-                        </div>
-
-                        <div className="bg-gray-50 rounded-lg p-3">
-                            <div className="flex items-center justify-between mb-2">
-                                <div className="flex items-center">
-                                    <IoWarning className="w-4 h-4 text-red-500 mr-2" />
-                                    <span className="text-sm font-medium text-gray-700">
-                                        Low Stock Items
-                                    </span>
-                                </div>
-                            </div>
-                            <div className={`text-lg font-bold`}>
-                                {store?.low_stock_items_count}
-                            </div>
-                        </div>
-
-                        <div className="bg-gray-50 rounded-lg p-3">
-                            <div className="flex items-center justify-between mb-2">
-                                <div className="flex items-center">
-                                    <FaClockRotateLeft className="w-4 h-4 text-gray-500 mr-2" />
-                                    <span className="text-lg font-bold text-gray-700">
-                                        Last Updated
-                                    </span>
-                                </div>
-                            </div>
-                            <div className={`text-sm font-medium`}>
-                                {store?.updated_at}
-                            </div>
-                        </div>
-
-                        {/* Actions */}
-                        <div className="mt-4 flex flex-wrap gap-2">
-                            <Link
-                                href={"/"}
-                                className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white"
-                            >
-                                View
-                            </Link>
-                            <Link
-                                href={"/"}
-                                className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white"
-                            >
-                                Update
-                            </Link>
-                            <Link
-                                href={"/"}
-                                className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white"
-                            >
-                                Disable
-                            </Link>
-                        </div>
-                    </div>
+                <div className="mt-4 flex flex-wrap gap-2">
+                    <Link
+                        href={`/dashboard/stores/${store.id}`}
+                        className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white"
+                    >
+                        View
+                    </Link>
+                    <Link
+                        href={`/dashboard/stores/${store.id}/edit`}
+                        className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white"
+                    >
+                        Update
+                    </Link>
+                    <span
+                        onClick={() => onToggleStoreStatus(store.id)}
+                        className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white cursor-pointer"
+                    >
+                        {store?.is_active ? "Disable" : "Enable"}
+                    </span>
                 </div>
-            )}
-        </div>
+            </DashboardAccordion.Expanded>
+        </DashboardAccordion.Container>
     );
 }
