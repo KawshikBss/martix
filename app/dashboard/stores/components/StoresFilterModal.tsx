@@ -23,8 +23,11 @@ const StoresFilterModal = ({ show, onClose }: Props) => {
         min_inventory_value: searchParams.get("min_inventory_value") ?? "",
         max_inventory_value: searchParams.get("max_inventory_value") ?? "",
         has_staff: (searchParams.get("has_staff") ?? "") === "true",
+        has_low_stock: (searchParams.get("has_low_stock") ?? "") === "true",
         has_expired_products:
             (searchParams.get("has_expired_products") ?? "") === "true",
+        has_soon_expiring_products:
+            (searchParams.get("has_soon_expiring_products") ?? "") === "true",
         min_create_date: searchParams.get("min_create_date") ?? "",
         max_create_date: searchParams.get("max_create_date") ?? "",
         min_update_date: searchParams.get("min_update_date") ?? "",
@@ -73,8 +76,12 @@ const StoresFilterModal = ({ show, onClose }: Props) => {
             min_inventory_value: searchParams.get("min_inventory_value") ?? "",
             max_inventory_value: searchParams.get("max_inventory_value") ?? "",
             has_staff: (searchParams.get("has_staff") ?? "") === "true",
+            has_low_stock: (searchParams.get("has_low_stock") ?? "") === "true",
             has_expired_products:
                 (searchParams.get("has_expired_products") ?? "") === "true",
+            has_soon_expiring_products:
+                (searchParams.get("has_soon_expiring_products") ?? "") ===
+                "true",
             min_create_date: searchParams.get("min_create_date") ?? "",
             max_create_date: searchParams.get("max_create_date") ?? "",
             min_update_date: searchParams.get("min_update_date") ?? "",
@@ -322,6 +329,49 @@ const StoresFilterModal = ({ show, onClose }: Props) => {
                     <div className="flex h-6 shrink-0 items-center">
                         <div className="group grid size-4 grid-cols-1">
                             <input
+                                checked={filters.has_low_stock}
+                                onChange={onFilterBoolChange}
+                                id="has_low_stock"
+                                name="has_low_stock"
+                                type="checkbox"
+                                aria-describedby="has_low_stock-description"
+                                className="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto"
+                            />
+                            <svg
+                                fill="none"
+                                viewBox="0 0 14 14"
+                                className="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-disabled:stroke-gray-950/25"
+                            >
+                                <path
+                                    d="M3 8L6 11L11 3.5"
+                                    strokeWidth={2}
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    className="opacity-0 group-has-checked:opacity-100"
+                                />
+                                <path
+                                    d="M3 7H11"
+                                    strokeWidth={2}
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    className="opacity-0 group-has-indeterminate:opacity-100"
+                                />
+                            </svg>
+                        </div>
+                    </div>
+                    <div className="text-sm/6">
+                        <label
+                            htmlFor="has_low_stock"
+                            className="font-medium text-gray-900"
+                        >
+                            Has Low Stock
+                        </label>
+                    </div>
+                </div>
+                <div className="flex gap-3">
+                    <div className="flex h-6 shrink-0 items-center">
+                        <div className="group grid size-4 grid-cols-1">
+                            <input
                                 checked={filters.has_expired_products}
                                 onChange={onFilterBoolChange}
                                 id="has_expired_products"
@@ -358,6 +408,49 @@ const StoresFilterModal = ({ show, onClose }: Props) => {
                             className="font-medium text-gray-900"
                         >
                             Has Expired Products
+                        </label>
+                    </div>
+                </div>
+                <div className="flex gap-3">
+                    <div className="flex h-6 shrink-0 items-center">
+                        <div className="group grid size-4 grid-cols-1">
+                            <input
+                                checked={filters.has_soon_expiring_products}
+                                onChange={onFilterBoolChange}
+                                id="has_soon_expiring_products"
+                                name="has_soon_expiring_products"
+                                type="checkbox"
+                                aria-describedby="has_soon_expiring_products-description"
+                                className="col-start-1 row-start-1 appearance-none rounded-sm border border-gray-300 bg-white checked:border-indigo-600 checked:bg-indigo-600 indeterminate:border-indigo-600 indeterminate:bg-indigo-600 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:border-gray-300 disabled:bg-gray-100 disabled:checked:bg-gray-100 forced-colors:appearance-auto"
+                            />
+                            <svg
+                                fill="none"
+                                viewBox="0 0 14 14"
+                                className="pointer-events-none col-start-1 row-start-1 size-3.5 self-center justify-self-center stroke-white group-has-disabled:stroke-gray-950/25"
+                            >
+                                <path
+                                    d="M3 8L6 11L11 3.5"
+                                    strokeWidth={2}
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    className="opacity-0 group-has-checked:opacity-100"
+                                />
+                                <path
+                                    d="M3 7H11"
+                                    strokeWidth={2}
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    className="opacity-0 group-has-indeterminate:opacity-100"
+                                />
+                            </svg>
+                        </div>
+                    </div>
+                    <div className="text-sm/6">
+                        <label
+                            htmlFor="has_soon_expiring_products"
+                            className="font-medium text-gray-900"
+                        >
+                            Has Products Expiring Soon
                         </label>
                     </div>
                 </div>
