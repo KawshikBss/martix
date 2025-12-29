@@ -1,9 +1,11 @@
 import { apiClient } from "../core/apiClient";
+import { PaginatedResponse } from "../core/PaginatedResponse";
 import { ProductInterface } from "../interfaces/ProductInterface";
 
 export const productService = {
     getProducts: async (params: {
         query?: string;
+        page?: number;
         filters?: {
             category: string;
             product_type: string;
@@ -22,11 +24,11 @@ export const productService = {
             min_update_date: string;
             max_update_date: string;
         };
-    }): Promise<ProductInterface[]> =>
+    }): Promise<PaginatedResponse<ProductInterface>> =>
         await apiClient.get(
-            `products?query=${params?.query ?? ""}&${Object.entries(
-                params?.filters ?? {}
-            )
+            `products?page=${params?.page ?? 1}&query=${
+                params?.query ?? ""
+            }&${Object.entries(params?.filters ?? {})
                 .map((item) => (item[1].length ? `${item[0]}=${item[1]}` : ""))
                 .join("&")}`
         ),
