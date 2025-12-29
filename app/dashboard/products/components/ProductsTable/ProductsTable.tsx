@@ -1,14 +1,16 @@
 "use client";
 
+import { PaginatedResponse } from "@/lib/core/PaginatedResponse";
 import ProductsTableItem from "./ProductsTableItem";
 import { ProductInterface } from "@/lib/interfaces/ProductInterface";
+import { InfiniteData } from "@tanstack/react-query";
 
 export interface IProductsTableProps {
-    data?: ProductInterface[];
+    data?: InfiniteData<PaginatedResponse<ProductInterface>>;
 }
 
 export function ProductsTable({ data }: IProductsTableProps) {
-    return data?.length ? (
+    return data?.pages?.[0].total ? (
         <table className="w-full text-left hidden md:table">
             <thead>
                 <tr className="border-b border-gray-300 text-gray-500">
@@ -33,9 +35,11 @@ export function ProductsTable({ data }: IProductsTableProps) {
                 </tr>
             </thead>
             <tbody>
-                {data?.map((product) => (
-                    <ProductsTableItem key={product.id} product={product} />
-                ))}
+                {data?.pages?.map((page) =>
+                    page?.data?.map((product) => (
+                        <ProductsTableItem key={product.id} product={product} />
+                    ))
+                )}
             </tbody>
         </table>
     ) : (

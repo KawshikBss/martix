@@ -48,7 +48,10 @@ export default function Products() {
     const {
         data: products,
         isLoading: productsIsLoading,
+        isFetchingNextPage: productsIsFetching,
         isSuccess: productsIsSuccess,
+        hasNextPage: productsHasNextPage,
+        fetchNextPage: fetchNextProducts,
     } = useProducts({ query, filters });
 
     return (
@@ -90,11 +93,12 @@ export default function Products() {
                 </div>
                 <ProductsTable data={products} />
                 <ProductsCatalog data={products} />
-                {productsIsLoading ? (
+                {productsIsLoading || productsIsFetching ? (
                     <Loader />
                 ) : !productsIsLoading &&
+                  !productsIsFetching &&
                   productsIsSuccess &&
-                  !products?.length ? (
+                  !products?.pages?.[0].total ? (
                     <p>
                         No products{query?.length ? ` matching "${query}"` : ""}
                         {filters?.category?.length ? " in that category" : ""}
@@ -154,6 +158,13 @@ export default function Products() {
                         </Link>
                         ?
                     </p>
+                ) : productsHasNextPage ? (
+                    <div
+                        onClick={() => fetchNextProducts()}
+                        className="bg-[#615cf6] hover:bg-transparent cursor-pointer text-white hover:text-[#615cf6] border border-[#615cf6] px-4 py-1 rounded-full w-fit mx-auto mt-4"
+                    >
+                        See More
+                    </div>
                 ) : (
                     ""
                 )}
