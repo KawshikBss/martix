@@ -22,7 +22,10 @@ export interface ProductInterface {
     variants: ProductInterface[];
     inventories: InventoryInterface[];
     is_active: boolean;
+    is_variation: boolean;
+    parent: ProductInterface;
     owner: UserInterface;
+    stock_status: string;
     created_at: string;
     updated_at: string;
 }
