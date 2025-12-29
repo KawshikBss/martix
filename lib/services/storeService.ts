@@ -1,9 +1,11 @@
 import { apiClient } from "../core/apiClient";
+import { PaginatedResponse } from "../core/PaginatedResponse";
 import { StoreInterface } from "../interfaces/StoreIntefrace";
 
 export const storeService = {
     getStores: async (params: {
         query?: string;
+        page?: number;
         filters?: {
             manager?: string;
             branch?: string;
@@ -14,17 +16,19 @@ export const storeService = {
             min_inventory_value?: string;
             max_inventory_value?: string;
             has_staff?: string;
+            has_low_stock?: string;
             has_expired_products?: string;
+            has_soon_expiring_products?: string;
             min_create_date?: string;
             max_create_date?: string;
             min_update_date?: string;
             max_update_date?: string;
         };
-    }): Promise<StoreInterface[]> =>
+    }): Promise<PaginatedResponse<StoreInterface>> =>
         await apiClient.get(
-            `stores?query=${params?.query ?? ""}&${Object.entries(
-                params?.filters ?? {}
-            )
+            `stores?page=${params?.page ?? 1}&query=${
+                params?.query ?? ""
+            }&${Object.entries(params?.filters ?? {})
                 .map((item) => (item[1].length ? `${item[0]}=${item[1]}` : ""))
                 .join("&")}`
         ),

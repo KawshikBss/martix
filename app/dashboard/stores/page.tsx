@@ -145,8 +145,11 @@ export default function BranchOverview() {
         min_inventory_value: searchParams.get("min_inventory_value") ?? "",
         max_inventory_value: searchParams.get("max_inventory_value") ?? "",
         has_staff: searchParams.get("has_staff") ?? "false",
+        has_low_stock: searchParams.get("has_low_stock") ?? "false",
         has_expired_products:
             searchParams.get("has_expired_products") ?? "false",
+        has_soon_expiring_products:
+            searchParams.get("has_soon_expiring_products") ?? "false",
         min_create_date: searchParams.get("min_create_date") ?? "",
         max_create_date: searchParams.get("max_create_date") ?? "",
         min_update_date: searchParams.get("min_update_date") ?? "",
@@ -156,7 +159,10 @@ export default function BranchOverview() {
     const {
         data: stores,
         isLoading: storesIsLoading,
+        isFetchingNextPage: storesIsFetching,
         isSuccess: storesIsSuccess,
+        hasNextPage: storesHasNextPage,
+        fetchNextPage: fetchNextStores,
     } = useStores({
         query,
         filters,
@@ -243,9 +249,12 @@ export default function BranchOverview() {
                 </div>
                 <StoresTable data={stores} />
                 <StoresList data={stores} />
-                {storesIsLoading ? (
+                {storesIsLoading || storesIsFetching ? (
                     <Loader />
-                ) : !storesIsLoading && storesIsSuccess && !stores?.length ? (
+                ) : !storesIsLoading &&
+                  !storesIsFetching &&
+                  storesIsSuccess &&
+                  !stores?.pages?.[0].total ? (
                     <p>
                         No stores{query?.length ? ` matching "${query}"` : ""}
                         {filters?.manager?.length
@@ -278,8 +287,14 @@ export default function BranchOverview() {
                             ? ` with stock value less than $${filters?.max_inventory_value}`
                             : ""}
                         {filters?.has_staff == "true" ? " has staffs" : ""}
+                        {filters?.has_low_stock == "true"
+                            ? " has low stock"
+                            : ""}
                         {filters?.has_expired_products == "true"
                             ? " has expired products"
+                            : ""}
+                        {filters?.has_soon_expiring_products == "true"
+                            ? " has products expiring soon"
                             : ""}
                         {filters?.min_create_date?.length &&
                         filters?.max_create_date?.length
@@ -305,6 +320,13 @@ export default function BranchOverview() {
                         </Link>
                         ?
                     </p>
+                ) : storesHasNextPage ? (
+                    <div
+                        onClick={() => fetchNextStores()}
+                        className="bg-[#615cf6] hover:bg-transparent cursor-pointer text-white hover:text-[#615cf6] border border-[#615cf6] px-4 py-1 rounded-full w-fit mx-auto mt-4"
+                    >
+                        See More
+                    </div>
                 ) : (
                     ""
                 )}

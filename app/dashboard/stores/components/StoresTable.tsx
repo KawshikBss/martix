@@ -1,17 +1,19 @@
 "use client";
 
+import { PaginatedResponse } from "@/lib/core/PaginatedResponse";
 import { useToggleStoreStatus } from "@/lib/hooks/stores/useToggleStoreStatus";
 import { StoreInterface } from "@/lib/interfaces/StoreIntefrace";
+import { InfiniteData } from "@tanstack/react-query";
 import Link from "next/link";
 
 export interface IStoresTableProps {
-    data?: StoreInterface[];
+    data?: InfiniteData<PaginatedResponse<StoreInterface>>;
 }
 
 export function StoresTable({ data }: IStoresTableProps) {
     const { mutateAsync: toggleStoreStatusMutation } = useToggleStoreStatus();
 
-    return data?.length ? (
+    return data?.pages?.[0].total ? (
         <table className="hidden md:table w-full text-left mt-4">
             <thead>
                 <tr className="border-b border-gray-300 text-gray-500">
@@ -28,52 +30,54 @@ export function StoresTable({ data }: IStoresTableProps) {
                 </tr>
             </thead>
             <tbody>
-                {data?.map((item, index) => (
-                    <tr
-                        key={item.id}
-                        className="border-b border-gray-300 hover:bg-gray-50"
-                    >
-                        <td className="px-2 py-4">
-                            {item.name} - {item.branch}
-                        </td>
-                        <td className="px-2 py-4">{item.manager.name}</td>
-                        <td className="px-2 py-4">{item.address}</td>
-                        <td className="px-2 py-4">
-                            {item.is_active ? "Active" : "Inactive"}
-                        </td>
-                        <td className="px-2 py-4">{1000}</td>
-                        <td className="px-2 py-4">{1000}</td>
-                        <td className="px-2 py-4">
-                            ${item.current_inventory_value}
-                        </td>
-                        <td className="px-2 py-4">
-                            {item.low_stock_items_count}
-                        </td>
-                        <td className="px-2 py-4">{item.updated_at}</td>
-                        <td className="px-2 py-4 flex flex-wrap gap-2">
-                            <Link
-                                href={`/dashboard/stores/${item.id}`}
-                                className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white"
-                            >
-                                View
-                            </Link>
-                            <Link
-                                href={`/dashboard/stores/${item.id}/edit`}
-                                className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white"
-                            >
-                                Update
-                            </Link>
-                            <span
-                                onClick={() =>
-                                    toggleStoreStatusMutation(item.id)
-                                }
-                                className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white cursor-pointer"
-                            >
-                                {item.is_active ? "Disable" : "Enable"}
-                            </span>
-                        </td>
-                    </tr>
-                ))}
+                {data?.pages?.map((page) =>
+                    page.data.map((item, index) => (
+                        <tr
+                            key={item.id}
+                            className="border-b border-gray-300 hover:bg-gray-50"
+                        >
+                            <td className="px-2 py-4">
+                                {item.name} - {item.branch}
+                            </td>
+                            <td className="px-2 py-4">{item.manager.name}</td>
+                            <td className="px-2 py-4">{item.address}</td>
+                            <td className="px-2 py-4">
+                                {item.is_active ? "Active" : "Inactive"}
+                            </td>
+                            <td className="px-2 py-4">{1000}</td>
+                            <td className="px-2 py-4">{1000}</td>
+                            <td className="px-2 py-4">
+                                ${item.current_inventory_value}
+                            </td>
+                            <td className="px-2 py-4">
+                                {item.low_stock_items_count}
+                            </td>
+                            <td className="px-2 py-4">{item.updated_at}</td>
+                            <td className="px-2 py-4 flex flex-wrap gap-2">
+                                <Link
+                                    href={`/dashboard/stores/${item.id}`}
+                                    className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white"
+                                >
+                                    View
+                                </Link>
+                                <Link
+                                    href={`/dashboard/stores/${item.id}/edit`}
+                                    className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white"
+                                >
+                                    Update
+                                </Link>
+                                <span
+                                    onClick={() =>
+                                        toggleStoreStatusMutation(item.id)
+                                    }
+                                    className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white cursor-pointer"
+                                >
+                                    {item.is_active ? "Disable" : "Enable"}
+                                </span>
+                            </td>
+                        </tr>
+                    ))
+                )}
             </tbody>
         </table>
     ) : (
