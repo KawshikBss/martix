@@ -1,5 +1,5 @@
 import { productService } from "@/lib/services/productService";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 
 export function useProducts(params: {
     query?: string;
@@ -22,12 +22,14 @@ export function useProducts(params: {
         max_update_date: string;
     };
 }) {
-    return useQuery({
-        queryKey: [
-            "products",
-            params?.query,
-            params?.filters
-        ],
-        queryFn: () => productService.getProducts(params),
+    return useInfiniteQuery({
+        queryKey: ["products", params?.query, params?.filters],
+        queryFn: ({ pageParam = 1 }) =>
+            productService.getProducts({ ...params, page: pageParam }),
+        getNextPageParam: (lastPage) => {
+            const { current_page, last_page } = lastPage;
+            return current_page < last_page ? current_page + 1 : undefined;
+        },
+        initialPageParam: 1,
     });
 }
