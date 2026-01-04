@@ -11,6 +11,7 @@ import SideCart from "./components/SideCart/SideCart";
 import { useSaleProducts } from "@/lib/hooks/sales/useSaleProducts";
 import { useStores } from "@/lib/hooks/stores/useStores";
 import { StoreInterface } from "@/lib/interfaces/StoreIntefrace";
+import Loader from "@/components/ui/loaders/Loader";
 
 export default function QuickSale() {
     const [query, setQuery] = React.useState<string>("");
@@ -112,7 +113,7 @@ export default function QuickSale() {
                         ""
                     )}
                     <button
-                        // onClick={openFilterModal}
+                        onClick={openFilterModal}
                         className="bg-[#615cf6] hover:bg-transparent text-white hover:text-[#615cf6] border border-[#615cf6] px-2 py-1 rounded-md"
                     >
                         <MdQrCode />
@@ -126,6 +127,23 @@ export default function QuickSale() {
                 </div>
 
                 <ProductsGrid data={products} />
+
+                {!selectedStore ? (
+                    <p>Select a store to continue</p>
+                ) : productsIsLoading || productsIsFetching ? (
+                    <Loader />
+                ) : !products?.pages?.[0].total ? (
+                    <p>No Products</p>
+                ) : productsHasNextPage ? (
+                    <div
+                        onClick={() => fetchNextProducts()}
+                        className="bg-[#615cf6] hover:bg-transparent cursor-pointer text-white hover:text-[#615cf6] border border-[#615cf6] px-4 py-1 rounded-full w-fit mx-auto mt-4"
+                    >
+                        See More
+                    </div>
+                ) : (
+                    ""
+                )}
             </div>
             <button
                 onClick={openSideCart}
