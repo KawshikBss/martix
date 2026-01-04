@@ -44,7 +44,7 @@ const SideCart = ({ show, onClose }: Props) => {
                     <div className="flex flex-col h-full">
                         <div className="mt-4 pe-3 flex flex-col gap-2 flex-2 overflow-y-scroll">
                             {items.map((item) => (
-                                <CartItem key={item.id} item={item} />
+                                <CartItem key={item.inventory_id} item={item} />
                             ))}
                         </div>
                         <div className="flex-1">
@@ -62,7 +62,7 @@ const SideCart = ({ show, onClose }: Props) => {
                                             Sub Total
                                         </td>
                                         <td className="px-2 py-2 font-normal text-end">
-                                            {subTotal}
+                                            {subTotal.toFixed(2)}
                                         </td>
                                     </tr>
                                     <tr className="border border-gray-300 text-gray-500">
@@ -70,7 +70,7 @@ const SideCart = ({ show, onClose }: Props) => {
                                             Tax
                                         </td>
                                         <td className="px-2 py-2 font-normal text-end">
-                                            {taxTotal}
+                                            {taxTotal.toFixed(2)}
                                         </td>
                                     </tr>
                                     <tr className="border border-gray-300 text-gray-500">
@@ -86,7 +86,7 @@ const SideCart = ({ show, onClose }: Props) => {
                                             Total
                                         </td>
                                         <td className="px-2 py-2 font-normal text-end">
-                                            {cartTotal}
+                                            {cartTotal.toFixed(2)}
                                         </td>
                                     </tr>
                                 </tbody>

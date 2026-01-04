@@ -1,26 +1,16 @@
 "use client";
 
-import productsData from "@/public/data/productsData";
-import Image from "next/image";
-import Link from "next/link";
 import * as React from "react";
-import {
-    FaCashRegister,
-    FaFilter,
-    FaMinusSquare,
-    FaPercentage,
-    FaShoppingCart,
-} from "react-icons/fa";
-import { PiEqualsFill } from "react-icons/pi";
-import CartTable from "./components/CartTable";
-import { CartList } from "./components/CartList/CartList";
+import { FaFilter, FaShoppingCart } from "react-icons/fa";
 import { MdClear, MdQrCode } from "react-icons/md";
 import ProductsFilterModal from "../../products/components/ProductsFilterModal";
 import { useSearchParams } from "next/navigation";
-import { useProducts } from "@/lib/hooks/products/useProducts";
 import ProductsGrid from "./components/ProductsGrid/ProductsGrid";
 import { useCart } from "@/lib/providers/CartProvider";
 import SideCart from "./components/SideCart/SideCart";
+import { useSaleProducts } from "@/lib/hooks/sales/useSaleProducts";
+import { useStores } from "@/lib/hooks/stores/useStores";
+import { StoreInterface } from "@/lib/interfaces/StoreIntefrace";
 
 export default function QuickSale() {
     const [query, setQuery] = React.useState<string>("");
@@ -61,6 +51,12 @@ export default function QuickSale() {
         max_update_date: searchParams.get("max_update_date") ?? "",
     };
 
+    const [selectedStore, setSelectedStore] = React.useState<
+        StoreInterface | undefined
+    >(undefined);
+
+    const { data: stores } = useStores({});
+
     const {
         data: products,
         isLoading: productsIsLoading,
@@ -68,7 +64,7 @@ export default function QuickSale() {
         isSuccess: productsIsSuccess,
         hasNextPage: productsHasNextPage,
         fetchNextPage: fetchNextProducts,
-    } = useProducts({ query, filters });
+    } = useSaleProducts({ query, storeId: selectedStore?.id, filters });
 
     const { totalUniqueItems } = useCart();
 
@@ -77,7 +73,27 @@ export default function QuickSale() {
             <h3 className="text-2xl font-medium">Quick Sale</h3>
             <div className="bg-white md:min-h-6/7 rounded-2xl shadow-md my-6 p-4 md:p-6">
                 <h4 className="text-xl font-medium">Products</h4>
-                <div className="my-6 flex flex-row justify-between">
+                <div className="my-6 flex flex-row justify-between gap-2 md:gap-4">
+                    <select
+                        id="store"
+                        name="store"
+                        autoComplete="tax-type"
+                        className="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                    >
+                        <option onClick={() => setSelectedStore(undefined)}>
+                            None
+                        </option>
+                        {stores?.pages?.map((page) =>
+                            page?.data?.map((store) => (
+                                <option
+                                    key={store.id}
+                                    onClick={() => setSelectedStore(store)}
+                                >
+                                    {store.name}
+                                </option>
+                            ))
+                        )}
+                    </select>
                     <input
                         value={query}
                         onChange={onQueryChange}
@@ -88,7 +104,7 @@ export default function QuickSale() {
                     {query?.length ? (
                         <button
                             onClick={clearQuery}
-                            className="ms-2 md:ms-4 bg-red-400 hover:bg-transparent text-white hover:text-red-400 border border-red-400 px-2 py-1 rounded-md"
+                            className="bg-red-400 hover:bg-transparent text-white hover:text-red-400 border border-red-400 px-2 py-1 rounded-md"
                         >
                             <MdClear />
                         </button>
@@ -97,13 +113,13 @@ export default function QuickSale() {
                     )}
                     <button
                         // onClick={openFilterModal}
-                        className="ms-2 md:ms-4 bg-[#615cf6] hover:bg-transparent text-white hover:text-[#615cf6] border border-[#615cf6] px-2 py-1 rounded-md"
+                        className="bg-[#615cf6] hover:bg-transparent text-white hover:text-[#615cf6] border border-[#615cf6] px-2 py-1 rounded-md"
                     >
                         <MdQrCode />
                     </button>
                     <button
                         onClick={openFilterModal}
-                        className="ms-2 md:ms-4 bg-[#615cf6] hover:bg-transparent text-white hover:text-[#615cf6] border border-[#615cf6] px-2 py-1 rounded-md"
+                        className="bg-[#615cf6] hover:bg-transparent text-white hover:text-[#615cf6] border border-[#615cf6] px-2 py-1 rounded-md"
                     >
                         <FaFilter />
                     </button>

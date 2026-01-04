@@ -6,10 +6,14 @@ import React, {
     useContext,
 } from "react";
 import { ProductInterface } from "../interfaces/ProductInterface";
+import { SalesProduct, SalesVariant } from "../interfaces/SalesProduct";
 
 export interface CartItem {
-    id: string;
-    item: ProductInterface;
+    inventory_id: number;
+    product_id: number;
+    name: string;
+    image: string;
+    variation: { option: string; value: string } | null;
     quantity: number;
     price: number;
     tax: number;
@@ -24,11 +28,16 @@ interface CartContextType {
     taxTotal: number;
     cartTotal: number;
     isEmpty: boolean;
-    inCart: (id: string) => boolean;
-    getItem: (id: string) => CartItem | undefined;
-    addItem: (newItem: ProductInterface, quantity?: number) => void;
-    removeItem: (id: string) => void;
-    updateItemQuantity: (id: string, increase?: number) => void;
+    inCart: (inventoryId: number) => boolean;
+    getItem: (inventoryId: number) => CartItem | undefined;
+    addItem: (
+        variant: SalesVariant,
+        product: SalesProduct,
+        quantity?: number
+    ) => void;
+    removeItem: (inventoryId: number) => void;
+    updateItemQuantity: (inventoryId: number, delta: number) => void;
+
     clearCart: () => void;
 }
 
@@ -42,73 +51,78 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     const [taxTotal, setTaxTotal] = useState(0);
     const [cartTotal, setCartTotal] = useState(0);
 
-    const inCart = (id: string) => items.some((item) => item.id === id);
+    const inCart = (inventoryId: number) =>
+        items.some((i) => i.inventory_id === inventoryId);
 
-    const getItem = (id: string) => items.find((item) => item.id === id);
+    const getItem = (inventoryId: number) =>
+        items.find((i) => i.inventory_id === inventoryId);
 
-    const addItem = (newItem: ProductInterface, quantity?: number) => {
-        quantity ??= 1;
+    const removeItem = (inventoryId: number) => {
+        setItems((prev) => prev.filter((i) => i.inventory_id !== inventoryId));
+    };
+
+    const addItem = (
+        variant: SalesVariant,
+        product: SalesProduct,
+        quantity: number = 1
+    ) => {
         setItems((prev) => {
-            const existing = prev.find((i) => i.id === newItem.id);
+            const existing = prev.find(
+                (i) => i.inventory_id === variant.inventory_id
+            );
+
+            const price = Number(variant.price);
+            const tax = (Number(product.tax) * price) / 100;
 
             if (!existing) {
-                var price = Number(newItem.max_selling_price);
-                var tax = Number(((newItem.tax_rate ?? 0) * price) / 100);
-                var total = (price + tax) * quantity;
                 return [
                     ...prev,
                     {
-                        id: newItem.id,
-                        item: newItem,
+                        inventory_id: variant.inventory_id,
+                        product_id: product.product_id,
+                        name: product.name,
+                        image: product.image,
+                        variation: variant.variation,
                         quantity,
-                        price: newItem.max_selling_price,
-                        tax: tax,
-                        itemTotal: total,
+                        price,
+                        tax,
+                        itemTotal: (price + tax) * quantity,
                     },
                 ];
             }
 
+            const newQty = existing.quantity + quantity;
+
             return prev.map((item) =>
-                item.id !== newItem.id
+                item.inventory_id !== variant.inventory_id
                     ? item
                     : {
                           ...item,
-                          quantity: item.quantity + quantity,
-                          itemTotal:
-                              (item.price + item.tax) *
-                              (item.quantity + quantity),
+                          quantity: newQty,
+                          itemTotal: (item.price + item.tax) * newQty,
                       }
             );
         });
     };
 
-    const removeItem = (id: string) => {
-        setItems((prev) => prev.filter((item) => item.id != id));
-    };
+    const updateItemQuantity = (inventoryId: number, delta: number) => {
+        setItems(
+            (prev) =>
+                prev
+                    .map((item) => {
+                        if (item.inventory_id !== inventoryId) return item;
 
-    const updateItemQuantity = (id: string, increase?: number) => {
-        increase ??= 1;
-        var item = getItem(id);
-        var newQuantity = Number((item?.quantity ?? 0) + increase);
-        if (newQuantity <= 0) removeItem(id);
-        else {
-            var newItemTotal = Number(
-                (Number(item?.price ?? 0) + Number(item?.tax ?? 0)) *
-                    newQuantity
-            );
+                        const newQty = item.quantity + delta;
+                        if (newQty <= 0) return null;
 
-            setItems((prev) =>
-                prev.map((item) =>
-                    item.id != id
-                        ? item
-                        : {
-                              ...item,
-                              quantity: newQuantity,
-                              itemTotal: newItemTotal,
-                          }
-                )
-            );
-        }
+                        return {
+                            ...item,
+                            quantity: newQty,
+                            itemTotal: (item.price + item.tax) * newQty,
+                        };
+                    })
+                    .filter(Boolean) as CartItem[]
+        );
     };
 
     const clearCart = () => setItems([]);
@@ -117,7 +131,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
         setTotalItems(items.reduce((sum, i) => sum + i.quantity, 0));
         setTotalUniqueItems(items.length);
         setSubTotal(items.reduce((sum, i) => sum + i.price * i.quantity, 0));
-        setTaxTotal(items.reduce((sum, i) => sum + i.tax, 0));
+        setTaxTotal(items.reduce((sum, i) => sum + i.tax * i.quantity, 0));
         setCartTotal(items.reduce((sum, i) => sum + i.itemTotal, 0));
     }, [items]);
 
