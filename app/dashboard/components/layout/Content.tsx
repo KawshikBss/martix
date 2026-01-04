@@ -4,6 +4,7 @@ import * as React from "react";
 import { Sidebar } from "./Sidebar";
 import Navbar from "./Navbar";
 import PageLoader from "@/components/ui/loaders/PageLoader";
+import { CartProvider } from "@/lib/providers/CartProvider";
 
 export default function Content({
     children,
@@ -12,7 +13,7 @@ export default function Content({
 }>) {
     const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
     return (
-        <>
+        <CartProvider>
             <Sidebar
                 isSidebarOpen={isSidebarOpen}
                 closeSidebar={() => setIsSidebarOpen(false)}
@@ -23,6 +24,6 @@ export default function Content({
                     {children}
                 </React.Suspense>
             </div>
-        </>
+        </CartProvider>
     );
 }
