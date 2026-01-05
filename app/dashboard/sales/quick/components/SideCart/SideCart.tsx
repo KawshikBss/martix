@@ -5,6 +5,7 @@ import React from "react";
 import { IoMdClose } from "react-icons/io";
 import CartItem from "./CartItem";
 import { FaTrash } from "react-icons/fa";
+import PaymentModal from "../PaymentModal/PaymentModal";
 
 type Props = {
     show?: boolean;
@@ -14,6 +15,13 @@ type Props = {
 const SideCart = ({ show, onClose }: Props) => {
     const { items, isEmpty, subTotal, taxTotal, cartTotal, clearCart } =
         useCart();
+
+    const [showPaymentModal, setShowPaymentModal] =
+        React.useState<boolean>(false);
+
+    const openPaymentModal = () => setShowPaymentModal(true);
+    const closePaymentModal = () => setShowPaymentModal(false);
+
     return (
         <div
             className={`absolute inset-0 bg-black/25 transition-opacity duration-300 z-[1000] ease-in-out ${
@@ -91,8 +99,12 @@ const SideCart = ({ show, onClose }: Props) => {
                                     </tr>
                                 </tbody>
                             </table>
-                            <button className="cursor-pointer block mx-auto mt-4 bg-[#615cf6] hover:bg-transparent text-white hover:text-[#615cf6] border border-[#615cf6] px-2 py-1 rounded-md">
-                                Proceed
+                            <button
+                                disabled={isEmpty}
+                                onClick={openPaymentModal}
+                                className="cursor-pointer block mx-auto mt-4 bg-[#615cf6] hover:bg-transparent text-white hover:text-[#615cf6] border border-[#615cf6] px-2 py-1 rounded-md"
+                            >
+                                Proceed To Pay
                             </button>
                         </div>
                     </div>
@@ -102,6 +114,7 @@ const SideCart = ({ show, onClose }: Props) => {
                     </p>
                 )}
             </div>
+            <PaymentModal show={showPaymentModal} onClose={closePaymentModal} />
         </div>
     );
 };
