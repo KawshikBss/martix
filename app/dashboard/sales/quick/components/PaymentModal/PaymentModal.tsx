@@ -1,6 +1,6 @@
 import DashboardModal from "@/components/ui/modals/DashboardModal";
 import { useCart } from "@/lib/providers/CartProvider";
-import React, { ChangeEvent, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { FaCreditCard, FaDivide, FaMobile, FaTrash } from "react-icons/fa";
 import { FaMoneyBill1Wave } from "react-icons/fa6";
 
@@ -37,16 +37,15 @@ const PaymentModal = ({ show, onClose }: Props) => {
     const [selectedPaymentMethod, setSelectedPaymentMethod] =
         useState<PaymentMethod>(PaymentMethod.Cash);
 
-    const [dueAmount, setDueAmount] = useState<number>(cartTotal);
+    const [totalAmount, setTotalAmount] = useState<number>(cartTotal);
 
     const [receivedAmount, setReceivedAmount] = useState<number>(0);
     const onReceivedAmountChanged = (e: ChangeEvent<HTMLInputElement>) => {
         const value = Number(e.target.value ?? -1);
         if (value >= 0) setReceivedAmount(value);
     };
-
+    const [dueAmount, setDueAmount] = useState<number>(0);
     const [changeAmount, setChangeAmount] = useState<number>(0);
-    
 
     const [cardType, setCardType] = useState<string | undefined>();
     const onCardTypeChanged = (e: ChangeEvent<HTMLInputElement>) => {
@@ -86,7 +85,36 @@ const PaymentModal = ({ show, onClose }: Props) => {
             };
         }
         addToPaymentDetails(paymentDetail);
+        setReceivedAmount(0);
+        setCardType(undefined);
+        setProvider(undefined);
+        setReference(undefined);
     };
+
+    useEffect(() => {
+        if (paymentDetails.length) {
+            var totalReceived = paymentDetails.reduce(
+                (prev, acc) => prev + acc.amount,
+                0
+            );
+            var remaining = cartTotal - totalReceived;
+
+            if (remaining >= 0) setTotalAmount(remaining);
+        } else {
+            setTotalAmount(cartTotal);
+        }
+    }, [paymentDetails, cartTotal]);
+
+    useEffect(() => {
+        var due = totalAmount - receivedAmount;
+        if (due >= 0) {
+            setDueAmount(due);
+            setChangeAmount(0);
+        } else {
+            setChangeAmount(-1 * due);
+            setDueAmount(0);
+        }
+    }, [totalAmount, receivedAmount]);
 
     return (
         <DashboardModal
@@ -175,7 +203,7 @@ const PaymentModal = ({ show, onClose }: Props) => {
                         </label>
                         <div className="mt-2 grid grid-cols-1">
                             <input
-                                value={dueAmount}
+                                value={totalAmount}
                                 readOnly
                                 id="total"
                                 name="total"
@@ -215,12 +243,8 @@ const PaymentModal = ({ show, onClose }: Props) => {
                                 </label>
                                 <div className="mt-2 grid grid-cols-1">
                                     <input
-                                        value={
-                                            receivedAmount > dueAmount
-                                                ? 0
-                                                : dueAmount - receivedAmount
-                                        }
-                                        disabled
+                                        value={dueAmount}
+                                        readOnly
                                         id="due"
                                         name="due"
                                         type="text"
@@ -238,12 +262,8 @@ const PaymentModal = ({ show, onClose }: Props) => {
                                 </label>
                                 <div className="mt-2 grid grid-cols-1">
                                     <input
-                                        value={
-                                            receivedAmount > dueAmount
-                                                ? receivedAmount - dueAmount
-                                                : 0
-                                        }
-                                        disabled
+                                        readOnly
+                                        value={changeAmount}
                                         id="change"
                                         name="change"
                                         type="text"
@@ -264,7 +284,7 @@ const PaymentModal = ({ show, onClose }: Props) => {
                                 </label>
                                 <div className="mt-2 grid grid-cols-1">
                                     <input
-                                        value={cardType}
+                                        value={cardType ?? ""}
                                         onChange={onCardTypeChanged}
                                         id="card_type"
                                         name="card_type"
@@ -283,7 +303,7 @@ const PaymentModal = ({ show, onClose }: Props) => {
                                 </label>
                                 <div className="mt-2 grid grid-cols-1">
                                     <input
-                                        value={reference}
+                                        value={reference ?? ""}
                                         onChange={onReferenceChanged}
                                         id="reference"
                                         name="reference"
@@ -305,7 +325,7 @@ const PaymentModal = ({ show, onClose }: Props) => {
                                 </label>
                                 <div className="mt-2 grid grid-cols-1">
                                     <input
-                                        value={provider}
+                                        value={provider ?? ""}
                                         onChange={onProviderChanged}
                                         id="provider"
                                         name="provider"
@@ -324,7 +344,7 @@ const PaymentModal = ({ show, onClose }: Props) => {
                                 </label>
                                 <div className="mt-2 grid grid-cols-1">
                                     <input
-                                        value={reference}
+                                        value={reference ?? ""}
                                         onChange={onReferenceChanged}
                                         id="reference"
                                         name="reference"
