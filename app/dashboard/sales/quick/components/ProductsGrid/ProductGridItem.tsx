@@ -85,24 +85,6 @@ const ProductGridItem = ({ product }: Props) => {
             </div>
             {product?.variants?.length && showVariants ? (
                 <div className="absolute left-0 right-0 top-full z-10 border border-gray-300 bg-white shadow-md rounded-2xl flex flex-col gap-1 p-2 mb-4">
-                    {/* <div
-                        onClick={(e) => handleVariantSelect(e, product?.variants?.[0])}
-                        className={`flex items-center justify-between py-1 px-2 text-sm text-gray-600 hover:bg-gray-200 ${
-                            inCart(product.id) ? "bg-[#615cf6] text-white" : ""
-                        } rounded-full`}
-                    >
-                        <p>MAIN</p>
-                        <p>
-                            Price:{" "}
-                            {product?.min_selling_price &&
-                            product?.max_selling_price
-                                ? `৳${product?.min_selling_price} - ৳${product?.max_selling_price}`
-                                : "৳" +
-                                  (product?.min_selling_price ??
-                                      product?.max_selling_price ??
-                                      "0")}
-                        </p>
-                    </div> */}
                     {product?.variants?.map((variant) => (
                         <div
                             key={variant.inventory_id}
@@ -113,11 +95,15 @@ const ProductGridItem = ({ product }: Props) => {
                                     : ""
                             } rounded-full`}
                         >
-                            <p>
-                                {variant?.variation?.option?.toLocaleUpperCase()}
-                                :{" "}
-                                {variant?.variation?.value?.toLocaleUpperCase()}
-                            </p>
+                            {variant?.variation ? (
+                                <p>
+                                    {variant?.variation?.option?.toLocaleUpperCase()}
+                                    :{" "}
+                                    {variant?.variation?.value?.toLocaleUpperCase()}
+                                </p>
+                            ) : (
+                                <p>BASE</p>
+                            )}
                             <p>
                                 Price:{" "}
                                 {product?.price_range
