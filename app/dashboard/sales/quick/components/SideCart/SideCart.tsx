@@ -1,18 +1,33 @@
 "use client";
 
 import { useCart } from "@/lib/providers/CartProvider";
-import React from "react";
+import React, { useState } from "react";
 import { IoMdClose } from "react-icons/io";
 import CartItem from "./CartItem";
 import { FaTrash } from "react-icons/fa";
-import PaymentModal from "../PaymentModal/PaymentModal";
+import PaymentModal from "../Modals/PaymentModal";
+import CustomerSelectModal from "../Modals/CustomerSelectModal";
+import { IoCloseCircle } from "react-icons/io5";
+import { StoreInterface } from "@/lib/interfaces/StoreIntefrace";
+import { CustomerInterface } from "@/lib/interfaces/CustomerInterface";
 
 type Props = {
     show?: boolean;
     onClose?: () => void;
+    selectedStore?: StoreInterface;
 };
 
-const SideCart = ({ show, onClose }: Props) => {
+const SideCart = ({ show, onClose, selectedStore }: Props) => {
+    const [selectedCustomer, setSelectedCustomer] = useState<
+        CustomerInterface | undefined
+    >(undefined);
+
+    const [showCustomerModal, setShowCustomerModal] =
+        React.useState<boolean>(false);
+
+    const openCustomerModal = () => setShowCustomerModal(true);
+    const closeCustomerModal = () => setShowCustomerModal(false);
+
     const { items, isEmpty, subTotal, taxTotal, cartTotal, clearCart } =
         useCart();
 
@@ -48,9 +63,33 @@ const SideCart = ({ show, onClose }: Props) => {
                         <IoMdClose className="mx-auto text-xl" />
                     </button>
                 </div>
+
+                <h4 className="text-xl font-medium mt-4">Customer</h4>
+                {selectedCustomer ? (
+                    <p className="text-base text-gray-400 font-medium">
+                        {selectedCustomer?.name} ( Email:{" "}
+                        {selectedCustomer?.email ?? "N/A"} ; Phone:
+                        {selectedCustomer?.phone ?? "N/A"} )
+                        <IoCloseCircle
+                            onClick={() => setSelectedCustomer(undefined)}
+                            className="cursor-pointer text-2xl text-red-400 inline-block ms-4"
+                        />
+                    </p>
+                ) : (
+                    <p className="text-base text-gray-400 font-medium">
+                        Walk In Customer
+                    </p>
+                )}
+                <button
+                    onClick={openCustomerModal}
+                    className="cursor-pointer mt-2 bg-[#615cf6] hover:bg-transparent text-sm text-white hover:text-[#615cf6] border border-[#615cf6] px-2 py-1 rounded-md"
+                >
+                    Add / Select Customer
+                </button>
                 {!isEmpty ? (
-                    <div className="flex flex-col h-full">
-                        <div className="mt-4 pe-3 flex flex-col gap-2 flex-2 overflow-y-scroll">
+                    <div className="flex flex-col h-full mt-4">
+                        <h4 className="text-xl font-medium">Items</h4>
+                        <div className="mt-2 pe-3 flex flex-col gap-2 flex-2 overflow-y-scroll">
                             {items.map((item) => (
                                 <CartItem key={item.inventory_id} item={item} />
                             ))}
@@ -114,6 +153,13 @@ const SideCart = ({ show, onClose }: Props) => {
                     </p>
                 )}
             </div>
+            <CustomerSelectModal
+                show={showCustomerModal}
+                onClose={closeCustomerModal}
+                currentSelected={selectedCustomer}
+                onSelect={setSelectedCustomer}
+                selectedStore={selectedStore}
+            />
             <PaymentModal show={showPaymentModal} onClose={closePaymentModal} />
         </div>
     );
