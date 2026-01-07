@@ -162,7 +162,11 @@ export default function QuickSale() {
                 show={showFilterModal}
                 onClose={closeFilterModal}
             />
-            <SideCart show={showSideCart} onClose={closeSideCart} />
+            <SideCart
+                show={showSideCart}
+                onClose={closeSideCart}
+                selectedStore={selectedStore}
+            />
         </main>
     );
 }
