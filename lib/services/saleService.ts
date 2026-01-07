@@ -1,6 +1,8 @@
 import { apiClient } from "../core/apiClient";
 import { PaginatedResponse } from "../core/PaginatedResponse";
+import { CustomerInterface } from "../interfaces/CustomerInterface";
 import { SalesProduct } from "../interfaces/SalesProduct";
+import { UserInterface } from "../interfaces/UserInterface";
 
 export const saleService = {
     getPosProducts: async (params: {
@@ -35,4 +37,18 @@ export const saleService = {
                 .map((item) => (item[1].length ? `${item[0]}=${item[1]}` : ""))
                 .join("&")}`
         ),
+    getCustomers: async (params: {
+        query?: string;
+        store?: string;
+        page?: number;
+    }): Promise<PaginatedResponse<UserInterface>> =>
+        await apiClient.get(
+            `customers?store=${params?.store ?? ""}&query=${
+                params?.query ?? ""
+            }`
+        ),
+
+    createCustomer: async (
+        payload: FormData | object
+    ): Promise<CustomerInterface> => await apiClient.post("customers", payload),
 };
