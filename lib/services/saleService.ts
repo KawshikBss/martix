@@ -1,6 +1,7 @@
 import { apiClient } from "../core/apiClient";
 import { PaginatedResponse } from "../core/PaginatedResponse";
 import { CustomerInterface } from "../interfaces/CustomerInterface";
+import { SaleInterface } from "../interfaces/SaleInterface";
 import { SalesProduct } from "../interfaces/SalesProduct";
 import { UserInterface } from "../interfaces/UserInterface";
 
@@ -51,4 +52,7 @@ export const saleService = {
     createCustomer: async (
         payload: FormData | object
     ): Promise<CustomerInterface> => await apiClient.post("customers", payload),
+
+    createOrder: async (payload: FormData | object): Promise<SaleInterface> =>
+        await apiClient.post("pos/sales", payload),
 };
