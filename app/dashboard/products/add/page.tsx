@@ -1,15 +1,10 @@
 "use client";
 
 import Loader from "@/components/ui/loaders/Loader";
-import { useCategories } from "@/lib/hooks/categories/useCategories";
 import { useCreateProduct } from "@/lib/hooks/products/useCreateProduct";
-import { useStores } from "@/lib/hooks/stores/useStores";
 import { StoreInterface } from "@/lib/interfaces/StoreIntefrace";
-import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import * as React from "react";
-import { FaCamera } from "react-icons/fa";
 import { toast } from "react-toastify";
 import ProductForm from "../components/ProductForm";
 
@@ -157,7 +152,6 @@ export default function AddProduct() {
                     );
                 });
             }
-            
 
             const response = await createProductMutation(formData);
             console.log(response);
