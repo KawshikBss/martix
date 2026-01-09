@@ -15,9 +15,17 @@ type Props = {
     show?: boolean;
     onClose?: () => void;
     selectedStore?: StoreInterface;
+    setSelectedStore: React.Dispatch<
+        React.SetStateAction<StoreInterface | undefined>
+    >;
 };
 
-const SideCart = ({ show, onClose, selectedStore }: Props) => {
+const SideCart = ({
+    show,
+    onClose,
+    selectedStore,
+    setSelectedStore,
+}: Props) => {
     const [selectedCustomer, setSelectedCustomer] = useState<
         CustomerInterface | undefined
     >(undefined);
@@ -36,6 +44,12 @@ const SideCart = ({ show, onClose, selectedStore }: Props) => {
 
     const openPaymentModal = () => setShowPaymentModal(true);
     const closePaymentModal = () => setShowPaymentModal(false);
+
+    const onReset = () => {
+        setSelectedCustomer(undefined);
+        setSelectedStore(undefined);
+        onClose!();
+    };
 
     return (
         <div
@@ -160,7 +174,13 @@ const SideCart = ({ show, onClose, selectedStore }: Props) => {
                 onSelect={setSelectedCustomer}
                 selectedStore={selectedStore}
             />
-            <PaymentModal show={showPaymentModal} onClose={closePaymentModal} />
+            <PaymentModal
+                show={showPaymentModal}
+                onClose={closePaymentModal}
+                selectedStore={selectedStore}
+                selectedCustomer={selectedCustomer}
+                onReset={onReset}
+            />
         </div>
     );
 };
