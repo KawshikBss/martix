@@ -166,6 +166,7 @@ export default function QuickSale() {
                 show={showSideCart}
                 onClose={closeSideCart}
                 selectedStore={selectedStore}
+                setSelectedStore={setSelectedStore}
             />
         </main>
     );
