@@ -1,12 +1,19 @@
 import DashboardModal from "@/components/ui/modals/DashboardModal";
+import { useCreateOrder } from "@/lib/hooks/sales/useCreateOrder";
+import { CustomerInterface } from "@/lib/interfaces/CustomerInterface";
+import { StoreInterface } from "@/lib/interfaces/StoreIntefrace";
 import { useCart } from "@/lib/providers/CartProvider";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { FaCreditCard, FaDivide, FaMobile, FaTrash } from "react-icons/fa";
 import { FaMoneyBill1Wave } from "react-icons/fa6";
+import { toast } from "react-toastify";
 
 type Props = {
     show?: boolean;
     onClose?: () => void;
+    selectedStore?: StoreInterface;
+    selectedCustomer?: CustomerInterface;
+    onReset: () => void;
 };
 
 enum PaymentMethod {
@@ -23,7 +30,13 @@ interface PaymentDetail {
     reference?: string;
 }
 
-const PaymentModal = ({ show, onClose }: Props) => {
+const PaymentModal = ({
+    show,
+    onClose,
+    selectedStore,
+    selectedCustomer,
+    onReset,
+}: Props) => {
     const { items, isEmpty, subTotal, taxTotal, cartTotal, clearCart } =
         useCart();
 
@@ -115,6 +128,36 @@ const PaymentModal = ({ show, onClose }: Props) => {
             setDueAmount(0);
         }
     }, [totalAmount, receivedAmount]);
+
+    const { mutateAsync: createOrderMutation } = useCreateOrder();
+
+    const handleCreateOrder = async () => {
+        var formData = {
+            store_id: selectedStore?.id,
+            customer_id: selectedCustomer?.id,
+            sub_total: subTotal,
+            tax_total: taxTotal,
+            discount_total: 0,
+            grand_total: cartTotal,
+            paid_amount: receivedAmount,
+            due_amount: dueAmount,
+            payment_method: PaymentMethod[selectedPaymentMethod],
+            items: items,
+        };
+        const response = await createOrderMutation(formData);
+
+        if (response) {
+            toast.success("Sale recorded successfully!");
+            onReset();
+            clearCart();
+            setPaymentDetails([]);
+            setReceivedAmount(0);
+            setCardType(undefined);
+            setProvider(undefined);
+            setReference(undefined);
+            onClose!();
+        }
+    };
 
     return (
         <DashboardModal
@@ -360,6 +403,13 @@ const PaymentModal = ({ show, onClose }: Props) => {
                     )}
                 </div>
             </div>
+
+            <button
+                onClick={handleCreateOrder}
+                className="cursor-pointer block mt-4 ms-auto bg-[#615cf6] hover:bg-transparent text-white hover:text-[#615cf6] border border-[#615cf6] px-2 py-1 rounded-md"
+            >
+                Complete
+            </button>
         </DashboardModal>
     );
 };
