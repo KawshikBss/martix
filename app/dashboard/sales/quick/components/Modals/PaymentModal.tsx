@@ -132,6 +132,18 @@ const PaymentModal = ({
     const { mutateAsync: createOrderMutation } = useCreateOrder();
 
     const handleCreateOrder = async () => {
+        var paidAmount = receivedAmount;
+        var due = dueAmount;
+        var paymentMethod = PaymentMethod[selectedPaymentMethod];
+        if (paymentDetails.length) {
+            paidAmount = paymentDetails.reduce(
+                (prev, acc) => prev + acc.amount,
+                0
+            );
+            due = cartTotal - paidAmount;
+            if (due < 0) due = 0;
+            paymentMethod = "Mixed";
+        }
         var formData = {
             store_id: selectedStore?.id,
             customer_id: selectedCustomer?.id,
@@ -139,9 +151,10 @@ const PaymentModal = ({
             tax_total: taxTotal,
             discount_total: 0,
             grand_total: cartTotal,
-            paid_amount: receivedAmount,
-            due_amount: dueAmount,
-            payment_method: PaymentMethod[selectedPaymentMethod],
+            paid_amount: paidAmount,
+            due_amount: due,
+            payment_method: paymentMethod,
+            payment_details: paymentDetails,
             items: items,
         };
         const response = await createOrderMutation(formData);
