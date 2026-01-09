@@ -177,7 +177,7 @@ const CustomerSelectModal = ({
                     </label>
                     <div className="mt-2">
                         <input
-                            value={selectedStore?.name}
+                            value={selectedStore?.name ?? ""}
                             readOnly
                             id="store"
                             name="store"
@@ -186,7 +186,7 @@ const CustomerSelectModal = ({
                             className="block w-full rounded-md bg-gray-100 px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
                         />
                         <input
-                            value={selectedStore?.id}
+                            value={selectedStore?.id ?? ""}
                             readOnly
                             type="text"
                             hidden
