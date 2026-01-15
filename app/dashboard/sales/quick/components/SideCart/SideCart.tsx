@@ -53,7 +53,7 @@ const SideCart = ({
 
     return (
         <div
-            className={`absolute inset-0 bg-black/25 transition-opacity duration-300 z-[1000] ease-in-out ${
+            className={`fixed inset-0 bg-black/25 transition-opacity duration-300 z-[1000] ease-in-out ${
                 show
                     ? "opacity-100 pointer-events-auto"
                     : "opacity-0 pointer-events-none"
