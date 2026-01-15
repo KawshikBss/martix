@@ -53,6 +53,30 @@ export const saleService = {
         payload: FormData | object
     ): Promise<CustomerInterface> => await apiClient.post("customers", payload),
 
+    getOrders: async (params: {
+        query?: string;
+        page?: number;
+        filters?: {
+            store: string;
+            user: string;
+            payment_status: string;
+            status: string;
+            min_order_value: string;
+            max_order_value: string;
+            min_create_date: string;
+            max_create_date: string;
+            min_update_date: string;
+            max_update_date: string;
+        };
+    }): Promise<PaginatedResponse<SaleInterface>> =>
+        await apiClient.get(
+            `pos/sales?page=${params?.page ?? 1}&query=${
+                params?.query ?? ""
+            }&${Object.entries(params?.filters ?? {})
+                .map((item) => (item[1].length ? `${item[0]}=${item[1]}` : ""))
+                .join("&")}`
+        ),
+
     createOrder: async (payload: FormData | object): Promise<SaleInterface> =>
         await apiClient.post("pos/sales", payload),
 };
