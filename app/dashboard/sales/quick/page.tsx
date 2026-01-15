@@ -70,7 +70,7 @@ export default function QuickSale() {
     const { totalUniqueItems } = useCart();
 
     return (
-        <main className="p-4 md:p-8 h-full">
+        <main className="p-4 md:p-8">
             <h3 className="text-2xl font-medium">Quick Sale</h3>
             <div className="bg-white md:min-h-6/7 rounded-2xl shadow-md my-6 p-4 md:p-6">
                 <h4 className="text-xl font-medium">Products</h4>
@@ -147,7 +147,7 @@ export default function QuickSale() {
             </div>
             <button
                 onClick={openSideCart}
-                className="absolute cursor-pointer bottom-4 right-4 w-12 h-12 text-center bg-[#615cf6] hover:bg-transparent text-white hover:text-[#615cf6] border border-[#615cf6] px-2 py-1 rounded-md"
+                className="fixed cursor-pointer bottom-4 right-4 w-12 h-12 text-center bg-[#615cf6] hover:bg-transparent text-white hover:text-[#615cf6] border border-[#615cf6] px-2 py-1 rounded-md"
             >
                 <FaShoppingCart className="mx-auto text-xl" />
                 {totalUniqueItems > 0 ? (
