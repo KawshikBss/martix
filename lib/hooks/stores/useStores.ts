@@ -1,7 +1,7 @@
 import { storeService } from "@/lib/services/storeService";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
-export function useStores(params: {
+export function useStores(params?: {
     query?: string;
     filters?: {
         manager?: string;
