@@ -110,7 +110,7 @@ const SalesFilterModal = ({ show, onClose }: Props) => {
                             <option value="">All</option>
                             {stores?.pages?.map((page) =>
                                 page?.data?.map((store) => (
-                                    <option value={store?.id}>
+                                    <option value={store?.id} key={store?.id}>
                                         {store?.name} [{store?.branch}]
                                     </option>
                                 ))
@@ -136,7 +136,9 @@ const SalesFilterModal = ({ show, onClose }: Props) => {
                         >
                             <option value="">All</option>
                             {users?.map((user) => (
-                                <option value={user?.id}>{user?.name}</option>
+                                <option value={user?.id} key={user?.id}>
+                                    {user?.name}
+                                </option>
                             ))}
                         </select>
                     </div>

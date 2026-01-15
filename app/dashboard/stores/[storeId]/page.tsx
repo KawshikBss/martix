@@ -203,7 +203,10 @@ const SingleStore = (props: Props) => {
 
                 <div className="flex flex-col gap-4">
                     {store?.inventories?.map((inventory) => (
-                        <div className="w-full flex flex-col md:flex-row md:justify-between items-start md:items-center gap-2">
+                        <div
+                            key={inventory.id}
+                            className="w-full flex flex-col md:flex-row md:justify-between items-start md:items-center gap-2"
+                        >
                             <Link
                                 href="/dashboard/products"
                                 className="flex flex-row items-center gap-4"
@@ -272,7 +275,10 @@ const SingleStore = (props: Props) => {
                 {store?.staff?.length ? (
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                         {store?.staff?.map((staff) => (
-                            <div className="col-span-1 rounded-2xl shadow-xl p-4">
+                            <div
+                                key={staff?.user?.id}
+                                className="col-span-1 rounded-2xl shadow-xl p-4"
+                            >
                                 <Link
                                     href="/dashboard/profile"
                                     className="flex flex-row items-center gap-4 mb-6"
