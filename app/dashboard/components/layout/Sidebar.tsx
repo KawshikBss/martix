@@ -93,6 +93,7 @@ export const navItems: INavItem[] = [
         title: "Sales / POS",
         href: "/dashboard/sales",
         children: [
+            { title: "All Sales", href: "/dashboard/sales" },
             { title: "Quick Sale", href: "/dashboard/sales/quick" },
             { title: "Receipts / Invoices", href: "/dashboard/sales/receipts" },
         ],
