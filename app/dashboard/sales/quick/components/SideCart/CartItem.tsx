@@ -49,11 +49,11 @@ const CartItem = ({ item }: Props) => {
                         ""
                     )}
                 </p>
-                <div className="grid grid-cols-5 items-center mt-2">
-                    <p className="col-span-2 md:col-span-3 text-start">
+                <div className="grid grid-cols-4 md:grid-cols-5 items-center mt-2">
+                    <p className="col-span-2 text-start">
                         Total: {item?.itemTotal?.toFixed(2)}
                     </p>
-                    <div className="col-span-3 md:col-span-2 flex rounded-lg">
+                    <div className="col-span-2 md:col-span-3 flex rounded-lg">
                         <button
                             onClick={() =>
                                 updateItemQuantity(item.inventory_id, -1)

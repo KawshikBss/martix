@@ -186,7 +186,7 @@ export function Sidebar(props: ISidebarProps) {
 
     return (
         <div
-            className={`w-full md:w-2/11 absolute md:static inset-0 bg-[#e9eef4] h-[200vh] md:h-[100vh] px-8 overflow-y-scroll z-50 transition-transform duration-300 ease-in-out ${
+            className={`w-full md:w-2/11 fixed md:static inset-0 bg-[#e9eef4] h-[200vh] md:h-[100vh] px-8 overflow-y-scroll z-50 transition-transform duration-300 ease-in-out ${
                 props.isSidebarOpen ? "translate-x-0" : "-translate-x-full"
             } md:translate-x-0 md:block`}
         >
