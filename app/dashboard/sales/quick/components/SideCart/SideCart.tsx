@@ -101,65 +101,63 @@ const SideCart = ({
                     Add / Select Customer
                 </button>
                 {!isEmpty ? (
-                    <div className="flex flex-col h-full mt-4">
+                    <div className="flex flex-col mt-4">
                         <h4 className="text-xl font-medium">Items</h4>
-                        <div className="mt-2 pe-3 flex flex-col gap-2 flex-2 overflow-y-scroll">
+                        <div className="mt-2 pe-3 flex flex-col gap-2 h-[40vh] md:h-[45vh] overflow-y-scroll">
                             {items.map((item) => (
                                 <CartItem key={item.inventory_id} item={item} />
                             ))}
                         </div>
-                        <div className="flex-1">
-                            <button
-                                onClick={clearCart}
-                                className="cursor-pointer block ms-auto my-4 px-2 py-1 bg-red-400 hover:bg-transparent text-center rounded-xl text-white hover:text-red-400 border border-red-400"
-                            >
-                                <FaTrash className="me-2 inline" /> Clear
-                            </button>
+                        <button
+                            onClick={clearCart}
+                            className="cursor-pointer block ms-auto my-4 px-2 py-1 bg-red-400 hover:bg-transparent text-center rounded-xl text-white hover:text-red-400 border border-red-400"
+                        >
+                            <FaTrash className="me-2 inline" /> Clear
+                        </button>
 
-                            <table className="w-full text-left">
-                                <tbody>
-                                    <tr className="border border-gray-300 text-gray-500">
-                                        <td className="px-2 py-2 font-semibold text-start">
-                                            Sub Total
-                                        </td>
-                                        <td className="px-2 py-2 font-normal text-end">
-                                            {subTotal.toFixed(2)}
-                                        </td>
-                                    </tr>
-                                    <tr className="border border-gray-300 text-gray-500">
-                                        <td className="px-2 py-2 font-semibold text-start">
-                                            Tax
-                                        </td>
-                                        <td className="px-2 py-2 font-normal text-end">
-                                            {taxTotal.toFixed(2)}
-                                        </td>
-                                    </tr>
-                                    <tr className="border border-gray-300 text-gray-500">
-                                        <td className="px-2 py-2 font-semibold text-start">
-                                            Discount
-                                        </td>
-                                        <td className="px-2 py-2 font-normal text-end">
-                                            {0}
-                                        </td>
-                                    </tr>
-                                    <tr className="border border-gray-300 text-gray-500">
-                                        <td className="px-2 py-2 font-semibold text-start">
-                                            Total
-                                        </td>
-                                        <td className="px-2 py-2 font-normal text-end">
-                                            {cartTotal.toFixed(2)}
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <button
-                                disabled={isEmpty}
-                                onClick={openPaymentModal}
-                                className="cursor-pointer block mx-auto mt-4 bg-[#615cf6] hover:bg-transparent text-white hover:text-[#615cf6] border border-[#615cf6] px-2 py-1 rounded-md"
-                            >
-                                Proceed To Pay
-                            </button>
-                        </div>
+                        <table className="w-full text-left">
+                            <tbody>
+                                <tr className="border border-gray-300 text-gray-500">
+                                    <td className="px-2 py-2 font-semibold text-start">
+                                        Sub Total
+                                    </td>
+                                    <td className="px-2 py-2 font-normal text-end">
+                                        {subTotal.toFixed(2)}
+                                    </td>
+                                </tr>
+                                <tr className="border border-gray-300 text-gray-500">
+                                    <td className="px-2 py-2 font-semibold text-start">
+                                        Tax
+                                    </td>
+                                    <td className="px-2 py-2 font-normal text-end">
+                                        {taxTotal.toFixed(2)}
+                                    </td>
+                                </tr>
+                                <tr className="border border-gray-300 text-gray-500">
+                                    <td className="px-2 py-2 font-semibold text-start">
+                                        Discount
+                                    </td>
+                                    <td className="px-2 py-2 font-normal text-end">
+                                        {0}
+                                    </td>
+                                </tr>
+                                <tr className="border border-gray-300 text-gray-500">
+                                    <td className="px-2 py-2 font-semibold text-start">
+                                        Total
+                                    </td>
+                                    <td className="px-2 py-2 font-normal text-end">
+                                        {cartTotal.toFixed(2)}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <button
+                            disabled={isEmpty}
+                            onClick={openPaymentModal}
+                            className="cursor-pointer block mx-auto mt-4 bg-[#615cf6] hover:bg-transparent text-white hover:text-[#615cf6] border border-[#615cf6] px-2 py-1 rounded-md"
+                        >
+                            Proceed To Pay
+                        </button>
                     </div>
                 ) : (
                     <p className="text-start text-gray-500 mt-4">
