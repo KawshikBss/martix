@@ -77,6 +77,9 @@ export const saleService = {
                 .join("&")}`
         ),
 
+    getOrder: async (id?: string): Promise<SaleInterface> =>
+        await apiClient.get(`pos/sales/${id}`),
+
     createOrder: async (payload: FormData | object): Promise<SaleInterface> =>
         await apiClient.post("pos/sales", payload),
 };
