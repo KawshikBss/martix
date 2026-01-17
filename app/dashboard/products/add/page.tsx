@@ -90,7 +90,7 @@ export default function AddProduct() {
 
         try {
             const formData = new FormData();
-            // if (image) formData.append("image", image);
+            if (image) formData.append("image", image);
             formData.append("name", name);
             formData.append("sku", sku);
             formData.append("cost_price", cost_price);
@@ -154,7 +154,6 @@ export default function AddProduct() {
             }
 
             const response = await createProductMutation(formData);
-            console.log(response);
 
             if (response) {
                 toast.success("Product created successfully!");

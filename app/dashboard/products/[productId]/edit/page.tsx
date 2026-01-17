@@ -129,7 +129,7 @@ const EditProduct = (props: Props) => {
 
         try {
             const formData = new FormData();
-            // if (image) formData.append("image", image);
+            if (image) formData.append("image", image);
             formData.append("name", name);
             formData.append("sku", sku);
             formData.append("cost_price", cost_price);
@@ -196,7 +196,6 @@ const EditProduct = (props: Props) => {
                 id: productId?.toString(),
                 payload: formData,
             });
-            console.log(response);
 
             if (response) {
                 toast.success("Product updated successfully!");
