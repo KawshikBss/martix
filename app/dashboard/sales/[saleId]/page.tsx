@@ -18,6 +18,10 @@ import { MdEmail } from "react-icons/md";
 import { TbCashRegister, TbTax } from "react-icons/tb";
 import ItemsTable from "./components/ItemsTable";
 import ItemsList from "./components/ItemsList";
+import { useRefundOrder } from "@/lib/hooks/sales/useRefundOrder";
+import { toast } from "react-toastify";
+import { useCancelOrder } from "@/lib/hooks/sales/useCancelOrder";
+import { useQueryClient } from "@tanstack/react-query";
 
 type Props = {};
 
@@ -26,6 +30,36 @@ const SingleSale = (props: Props) => {
     const { data: sale } = useSale(saleId?.toString());
 
     const { back } = useRouter();
+
+    const queryClient = useQueryClient();
+
+    const { mutateAsync: refundOrderMutation } = useRefundOrder();
+    const onRefund = async () => {
+        const res = await refundOrderMutation({
+            saleId: saleId?.toString(),
+            payload: {},
+        });
+        if (res) {
+            toast.success("Order refunded successfully!");
+            queryClient.invalidateQueries({
+                queryKey: ["sale", saleId],
+            });
+        }
+    };
+
+    const { mutateAsync: cancelOrderMutation } = useCancelOrder();
+    const onCancel = async () => {
+        const res = await cancelOrderMutation({
+            saleId: saleId?.toString(),
+            payload: {},
+        });
+        if (res) {
+            toast.success("Order cancelled successfully!");
+            queryClient.invalidateQueries({
+                queryKey: ["sale", saleId],
+            });
+        }
+    };
 
     return (
         <main className="p-4 md:p-8">
@@ -45,8 +79,10 @@ const SingleSale = (props: Props) => {
                                 sale?.status == "pending"
                                     ? "yellow-500"
                                     : sale?.status == "completed"
-                                    ? "green-500"
-                                    : "red-400"
+                                      ? "green-500"
+                                      : sale?.status == "refunded"
+                                        ? "amber-300"
+                                        : "red-400"
                             }`}
                         />
                         <span className="text-md font-regular text-gray-700">
@@ -54,7 +90,7 @@ const SingleSale = (props: Props) => {
                         </span>
                     </div>
                 </div>
-                <div className="flex flex-row gap-4">
+                <div className="flex flex-row flex-wrap gap-4">
                     <button
                         onClick={back}
                         className="bg-transparent hover:bg-gray-500 text-gray-500 hover:text-white border border-gray-500 px-2 py-1 rounded-md cursor-pointer mr-2"
@@ -70,9 +106,22 @@ const SingleSale = (props: Props) => {
                     <button className="bg-blue-500 hover:bg-transparent text-white hover:text-blue-500 border border-blue-500 px-2 py-1 rounded-md cursor-pointer mr-2">
                         Print
                     </button>
-                    <button className="bg-yellow-500 hover:bg-transparent text-white hover:text-yellow-500 border border-yellow-500 px-2 py-1 rounded-md">
-                        Refund
-                    </button>
+                    {sale?.status !== "refunded" && (
+                        <button
+                            onClick={onRefund}
+                            className="bg-yellow-500 hover:bg-transparent text-white hover:text-yellow-500 border border-yellow-500 px-2 py-1 rounded-md"
+                        >
+                            Refund
+                        </button>
+                    )}
+                    {sale?.status !== "canceled" && (
+                        <button
+                            onClick={onCancel}
+                            className="bg-red-500 hover:bg-transparent text-white hover:text-red-500 border border-red-500 px-2 py-1 rounded-md"
+                        >
+                            Cancel
+                        </button>
+                    )}
                 </div>
             </div>
 
@@ -164,8 +213,8 @@ const SingleSale = (props: Props) => {
                                     sale?.payment_status == "unpaid"
                                         ? "text-yellow-600 bg-yellow-200"
                                         : sale?.payment_status == "paid"
-                                        ? "text-green-600 bg-green-200"
-                                        : "text-red-600 bg-red-200"
+                                          ? "text-green-600 bg-green-200"
+                                          : "text-red-600 bg-red-200"
                                 } w-fit px-4 py-2 rounded-md mb-4`}
                             >
                                 <FaCashRegister
@@ -173,8 +222,8 @@ const SingleSale = (props: Props) => {
                                         sale?.payment_status == "unpaid"
                                             ? "text-yellow-600"
                                             : sale?.payment_status == "paid"
-                                            ? "text-green-600"
-                                            : "text-red-600"
+                                              ? "text-green-600"
+                                              : "text-red-600"
                                     } text-lg inline me-2`}
                                 />
                                 {sale?.payment_status ?? "N/A"}
