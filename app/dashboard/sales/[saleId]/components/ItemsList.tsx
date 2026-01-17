@@ -13,6 +13,7 @@ const ItemsList = ({ data }: Props) => {
             <div className="grid grid-cols-1 gap-6">
                 {data?.map((item) => (
                     <div
+                        key={item?.id}
                         className={`border border-gray-300 bg-white shadow-sm rounded-2xl p-4 flex flex-col`}
                     >
                         <div className="w-full aspect-video relative bg-gray-100 rounded-lg mb-4 flex items-center justify-center">
