@@ -6,7 +6,9 @@ export function useCancelOrder() {
     return useMutation({
         mutationFn: (params: { saleId?: string; payload: FormData | object }) =>
             saleService.cancelOrder(params),
-        onSuccess: () =>
-            queryClient.invalidateQueries({ queryKey: ["sales", "sale"] }),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["sales"] });
+            queryClient.invalidateQueries({ queryKey: ["sale"] });
+        },
     });
 }
