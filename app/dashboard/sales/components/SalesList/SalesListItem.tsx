@@ -1,15 +1,39 @@
 import DashboardAccordion from "@/components/ui/accordions/DashboardAccordion";
+import { useCancelOrder } from "@/lib/hooks/sales/useCancelOrder";
+import { useRefundOrder } from "@/lib/hooks/sales/useRefundOrder";
 import { SaleInterface } from "@/lib/interfaces/SaleInterface";
 import Image from "next/image";
 import Link from "next/link";
 import { FaCashRegister, FaReceipt, FaUser } from "react-icons/fa";
 import { FaMoneyBill1Wave, FaShop } from "react-icons/fa6";
+import { toast } from "react-toastify";
 
 export interface ISalesListItemProps {
     sale: SaleInterface;
 }
 
 export function SalesListItem({ sale }: ISalesListItemProps) {
+    const { mutateAsync: refundOrderMutation } = useRefundOrder();
+    const onRefund = async (saleId: string) => {
+        const res = await refundOrderMutation({
+            saleId: saleId?.toString(),
+            payload: {},
+        });
+        if (res) {
+            toast.success("Order refunded successfully!");
+        }
+    };
+
+    const { mutateAsync: cancelOrderMutation } = useCancelOrder();
+    const onCancel = async (saleId: string) => {
+        const res = await cancelOrderMutation({
+            saleId: saleId?.toString(),
+            payload: {},
+        });
+        if (res) {
+            toast.success("Order cancelled successfully!");
+        }
+    };
     return (
         <DashboardAccordion.Container>
             <DashboardAccordion.Header>
@@ -31,8 +55,8 @@ export function SalesListItem({ sale }: ISalesListItemProps) {
                                     sale?.status == "pending"
                                         ? "text-yellow-600"
                                         : sale?.status == "completed"
-                                        ? "text-green-600"
-                                        : "text-red-600"
+                                          ? "text-green-600"
+                                          : "text-red-600"
                                 }`}
                             >
                                 {sale?.status}
@@ -97,10 +121,10 @@ export function SalesListItem({ sale }: ISalesListItemProps) {
                                 sale?.payment_status == "pending"
                                     ? "text-yellow-600"
                                     : sale?.status == "paid"
-                                    ? "text-green-600"
-                                    : sale?.status == "partial"
-                                    ? "text-orange-600"
-                                    : "text-red-600"
+                                      ? "text-green-600"
+                                      : sale?.status == "partial"
+                                        ? "text-orange-600"
+                                        : "text-red-600"
                             } mr-2`}
                         />
                     }
@@ -122,13 +146,21 @@ export function SalesListItem({ sale }: ISalesListItemProps) {
                     >
                         Print
                     </Link>
-                    {sale?.status === "pending" && (
-                        <Link
-                            href={`/dashboard/sales/${sale.id}`}
-                            className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white"
+                    {sale?.status !== "refunded" && (
+                        <button
+                            onClick={() => onRefund(sale?.id)}
+                            className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white cursor-pointer"
                         >
                             Refund
-                        </Link>
+                        </button>
+                    )}
+                    {sale?.status !== "canceled" && (
+                        <button
+                            onClick={() => onCancel(sale?.id)}
+                            className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white cursor-pointer"
+                        >
+                            Cancel
+                        </button>
                     )}
                 </div>
             </DashboardAccordion.Expanded>

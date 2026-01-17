@@ -1,14 +1,38 @@
 import { PaginatedResponse } from "@/lib/core/PaginatedResponse";
+import { useCancelOrder } from "@/lib/hooks/sales/useCancelOrder";
+import { useRefundOrder } from "@/lib/hooks/sales/useRefundOrder";
 import { SaleInterface } from "@/lib/interfaces/SaleInterface";
 import { InfiniteData } from "@tanstack/react-query";
 import Link from "next/link";
 import React from "react";
+import { toast } from "react-toastify";
 
 type Props = {
     data?: InfiniteData<PaginatedResponse<SaleInterface>>;
 };
 
 const SalesTable = ({ data }: Props) => {
+    const { mutateAsync: refundOrderMutation } = useRefundOrder();
+    const onRefund = async (saleId: string) => {
+        const res = await refundOrderMutation({
+            saleId: saleId?.toString(),
+            payload: {},
+        });
+        if (res) {
+            toast.success("Order refunded successfully!");
+        }
+    };
+
+    const { mutateAsync: cancelOrderMutation } = useCancelOrder();
+    const onCancel = async (saleId: string) => {
+        const res = await cancelOrderMutation({
+            saleId: saleId?.toString(),
+            payload: {},
+        });
+        if (res) {
+            toast.success("Order cancelled successfully!");
+        }
+    };
     return data?.pages?.[0].total ? (
         <table className="hidden md:table w-full text-left mt-4">
             <thead>
@@ -67,17 +91,25 @@ const SalesTable = ({ data }: Props) => {
                                 >
                                     Print
                                 </Link>
-                                {item?.status === "pending" && (
-                                    <Link
-                                        href={`/dashboard/sales/${item.id}`}
-                                        className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white"
+                                {item?.status !== "refunded" && (
+                                    <button
+                                        onClick={() => onRefund(item?.id)}
+                                        className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white cursor-pointer"
                                     >
                                         Refund
-                                    </Link>
+                                    </button>
+                                )}
+                                {item?.status !== "canceled" && (
+                                    <button
+                                        onClick={() => onCancel(item?.id)}
+                                        className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white cursor-pointer"
+                                    >
+                                        Cancel
+                                    </button>
                                 )}
                             </td>
                         </tr>
-                    ))
+                    )),
                 )}
             </tbody>
         </table>
