@@ -57,7 +57,7 @@ const ProductForm = ({
 
     const handleImageClick = () => imageInputRef.current?.click();
     const handleImageChange = async (
-        e: React.ChangeEvent<HTMLInputElement>
+        e: React.ChangeEvent<HTMLInputElement>,
     ) => {
         const file = e.target.files?.[0];
         if (!file) return;
@@ -136,8 +136,8 @@ const ProductForm = ({
             prev.filter(
                 (variation) =>
                     variation.option != variant.option &&
-                    variation.value != variant.value
-            )
+                    variation.value != variant.value,
+            ),
         );
     };
 
@@ -387,6 +387,9 @@ const ProductForm = ({
                                 </label>
                                 <div className="mt-2 grid grid-cols-1">
                                     <select
+                                        defaultValue={
+                                            product?.category_id ?? ""
+                                        }
                                         id="category"
                                         name="category"
                                         autoComplete="category"
@@ -516,7 +519,7 @@ const ProductForm = ({
                                             >
                                                 {store.name}
                                             </option>
-                                        ))
+                                        )),
                                     )}
                                 </select>
                             </div>
@@ -721,7 +724,7 @@ const ProductForm = ({
                                     <div
                                         onClick={() =>
                                             removeFromProductVariations(
-                                                variation
+                                                variation,
                                             )
                                         }
                                         className="sm:col-span-1 text-sm border text-center px-2 py-1 rounded-md bg-red-400 text-white hover:bg-transparent hover:text-red-400 border-red-400 cursor-pointer"
