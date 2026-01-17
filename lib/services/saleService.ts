@@ -33,10 +33,10 @@ export const saleService = {
             `pos/products?store=${params?.storeId ?? ""}&page=${
                 params?.page ?? 1
             }&query=${params?.query ?? ""}&${Object.entries(
-                params?.filters ?? {}
+                params?.filters ?? {},
             )
                 .map((item) => (item[1].length ? `${item[0]}=${item[1]}` : ""))
-                .join("&")}`
+                .join("&")}`,
         ),
     getCustomers: async (params: {
         query?: string;
@@ -46,11 +46,11 @@ export const saleService = {
         await apiClient.get(
             `customers?store=${params?.store ?? ""}&query=${
                 params?.query ?? ""
-            }`
+            }`,
         ),
 
     createCustomer: async (
-        payload: FormData | object
+        payload: FormData | object,
     ): Promise<CustomerInterface> => await apiClient.post("customers", payload),
 
     getOrders: async (params: {
@@ -74,7 +74,7 @@ export const saleService = {
                 params?.query ?? ""
             }&${Object.entries(params?.filters ?? {})
                 .map((item) => (item[1].length ? `${item[0]}=${item[1]}` : ""))
-                .join("&")}`
+                .join("&")}`,
         ),
 
     getOrder: async (id?: string): Promise<SaleInterface> =>
@@ -82,4 +82,22 @@ export const saleService = {
 
     createOrder: async (payload: FormData | object): Promise<SaleInterface> =>
         await apiClient.post("pos/sales", payload),
+
+    refundOrder: async (params: {
+        saleId?: string;
+        payload: FormData | object;
+    }): Promise<SaleInterface> =>
+        await apiClient.post(
+            `pos/sales/${params?.saleId}/refund`,
+            params?.payload,
+        ),
+
+    cancelOrder: async (params: {
+        saleId?: string;
+        payload: FormData | object;
+    }): Promise<SaleInterface> =>
+        await apiClient.post(
+            `pos/sales/${params?.saleId}/cancel`,
+            params?.payload,
+        ),
 };
