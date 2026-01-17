@@ -66,28 +66,28 @@ const SingleSale = (props: Props) => {
             <div className="w-full bg-white rounded-2xl shadow-md p-4 md:p-6 flex flex-col md:flex-row justify-between items-center gap-4 md:gap-0">
                 <div className="flex flex-row justify-start items-start gap-2">
                     <div>
-                        <h3 className="text-2xl font-medium">
-                            {sale?.sale_number ?? "N/A"}
-                        </h3>
+                        <div className="flex flex-row justify-start items-center gap-2">
+                            <h3 className="text-2xl font-medium">
+                                {sale?.sale_number ?? "N/A"}
+                            </h3>
+                            <div
+                                className={`w-4 h-4 ms-4 rounded-full bg-${
+                                    sale?.status == "pending"
+                                        ? "yellow-500"
+                                        : sale?.status == "completed"
+                                          ? "green-500"
+                                          : sale?.status == "refunded"
+                                            ? "amber-300"
+                                            : "red-400"
+                                }`}
+                            />
+                            <span className="text-md font-regular text-gray-700">
+                                {sale?.status ?? "N/A"}
+                            </span>
+                        </div>
                         <p className="text-sm text-gray-500">
                             {sale?.created_at}
                         </p>
-                    </div>
-                    <div className="flex flex-row justify-start items-center gap-2">
-                        <div
-                            className={`w-4 h-4 ms-4 rounded-full bg-${
-                                sale?.status == "pending"
-                                    ? "yellow-500"
-                                    : sale?.status == "completed"
-                                      ? "green-500"
-                                      : sale?.status == "refunded"
-                                        ? "amber-300"
-                                        : "red-400"
-                            }`}
-                        />
-                        <span className="text-md font-regular text-gray-700">
-                            {sale?.status ?? "N/A"}
-                        </span>
                     </div>
                 </div>
                 <div className="flex flex-row flex-wrap gap-4">
