@@ -141,10 +141,10 @@ export function SalesListItem({ sale }: ISalesListItemProps) {
                         View
                     </Link>
                     <Link
-                        href={`/dashboard/sales/${sale.id}`}
+                        href={`/dashboard/sales/receipts/${sale?.id}`}
                         className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white"
                     >
-                        Print
+                        Invoice
                     </Link>
                     {sale?.status !== "refunded" && (
                         <button
