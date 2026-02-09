@@ -16,7 +16,7 @@ import KpiCard from "@/components/ui/KpiCard";
 import { FaMoneyBill1Wave } from "react-icons/fa6";
 import { IoCloseCircle } from "react-icons/io5";
 import { useSales } from "@/lib/hooks/sales/useSales";
-import SalesTable from "./components/SalesTable";
+import SalesTable from "./components/SalesTable/SalesTable";
 import { SalesList } from "./components/SalesList/SalesList";
 import SalesFilterModal from "./components/SalesFilterModal";
 
@@ -168,18 +168,18 @@ export default function Products() {
                         filters?.max_create_date?.length
                             ? ` created between ${filters?.min_create_date} and ${filters?.max_create_date}`
                             : filters?.min_create_date?.length
-                            ? ` created after ${filters?.min_create_date}`
-                            : filters?.max_create_date?.length
-                            ? ` created before ${filters?.max_create_date}`
-                            : ""}
+                              ? ` created after ${filters?.min_create_date}`
+                              : filters?.max_create_date?.length
+                                ? ` created before ${filters?.max_create_date}`
+                                : ""}
                         {filters?.min_update_date?.length &&
                         filters?.max_update_date?.length
                             ? ` updated between ${filters?.min_update_date} and ${filters?.max_update_date}`
                             : filters?.min_update_date?.length
-                            ? ` updated after ${filters?.min_update_date}`
-                            : filters?.max_update_date?.length
-                            ? ` updated before ${filters?.max_update_date}`
-                            : ""}{" "}
+                              ? ` updated after ${filters?.min_update_date}`
+                              : filters?.max_update_date?.length
+                                ? ` updated before ${filters?.max_update_date}`
+                                : ""}{" "}
                         <Link
                             href="/dashboard/sales/quick"
                             className="text-[#615cf6]"
