@@ -98,14 +98,11 @@ const SingleSale = (props: Props) => {
                         Go Back
                     </button>
                     <Link
-                        href={`/dashboard/stores/${saleId}/edit`}
+                        href={`/dashboard/sales/receipts/${saleId}`}
                         className="bg-[#615cf6] hover:bg-transparent text-white hover:text-[#615cf6] border border-[#615cf6] px-2 py-1 rounded-md"
                     >
                         Invoice
                     </Link>
-                    <button className="bg-blue-500 hover:bg-transparent text-white hover:text-blue-500 border border-blue-500 px-2 py-1 rounded-md cursor-pointer mr-2">
-                        Print
-                    </button>
                     {sale?.status !== "refunded" && (
                         <button
                             onClick={onRefund}
