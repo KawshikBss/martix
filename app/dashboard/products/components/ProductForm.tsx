@@ -10,6 +10,8 @@ import { FaCamera } from "react-icons/fa";
 interface ProductVariation {
     option: string;
     value: string;
+    isActive?: boolean;
+    isPreexisting?: boolean;
 }
 
 interface ProductStock {
@@ -131,13 +133,9 @@ const ProductForm = ({
         setProductVariations((prev) => [...prev, { option, value }]);
     };
 
-    const removeFromProductVariations = (variant: ProductVariation) => {
+    const removeFromProductVariations = (variantIndex: number) => {
         setProductVariations((prev) =>
-            prev.filter(
-                (variation) =>
-                    variation.option != variant.option &&
-                    variation.value != variant.value,
-            ),
+            prev.filter((_, index) => index !== variantIndex),
         );
     };
 
@@ -464,198 +462,226 @@ const ProductForm = ({
                     <h3 className="text-2xl font-medium mb-4">
                         Stock & Inventory Information
                     </h3>
-                    {productStocks.map((stock, index) => (
-                        <div
-                            key={index.toString()}
-                            className="grid grid-cols-5 my-4 items-center border border-purple-300 bg-purple-100 py-1 px-2 rounded-lg"
-                        >
-                            <div className="col-span-1 text-sm/6 font-medium">
-                                {stock.store.name}
-                            </div>
-                            <div className="col-span-1 text-sm/6 font-medium">
-                                {stock.variant
-                                    ? `${stock.variant.option.toLocaleUpperCase()}: ${
-                                          stock.variant.value
-                                      }`
-                                    : "Main"}
-                            </div>
-                            <div className="col-span-1 text-sm/6 font-medium">
-                                {stock.quantity} units
-                            </div>
-                            <div className="col-span-1 text-sm/6 font-medium">
-                                ${stock.selling_price}
-                            </div>
-                            <div
-                                onClick={() => removeFromProductStocks(stock)}
-                                className="sm:col-span-1 text-sm border text-center px-2 py-1 rounded-md bg-red-400 text-white hover:bg-transparent hover:text-red-400 border-red-400 cursor-pointer"
+                    {product ? (
+                        <p className="text-sm/6 text-gray-600">
+                            Current Stocks cannot be edited here. To manage
+                            stocks, please navigate to the{" "}
+                            <Link
+                                href="/dashboard/stocks"
+                                className="text-indigo-600 hover:text-indigo-500"
                             >
-                                Remove
-                            </div>
-                        </div>
-                    ))}
-                    <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-8 border border-gray-300 bg-gray-50 p-4 rounded-lg">
-                        <div className="sm:col-span-2">
-                            <label
-                                htmlFor="store"
-                                className="block text-sm/6 font-medium"
-                            >
-                                Store
-                            </label>
-                            <div className="mt-2 grid grid-cols-1">
-                                <select
-                                    id="store"
-                                    name="store"
-                                    autoComplete="tax-type"
-                                    className="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                                Stocks Page
+                            </Link>
+                            .
+                        </p>
+                    ) : (
+                        <>
+                            <p className="text-sm/6 text-gray-600 mb-4">
+                                Initial Stock (optional) <br />
+                                This will be recorded as Opening Balance.
+                            </p>
+                            {productStocks.map((stock, index) => (
+                                <div
+                                    key={index.toString()}
+                                    className="grid grid-cols-5 my-4 items-center border border-purple-300 bg-purple-100 py-1 px-2 rounded-lg"
                                 >
-                                    <option>None</option>
-                                    {stores?.pages?.map((page) =>
-                                        page?.data?.map((store) => (
+                                    <div className="col-span-1 text-sm/6 font-medium">
+                                        {stock.store.name}
+                                    </div>
+                                    <div className="col-span-1 text-sm/6 font-medium">
+                                        {stock.variant
+                                            ? `${stock.variant.option.toLocaleUpperCase()}: ${
+                                                  stock.variant.value
+                                              }`
+                                            : "Main"}
+                                    </div>
+                                    <div className="col-span-1 text-sm/6 font-medium">
+                                        {stock.quantity} units
+                                    </div>
+                                    <div className="col-span-1 text-sm/6 font-medium">
+                                        ${stock.selling_price}
+                                    </div>
+                                    <div
+                                        onClick={() =>
+                                            removeFromProductStocks(stock)
+                                        }
+                                        className="sm:col-span-1 text-sm border text-center px-2 py-1 rounded-md bg-red-400 text-white hover:bg-transparent hover:text-red-400 border-red-400 cursor-pointer"
+                                    >
+                                        Remove
+                                    </div>
+                                </div>
+                            ))}
+                            <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-8 border border-gray-300 bg-gray-50 p-4 rounded-lg">
+                                <div className="sm:col-span-2">
+                                    <label
+                                        htmlFor="store"
+                                        className="block text-sm/6 font-medium"
+                                    >
+                                        Store
+                                    </label>
+                                    <div className="mt-2 grid grid-cols-1">
+                                        <select
+                                            id="store"
+                                            name="store"
+                                            autoComplete="tax-type"
+                                            className="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                                        >
+                                            <option>None</option>
+                                            {stores?.pages?.map((page) =>
+                                                page?.data?.map((store) => (
+                                                    <option
+                                                        key={store.id}
+                                                        onClick={() =>
+                                                            setSelectedStore(
+                                                                store,
+                                                            )
+                                                        }
+                                                    >
+                                                        {store.name}
+                                                    </option>
+                                                )),
+                                            )}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div className="sm:col-span-2">
+                                    <label
+                                        htmlFor="stock_variant"
+                                        className="block text-sm/6 font-medium"
+                                    >
+                                        Variant
+                                    </label>
+                                    <div className="mt-2 grid grid-cols-1">
+                                        <select
+                                            id="stock_variant"
+                                            name="stock_variant"
+                                            autoComplete="tax-type"
+                                            className="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
+                                        >
                                             <option
-                                                key={store.id}
                                                 onClick={() =>
-                                                    setSelectedStore(store)
+                                                    setSelectedVariation(null)
                                                 }
                                             >
-                                                {store.name}
+                                                Main
                                             </option>
-                                        )),
-                                    )}
-                                </select>
-                            </div>
-                        </div>
-                        <div className="sm:col-span-2">
-                            <label
-                                htmlFor="stock_variant"
-                                className="block text-sm/6 font-medium"
-                            >
-                                Variant
-                            </label>
-                            <div className="mt-2 grid grid-cols-1">
-                                <select
-                                    id="stock_variant"
-                                    name="stock_variant"
-                                    autoComplete="tax-type"
-                                    className="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                                >
-                                    <option
-                                        onClick={() =>
-                                            setSelectedVariation(null)
-                                        }
+                                            {productVariations?.map(
+                                                (variation) => (
+                                                    <option
+                                                        key={`${variation.option}-${variation.value}`}
+                                                        onClick={() =>
+                                                            setSelectedVariation(
+                                                                variation,
+                                                            )
+                                                        }
+                                                    >
+                                                        {variation.option.toLocaleUpperCase()}
+                                                        : {variation.value}
+                                                    </option>
+                                                ),
+                                            )}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div className="sm:col-span-2">
+                                    <label
+                                        htmlFor="barcode"
+                                        className="block text-sm/6 font-medium"
                                     >
-                                        Main
-                                    </option>
-                                    {productVariations?.map((variation) => (
-                                        <option
-                                            key={`${variation.option}-${variation.value}`}
-                                            onClick={() =>
-                                                setSelectedVariation(variation)
-                                            }
-                                        >
-                                            {variation.option.toLocaleUpperCase()}
-                                            : {variation.value}
-                                        </option>
-                                    ))}
-                                </select>
+                                        Barcode
+                                    </label>
+                                    <div className="mt-2 flex gap-2">
+                                        <input
+                                            id="barcode"
+                                            name="barcode"
+                                            type="text"
+                                            autoComplete="off"
+                                            className="block w-full rounded-md bg-gray-100 px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+                                            placeholder="Enter tax rate"
+                                        />
+                                    </div>
+                                </div>
+                                <div className="sm:col-span-2">
+                                    <label
+                                        htmlFor="selling_price"
+                                        className="block text-sm/6 font-medium"
+                                    >
+                                        Selling Price
+                                    </label>
+                                    <div className="mt-2 flex gap-2">
+                                        <input
+                                            id="selling_price"
+                                            name="selling_price"
+                                            type="text"
+                                            autoComplete="off"
+                                            className="block w-full rounded-md bg-gray-100 px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+                                            placeholder="Enter tax rate"
+                                        />
+                                    </div>
+                                </div>
+                                <div className="sm:col-span-2">
+                                    <label
+                                        htmlFor="quantity"
+                                        className="block text-sm/6 font-medium"
+                                    >
+                                        Quantity
+                                    </label>
+                                    <div className="mt-2 flex gap-2">
+                                        <input
+                                            id="quantity"
+                                            name="quantity"
+                                            type="text"
+                                            autoComplete="off"
+                                            className="block w-full rounded-md bg-gray-100 px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+                                            placeholder="Enter tax rate"
+                                        />
+                                    </div>
+                                </div>
+                                <div className="sm:col-span-2">
+                                    <label
+                                        htmlFor="reorder_level"
+                                        className="block text-sm/6 font-medium"
+                                    >
+                                        Reorder Level
+                                    </label>
+                                    <div className="mt-2 flex gap-2">
+                                        <input
+                                            id="reorder_level"
+                                            name="reorder_level"
+                                            type="text"
+                                            autoComplete="off"
+                                            className="block w-full rounded-md bg-gray-100 px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+                                            placeholder="Enter tax rate"
+                                        />
+                                    </div>
+                                </div>
+                                <div className="sm:col-span-2">
+                                    <label
+                                        htmlFor="expiry_date"
+                                        className="block text-sm/6 font-medium"
+                                    >
+                                        Expiry Date
+                                    </label>
+                                    <div className="mt-2 flex gap-2">
+                                        <input
+                                            id="expiry_date"
+                                            name="expiry_date"
+                                            type="date"
+                                            autoComplete="off"
+                                            className="block w-full rounded-md bg-gray-100 px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
+                                            placeholder="Enter tax rate"
+                                        />
+                                    </div>
+                                </div>
+                                <div
+                                    onClick={addToProductStocks}
+                                    className="col-span-2 text-sm h-fit mt-auto border text-center px-2 py-1 rounded-md bg-[#615cf6] text-white hover:bg-transparent hover:text-[#615cf6] border-[#615cf6] cursor-pointer"
+                                >
+                                    Add Stock
+                                </div>
                             </div>
-                        </div>
-                        <div className="sm:col-span-2">
-                            <label
-                                htmlFor="barcode"
-                                className="block text-sm/6 font-medium"
-                            >
-                                Barcode
-                            </label>
-                            <div className="mt-2 flex gap-2">
-                                <input
-                                    id="barcode"
-                                    name="barcode"
-                                    type="text"
-                                    autoComplete="off"
-                                    className="block w-full rounded-md bg-gray-100 px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
-                                    placeholder="Enter tax rate"
-                                />
-                            </div>
-                        </div>
-                        <div className="sm:col-span-2">
-                            <label
-                                htmlFor="selling_price"
-                                className="block text-sm/6 font-medium"
-                            >
-                                Selling Price
-                            </label>
-                            <div className="mt-2 flex gap-2">
-                                <input
-                                    id="selling_price"
-                                    name="selling_price"
-                                    type="text"
-                                    autoComplete="off"
-                                    className="block w-full rounded-md bg-gray-100 px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
-                                    placeholder="Enter tax rate"
-                                />
-                            </div>
-                        </div>
-                        <div className="sm:col-span-2">
-                            <label
-                                htmlFor="quantity"
-                                className="block text-sm/6 font-medium"
-                            >
-                                Quantity
-                            </label>
-                            <div className="mt-2 flex gap-2">
-                                <input
-                                    id="quantity"
-                                    name="quantity"
-                                    type="text"
-                                    autoComplete="off"
-                                    className="block w-full rounded-md bg-gray-100 px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
-                                    placeholder="Enter tax rate"
-                                />
-                            </div>
-                        </div>
-                        <div className="sm:col-span-2">
-                            <label
-                                htmlFor="reorder_level"
-                                className="block text-sm/6 font-medium"
-                            >
-                                Reorder Level
-                            </label>
-                            <div className="mt-2 flex gap-2">
-                                <input
-                                    id="reorder_level"
-                                    name="reorder_level"
-                                    type="text"
-                                    autoComplete="off"
-                                    className="block w-full rounded-md bg-gray-100 px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
-                                    placeholder="Enter tax rate"
-                                />
-                            </div>
-                        </div>
-                        <div className="sm:col-span-2">
-                            <label
-                                htmlFor="expiry_date"
-                                className="block text-sm/6 font-medium"
-                            >
-                                Expiry Date
-                            </label>
-                            <div className="mt-2 flex gap-2">
-                                <input
-                                    id="expiry_date"
-                                    name="expiry_date"
-                                    type="date"
-                                    autoComplete="off"
-                                    className="block w-full rounded-md bg-gray-100 px-3 py-1.5 text-base outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-500 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-500 sm:text-sm/6"
-                                    placeholder="Enter tax rate"
-                                />
-                            </div>
-                        </div>
-                        <div
-                            onClick={addToProductStocks}
-                            className="col-span-2 text-sm h-fit mt-auto border text-center px-2 py-1 rounded-md bg-[#615cf6] text-white hover:bg-transparent hover:text-[#615cf6] border-[#615cf6] cursor-pointer"
-                        >
-                            Add Stock
-                        </div>
-                    </div>
+                        </>
+                    )}
                 </div>
                 <div className="w-full md:w-1/3 bg-white rounded-2xl shadow-md p-6">
                     <h3 className="text-2xl font-medium">Advance</h3>
@@ -710,7 +736,7 @@ const ProductForm = ({
                                     </label>
                                 </div>
                             </div>
-                            {productVariations.map((variation) => (
+                            {productVariations.map((variation, index) => (
                                 <div
                                     className="grid grid-cols-5 my-2"
                                     key={`${variation.option}-${variation.value}`}
@@ -722,14 +748,32 @@ const ProductForm = ({
                                         {variation.value}
                                     </div>
                                     <div
-                                        onClick={() =>
-                                            removeFromProductVariations(
-                                                variation,
-                                            )
-                                        }
+                                        onClick={() => {
+                                            if (variation.isPreexisting) {
+                                                setProductVariations((prev) =>
+                                                    prev.map((item) =>
+                                                        item == variation
+                                                            ? {
+                                                                  ...item,
+                                                                  isActive:
+                                                                      !item.isActive,
+                                                              }
+                                                            : item,
+                                                    ),
+                                                );
+                                            } else {
+                                                removeFromProductVariations(
+                                                    index,
+                                                );
+                                            }
+                                        }}
                                         className="sm:col-span-1 text-sm border text-center px-2 py-1 rounded-md bg-red-400 text-white hover:bg-transparent hover:text-red-400 border-red-400 cursor-pointer"
                                     >
-                                        Remove
+                                        {!variation.isPreexisting
+                                            ? "Remove"
+                                            : variation.isActive
+                                              ? "Discontinue"
+                                              : "Reactivate"}
                                     </div>
                                 </div>
                             ))}
