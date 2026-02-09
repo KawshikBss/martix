@@ -12,6 +12,8 @@ import ProductForm from "../../components/ProductForm";
 interface ProductVariation {
     option: string;
     value: string;
+    isActive?: boolean;
+    isPreexisting?: boolean;
 }
 
 interface ProductStock {
@@ -41,7 +43,7 @@ const EditProduct = (props: Props) => {
     };
 
     const [productStocks, setProductStocks] = React.useState<ProductStock[]>(
-        []
+        [],
     );
 
     const [enableVariations, setEnableVariations] =
@@ -55,36 +57,22 @@ const EditProduct = (props: Props) => {
 
     const { back } = useRouter();
 
-    const setDefaultStocks = () => {
-        setProductStocks(
-            product?.inventories.map((item) => {
-                return {
-                    store: item.store,
-                    variant: null,
-                    barcode: item.barcode,
-                    selling_price: item.selling_price,
-                    quantity: item.quantity,
-                    reorder_level: item.reorder_level,
-                    expiry_date: item.expiry_date,
-                };
-            }) ?? []
-        );
-    };
-
     const setDefaultVariations = () => {
+        setEnableVariations(product?.variants?.length ? true : false);
         setProductVariations(
             product?.variants?.map((variant) => {
                 return {
                     option: variant.variation_meta.option,
                     value: variant.variation_meta.value,
+                    isActive: variant.is_active,
+                    isPreexisting: true,
                 };
-            }) ?? []
+            }) ?? [],
         );
     };
 
     useEffect(() => {
         if (!product) return;
-        setDefaultStocks();
         setDefaultVariations();
     }, [product]);
 
@@ -145,49 +133,55 @@ const EditProduct = (props: Props) => {
                 productVariations.forEach((variation, index) => {
                     formData.append(
                         `variations[${index}][option]`,
-                        variation.option
+                        variation.option,
                     );
                     formData.append(
                         `variations[${index}][value]`,
-                        variation.value
+                        variation.value,
                     );
+                    if (variation.isPreexisting) {
+                        formData.append(
+                            `variations[${index}][active]`,
+                            variation.isActive ? "true" : "false",
+                        );
+                    }
                 });
             }
             if (productStocks.length) {
                 productStocks.forEach((stock, index) => {
                     formData.append(
                         `product_stocks[${index}][store]`,
-                        stock.store.id
+                        stock.store.id,
                     );
                     if (stock.variant) {
                         formData.append(
                             `product_stocks[${index}][variant][option]`,
-                            stock.variant?.option
+                            stock.variant?.option,
                         );
                         formData.append(
                             `product_stocks[${index}][variant][value]`,
-                            stock.variant?.value
+                            stock.variant?.value,
                         );
                     }
                     formData.append(
                         `product_stocks[${index}][barcode]`,
-                        stock.barcode
+                        stock.barcode,
                     );
                     formData.append(
                         `product_stocks[${index}][selling_price]`,
-                        `${stock.selling_price}`
+                        `${stock.selling_price}`,
                     );
                     formData.append(
                         `product_stocks[${index}][quantity]`,
-                        `${stock.quantity}`
+                        `${stock.quantity}`,
                     );
                     formData.append(
                         `product_stocks[${index}][reorder_level]`,
-                        `${stock.reorder_level}`
+                        `${stock.reorder_level}`,
                     );
                     formData.append(
                         `product_stocks[${index}][expiry_date]`,
-                        stock.expiry_date
+                        stock.expiry_date,
                     );
                 });
             }
@@ -207,7 +201,7 @@ const EditProduct = (props: Props) => {
             setUpdatingProduct(false);
         }
     };
-    
+
     return (
         <main className="p-4 md:p-8">
             <div className="w-full bg-white rounded-2xl shadow-md p-6 flex flex-col md:flex-row justify-between items-center">
