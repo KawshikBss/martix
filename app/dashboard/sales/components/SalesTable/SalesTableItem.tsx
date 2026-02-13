@@ -33,7 +33,7 @@ const SalesTableItem = ({ sale }: Props) => {
         }
     };
     return (
-        <tr className="border-b border-gray-300 hover:bg-gray-50">
+        <tr className="border-b border-gray-300 hover:bg-gray-50 align-top">
             <td className="px-2 py-4">{sale?.sale_number}</td>
             <td className="px-2 py-4">{sale?.created_at}</td>
             <td className="px-2 py-4">
