@@ -228,51 +228,51 @@ const SingleSale = (props: Props) => {
                         </div>
                     </div>
                 </div>
-                <div className="col-span-1 md:col-span-2 bg-white rounded-2xl shadow-md p-4 md:p-6 flex flex-col justify-start items-start gap-6">
-                    <div className="bg-gray-200 p-4 rounded-md w-full flex flex-row justify-between items-center">
+                <div className="col-span-1 md:col-span-2 bg-white rounded-2xl shadow-md p-4 md:p-6 grid grid-cols-2 gap-6">
+                    <div className="bg-gray-200 p-4 rounded-md flex flex-col justify-between items-center">
+                        <TbCashRegister className="inline text-3xl me-2" />
                         <h5 className="text-lg mb-0.5">
-                            <TbCashRegister className="inline me-2" />
                             Subtotal:
+                            <span className="text-gray-700">
+                                {sale?.sub_total ?? "N/A"}
+                            </span>
                         </h5>
-                        <span className="text-gray-700">
-                            {sale?.sub_total ?? "N/A"}
-                        </span>
                     </div>
-                    <div className="bg-gray-200 p-4 rounded-md w-full flex flex-row justify-between items-center">
+                    <div className="bg-gray-200 p-4 rounded-md flex flex-col justify-between items-center">
+                        <TbTax className="inline text-3xl me-2" />
                         <h5 className="text-lg mb-0.5">
-                            <TbTax className="inline me-2" />
                             Tax:
+                            <span className="text-gray-700">
+                                {sale?.tax_total ?? "N/A"}
+                            </span>
                         </h5>
-                        <span className="text-gray-700">
-                            {sale?.tax_total ?? "N/A"}
-                        </span>
                     </div>
-                    <div className="bg-gray-200 p-4 rounded-md w-full flex flex-row justify-between items-center">
+                    <div className="bg-gray-200 p-4 rounded-md flex flex-col justify-between items-center">
+                        <FaPercentage className="inline text-3xl me-2" />
                         <h5 className="text-lg mb-0.5">
-                            <FaPercentage className="inline me-2" />
                             Discount:
+                            <span className="text-gray-700">
+                                {sale?.discount_total ?? "N/A"}
+                            </span>
                         </h5>
-                        <span className="text-gray-700">
-                            {sale?.discount_total ?? "N/A"}
-                        </span>
                     </div>
-                    <div className="bg-gray-200 p-4 rounded-md w-full flex flex-row justify-between items-center">
+                    <div className="bg-gray-200 p-4 rounded-md flex flex-col justify-between items-center">
+                        <FaEquals className="inline text-3xl me-2" />
                         <h5 className="text-lg mb-0.5">
-                            <FaEquals className="inline me-2" />
                             Total:
+                            <span className="text-gray-700">
+                                {sale?.grand_total ?? "N/A"}
+                            </span>
                         </h5>
-                        <span className="text-gray-700">
-                            {sale?.grand_total ?? "N/A"}
-                        </span>
                     </div>
-                    <div className="bg-gray-200 p-4 rounded-md w-full flex flex-row justify-between items-center">
+                    <div className="bg-gray-200 p-4 rounded-md flex flex-col justify-between items-center">
+                        <FaMoneyBill1Wave className="inline text-3xl me-2" />
                         <h5 className="text-lg mb-0.5">
-                            <FaMoneyBill1Wave className="inline me-2" />
                             Amount Paid:
+                            <span className="text-gray-700">
+                                {sale?.paid_amount ?? "N/A"}
+                            </span>
                         </h5>
-                        <span className="text-gray-700">
-                            {sale?.paid_amount ?? "N/A"}
-                        </span>
                     </div>
                 </div>
             </div>
