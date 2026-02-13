@@ -95,7 +95,7 @@ export const navItems: INavItem[] = [
         children: [
             { title: "All Sales", href: "/dashboard/sales" },
             { title: "Quick Sale", href: "/dashboard/sales/quick" },
-            { title: "Receipts / Invoices", href: "/dashboard/sales/receipts" },
+            // { title: "Receipts / Invoices", href: "/dashboard/sales/receipts" },
         ],
     },
     {
@@ -169,7 +169,7 @@ export function Sidebar(props: ISidebarProps) {
         setExpanded((prev) =>
             prev.includes(title)
                 ? prev.filter((t) => t !== title)
-                : [...prev, title]
+                : [...prev, title],
         );
     };
 
@@ -270,7 +270,7 @@ export function Sidebar(props: ISidebarProps) {
                                                         className="w-full hover:bg-white rounded-md flex flex-row justify-start items-center gap-3 px-2 py-1 text-left"
                                                         onClick={() =>
                                                             handleToggle(
-                                                                itemChild.title
+                                                                itemChild.title,
                                                             )
                                                         }
                                                     >
@@ -280,7 +280,7 @@ export function Sidebar(props: ISidebarProps) {
                                                         <FaAngleDown
                                                             className={`ms-auto transition-transform ${
                                                                 expanded.includes(
-                                                                    itemChild.title
+                                                                    itemChild.title,
                                                                 )
                                                                     ? "rotate-180"
                                                                     : ""
@@ -288,13 +288,13 @@ export function Sidebar(props: ISidebarProps) {
                                                         />
                                                     </button>
                                                     {expanded.includes(
-                                                        itemChild.title
+                                                        itemChild.title,
                                                     ) &&
                                                         itemChild.children && (
                                                             <div className="ml-6 px-1 border-l-1 border-l-gray-400">
                                                                 {itemChild.children.map(
                                                                     (
-                                                                        itemChild2
+                                                                        itemChild2,
                                                                     ) => (
                                                                         <div
                                                                             key={
@@ -315,7 +315,7 @@ export function Sidebar(props: ISidebarProps) {
                                                                                 </span>
                                                                             </Link>
                                                                         </div>
-                                                                    )
+                                                                    ),
                                                                 )}
                                                             </div>
                                                         )}
