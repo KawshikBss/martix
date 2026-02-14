@@ -18,6 +18,13 @@ import KpiCard from "@/components/ui/KpiCard";
 import { StockLevelsTable } from "./components/StockLevelsTable";
 import { StockLevelsList } from "./components/StockLevelsList/StockLevelsList";
 import { useInventories } from "@/lib/hooks/inventories/useInventories";
+import { FaFilter } from "react-icons/fa";
+import { useState } from "react";
+import { MdClear } from "react-icons/md";
+import Link from "next/link";
+import Loader from "@/components/ui/loaders/Loader";
+import { useSearchParams } from "next/navigation";
+import InventoriesFilterModal from "./components/InventoriesFilterModal";
 ChartJS.register(
     ArcElement,
     Tooltip,
@@ -25,7 +32,7 @@ ChartJS.register(
     CategoryScale,
     LinearScale,
     BarElement,
-    Title
+    Title,
 );
 
 const doughnutChartData = {
@@ -95,8 +102,43 @@ const barChartData = {
 };
 
 export default function StockLevels() {
-    const { data: inventories, isLoading: inventoriesIsLoading } =
-        useInventories();
+    const [query, setQuery] = useState<string>("");
+    const onQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setQuery(e.target.value);
+    };
+    const clearQuery = () => setQuery("");
+
+    const searchParams = useSearchParams();
+    const filters = {
+        store: searchParams.get("store") ?? "",
+        status: searchParams.get("status") ?? "",
+        category: searchParams.get("category") ?? "",
+        brand: searchParams.get("brand") ?? "",
+        min_inventory_value: searchParams.get("min_inventory_value") ?? "",
+        max_inventory_value: searchParams.get("max_inventory_value") ?? "",
+        has_expired_products:
+            searchParams.get("has_expired_products") ?? "false",
+        has_soon_expiring_products:
+            searchParams.get("has_soon_expiring_products") ?? "false",
+        min_create_date: searchParams.get("min_create_date") ?? "",
+        max_create_date: searchParams.get("max_create_date") ?? "",
+        min_update_date: searchParams.get("min_update_date") ?? "",
+        max_update_date: searchParams.get("max_update_date") ?? "",
+    };
+
+    const [showFilterModal, setShowFilterModal] = useState<boolean>(false);
+
+    const openFilterModal = () => setShowFilterModal(true);
+    const closeFilterModal = () => setShowFilterModal(false);
+
+    const {
+        data: inventories,
+        isLoading: inventoriesIsLoading,
+        isFetchingNextPage: inventoriesIsFetching,
+        isSuccess: inventoriesIsSuccess,
+        hasNextPage: inventoriesHasNextPage,
+        fetchNextPage: fetchNextInventories,
+    } = useInventories({ query, filters });
 
     return (
         <main className="p-4 md:p-8">
@@ -144,12 +186,101 @@ export default function StockLevels() {
                     trend={70}
                 />
             </div>
-
-            <StockLevelsTable
-                data={inventories}
-                isLoading={inventoriesIsLoading}
-            />
-            <StockLevelsList data={productsData} />
+            <div className="bg-white rounded-2xl shadow-md p-4 md:p-6">
+                <div className="my-6 flex flex-row justify-between">
+                    <input
+                        value={query}
+                        onChange={onQueryChange}
+                        type="text"
+                        placeholder="Search inventories..."
+                        className="border border-gray-300 rounded-md px-2 py-1 w-full"
+                    />
+                    {query?.length ? (
+                        <button
+                            onClick={clearQuery}
+                            className="ms-2 md:ms-4 bg-red-400 hover:bg-transparent text-white hover:text-red-400 border border-red-400 px-2 py-1 rounded-md"
+                        >
+                            <MdClear />
+                        </button>
+                    ) : (
+                        ""
+                    )}
+                    <button
+                        onClick={openFilterModal}
+                        className="ms-2 md:ms-4 bg-[#615cf6] hover:bg-transparent text-white hover:text-[#615cf6] border border-[#615cf6] px-2 py-1 rounded-md"
+                    >
+                        <FaFilter />
+                    </button>
+                </div>
+                <StockLevelsTable data={inventories} />
+                <StockLevelsList data={productsData} />
+                {inventoriesIsLoading || inventoriesIsFetching ? (
+                    <Loader />
+                ) : !inventoriesIsLoading &&
+                  !inventoriesIsFetching &&
+                  inventoriesIsSuccess &&
+                  !inventories?.pages?.[0].total ? (
+                    <p>
+                        No stocks{query?.length ? ` matching "${query}"` : ""}
+                        {filters?.store?.length ? " in that store" : ""}
+                        {filters?.status?.length
+                            ? ` currently "${filters?.status}"`
+                            : ""}
+                        {filters?.category?.length
+                            ? ` in the "${filters?.category}" category`
+                            : ""}
+                        {filters?.brand?.length
+                            ? ` from the "${filters?.brand}" brand`
+                            : ""}
+                        {filters?.min_inventory_value?.length &&
+                        filters?.max_inventory_value?.length
+                            ? ` with stock value between $${filters?.min_inventory_value} and $${filters?.max_inventory_value}`
+                            : filters?.min_inventory_value?.length
+                              ? ` with stock value more than $${filters?.min_inventory_value}`
+                              : filters?.max_inventory_value?.length
+                                ? ` with stock value less than $${filters?.max_inventory_value}`
+                                : ""}
+                        {filters?.has_expired_products == "true"
+                            ? " has expired products"
+                            : ""}
+                        {filters?.has_soon_expiring_products == "true"
+                            ? " has products expiring soon"
+                            : ""}
+                        {filters?.min_create_date?.length &&
+                        filters?.max_create_date?.length
+                            ? ` created between ${filters?.min_create_date} and ${filters?.max_create_date}`
+                            : filters?.min_create_date?.length
+                              ? ` created after ${filters?.min_create_date}`
+                              : filters?.max_create_date?.length
+                                ? ` created before ${filters?.max_create_date}`
+                                : ""}
+                        {filters?.min_update_date?.length &&
+                        filters?.max_update_date?.length
+                            ? ` updated between ${filters?.min_update_date} and ${filters?.max_update_date}`
+                            : filters?.min_update_date?.length
+                              ? ` updated after ${filters?.min_update_date}`
+                              : filters?.max_update_date?.length
+                                ? ` updated before ${filters?.max_update_date}`
+                                : ""}{" "}
+                        <Link
+                            href="/dashboard/stores/add"
+                            className="text-[#615cf6]"
+                        >
+                            Add new
+                        </Link>
+                        ?
+                    </p>
+                ) : inventoriesHasNextPage ? (
+                    <div
+                        onClick={() => fetchNextInventories()}
+                        className="bg-[#615cf6] hover:bg-transparent cursor-pointer text-white hover:text-[#615cf6] border border-[#615cf6] px-4 py-1 rounded-full w-fit mx-auto mt-4"
+                    >
+                        See More
+                    </div>
+                ) : (
+                    ""
+                )}
+            </div>
 
             <div className="w-full my-6 flex flex-col md:flex-row justify-between items-start gap-6">
                 <div className="w-full h-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between">
@@ -169,6 +300,10 @@ export default function StockLevels() {
                     <Bar options={barChartOptions} data={barChartData} />
                 </div>
             </div>
+            <InventoriesFilterModal
+                show={showFilterModal}
+                onClose={closeFilterModal}
+            />
         </main>
     );
 }
