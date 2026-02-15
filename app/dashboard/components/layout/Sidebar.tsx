@@ -67,7 +67,7 @@ export const navItems: INavItem[] = [
                 href: "/dashboard/inventory/stock-levels",
             },
             {
-                title: "Stock In / Stock Out",
+                title: "Stock Adjustment",
                 href: "/dashboard/inventory/adjust",
             },
             { title: "Low Stock Alerts", href: "/dashboard/inventory/alerts" },
