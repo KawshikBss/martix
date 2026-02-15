@@ -4,15 +4,65 @@ import Loader from "@/components/ui/loaders/Loader";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import StockAdjustForm from "./components/StockAdjustForm";
+import { toast } from "react-toastify";
+import { useStockAdjustment } from "@/lib/hooks/inventories/useStockAdjustment";
 
 type Props = {};
 
 const StockAdjustPage = (props: Props) => {
-    const adjustFormRef = React.useRef<HTMLFormElement | null>(null);
     const { back } = useRouter();
+
+    const adjustFormRef = React.useRef<HTMLFormElement | null>(null);
     const [adjustingStock, setAdjustingStock] = useState(false);
-    const resetForm = () => {};
-    const handleStockAdjust = async () => {};
+
+    const { mutateAsync: stockAdjustmentMutation } = useStockAdjustment();
+
+    const resetForm = () => {
+        if (!adjustFormRef) return;
+        adjustFormRef.current?.reset();
+    };
+    
+    const handleStockAdjust = async () => {
+        if (!adjustFormRef) return;
+        setAdjustingStock(true);
+
+        const formElements = adjustFormRef.current?.elements;
+        const product = (formElements?.namedItem("variant") as HTMLInputElement)
+            .value;
+        const store = (formElements?.namedItem("store") as HTMLInputElement)
+            .value;
+        const adjustment_type = (
+            formElements?.namedItem("adjustment_type") as HTMLInputElement
+        ).value;
+        const quantity = (
+            formElements?.namedItem("quantity") as HTMLInputElement
+        ).value;
+        const reason = (formElements?.namedItem("reason") as HTMLInputElement)
+            .value;
+        const notes = (formElements?.namedItem("notes") as HTMLInputElement)
+            .value;
+
+        try {
+            const formData = new FormData();
+            formData.append("product", product);
+            formData.append("store", store);
+            formData.append("adjustment_type", adjustment_type);
+            formData.append("quantity", quantity);
+            formData.append("reason", reason);
+            formData.append("notes", notes);
+
+            const response = await stockAdjustmentMutation(formData);
+
+            if (response) {
+                toast.success("Stock adjusted successfully!");
+                resetForm();
+            }
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setAdjustingStock(false);
+        }
+    };
     return (
         <main className="p-4 md:p-8">
             <div className="w-full bg-white rounded-2xl shadow-md p-6 flex flex-col md:flex-row justify-between items-center">
