@@ -33,6 +33,10 @@ export const inventoryService = {
                 .map((item) => (item[1].length ? `${item[0]}=${item[1]}` : ""))
                 .join("&")}`,
         ),
+
+    adjustInventory: async (payload: FormData | object): Promise<any> =>
+        await apiClient.post("inventories/adjustment", payload),
+
     getInventoryMovements: async (): Promise<InventoryMovementInterface[]> =>
         await apiClient.get("inventories/movements"),
 };
