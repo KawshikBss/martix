@@ -14,21 +14,35 @@ const StockAdjustForm = ({ ref }: Props) => {
     const onProductQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setProductQuery(e.target.value);
     };
-    const clearProductQuery = () => setProductQuery("");
+    const clearProductQuery = () => {
+        setSelectedProduct(null);
+        setProductQuery("");
+    };
     const { data: products } = useProducts({ query: productQuery });
     const [storeQuery, setStoreQuery] = useState<string>("");
     const onStoreQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setStoreQuery(e.target.value);
     };
-    const clearStoreQuery = () => setStoreQuery("");
+    const clearStoreQuery = () => {
+        setSelectedStore(null);
+        setStoreQuery("");
+    };
     const { data: stores } = useStores({ query: storeQuery });
     const [selectedProduct, setSelectedProduct] =
         useState<ProductInterface | null>(null);
     const [selectedStore, setSelectedStore] = useState<StoreInterface | null>(
         null,
     );
+
+    const onReset = () => {
+        setSelectedProduct(null);
+        setSelectedStore(null);
+        setProductQuery("");
+        setStoreQuery("");
+    };
+
     return (
-        <form ref={ref}>
+        <form ref={ref} onReset={onReset}>
             <div className="w-full bg-white rounded-2xl shadow-md mt-6 p-6">
                 <div className="mt-4 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                     <div className="sm:col-span-3">
@@ -40,13 +54,19 @@ const StockAdjustForm = ({ ref }: Props) => {
                         </label>
                         <div className="mt-2 relative">
                             <div className="flex flex-row justify-between gap-2 md:gap-4">
-                                <input
-                                    value={productQuery}
-                                    onChange={onProductQueryChange}
-                                    type="text"
-                                    placeholder="Search products..."
-                                    className="border border-gray-300 rounded-md px-2 py-1 w-full"
-                                />
+                                {selectedProduct ? (
+                                    <span className="border border-gray-300 rounded-md px-2 py-1 w-full">
+                                        {selectedProduct.name}
+                                    </span>
+                                ) : (
+                                    <input
+                                        value={productQuery}
+                                        onChange={onProductQueryChange}
+                                        type="text"
+                                        placeholder="Search products..."
+                                        className="border border-gray-300 rounded-md px-2 py-1 w-full"
+                                    />
+                                )}
                                 {productQuery.length ? (
                                     <button
                                         onClick={clearProductQuery}
@@ -57,9 +77,11 @@ const StockAdjustForm = ({ ref }: Props) => {
                                 ) : (
                                     ""
                                 )}
-                                <button className="bg-[#615cf6] hover:bg-transparent text-white hover:text-[#615cf6] border border-[#615cf6] px-2 py-1 rounded-md">
-                                    <MdQrCode />
-                                </button>
+                                {!selectedProduct && (
+                                    <button className="bg-[#615cf6] hover:bg-transparent text-white hover:text-[#615cf6] border border-[#615cf6] px-2 py-1 rounded-md">
+                                        <MdQrCode />
+                                    </button>
+                                )}
                             </div>
                             {!selectedProduct && productQuery?.length > 0 ? (
                                 <div className="absolute top-full mt-2 bg-white rounded-md p-2 border border-gray-400 shadow-md w-full">
@@ -124,13 +146,19 @@ const StockAdjustForm = ({ ref }: Props) => {
                         </label>
                         <div className="mt-2 relative">
                             <div className="flex flex-row justify-between gap-2 md:gap-4">
-                                <input
-                                    value={storeQuery}
-                                    onChange={onStoreQueryChange}
-                                    type="text"
-                                    placeholder="Search stores..."
-                                    className="border border-gray-300 rounded-md px-2 py-1 w-full"
-                                />
+                                {selectedStore ? (
+                                    <span className="border border-gray-300 rounded-md px-2 py-1 w-full">
+                                        {selectedStore.name}
+                                    </span>
+                                ) : (
+                                    <input
+                                        value={storeQuery}
+                                        onChange={onStoreQueryChange}
+                                        type="text"
+                                        placeholder="Search stores..."
+                                        className="border border-gray-300 rounded-md px-2 py-1 w-full"
+                                    />
+                                )}
                                 {storeQuery.length ? (
                                     <button
                                         onClick={clearStoreQuery}
@@ -141,9 +169,11 @@ const StockAdjustForm = ({ ref }: Props) => {
                                 ) : (
                                     ""
                                 )}
-                                <button className="bg-[#615cf6] hover:bg-transparent text-white hover:text-[#615cf6] border border-[#615cf6] px-2 py-1 rounded-md">
-                                    <MdQrCode />
-                                </button>
+                                {!selectedStore && (
+                                    <button className="bg-[#615cf6] hover:bg-transparent text-white hover:text-[#615cf6] border border-[#615cf6] px-2 py-1 rounded-md">
+                                        <MdQrCode />
+                                    </button>
+                                )}
                             </div>
                             {!selectedStore && storeQuery?.length > 0 ? (
                                 <div className="absolute top-full mt-2 bg-white rounded-md p-2 border border-gray-400 shadow-md w-full">
@@ -168,6 +198,12 @@ const StockAdjustForm = ({ ref }: Props) => {
                             ) : (
                                 ""
                             )}
+                            <input
+                                type="text"
+                                hidden
+                                name="store"
+                                value={selectedStore?.id || ""}
+                            />
                         </div>
                     </div>
                     <div className="sm:col-span-3">
