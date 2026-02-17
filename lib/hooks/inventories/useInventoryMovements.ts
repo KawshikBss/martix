@@ -1,9 +1,31 @@
 import { inventoryService } from "@/lib/services/inventoryService";
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 
-export function useInventoryMovements() {
-    return useQuery({
-        queryKey: ["inventory-movements"],
-        queryFn: () => inventoryService.getInventoryMovements(),
+export function useInventoryMovements(params: {
+    query?: string;
+    filters?: {
+        user?: string;
+        store?: string;
+        product?: string;
+        adjustment_type?: string;
+        reason?: string;
+        min_create_date?: string;
+        max_create_date?: string;
+        min_update_date?: string;
+        max_update_date?: string;
+    };
+}) {
+    return useInfiniteQuery({
+        queryKey: ["inventory-movements", params?.query, params?.filters],
+        queryFn: ({ pageParam = 1 }) =>
+            inventoryService.getInventoryMovements({
+                ...params,
+                page: pageParam,
+            }),
+        getNextPageParam: (lastPage) => {
+            const { current_page, last_page } = lastPage;
+            return current_page < last_page ? current_page + 1 : undefined;
+        },
+        initialPageParam: 1,
     });
 }
