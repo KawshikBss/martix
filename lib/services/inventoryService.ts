@@ -8,16 +8,12 @@ export const inventoryService = {
         query?: string;
         page?: number;
         filters?: {
-            manager?: string;
-            branch?: string;
-            location?: string;
+            store?: string;
             status?: string;
-            stock_level?: string;
-            type?: string;
+            category?: string;
+            brand?: string;
             min_inventory_value?: string;
             max_inventory_value?: string;
-            has_staff?: string;
-            has_low_stock?: string;
             has_expired_products?: string;
             has_soon_expiring_products?: string;
             min_create_date?: string;
@@ -37,6 +33,26 @@ export const inventoryService = {
     adjustInventory: async (payload: FormData | object): Promise<any> =>
         await apiClient.post("inventories/adjustment", payload),
 
-    getInventoryMovements: async (): Promise<InventoryMovementInterface[]> =>
-        await apiClient.get("inventories/movements"),
+    getInventoryMovements: async (params: {
+        query?: string;
+        page?: number;
+        filters?: {
+            user?: string;
+            store?: string;
+            product?: string;
+            adjustment_type?: string;
+            reason?: string;
+            min_create_date?: string;
+            max_create_date?: string;
+            min_update_date?: string;
+            max_update_date?: string;
+        };
+    }): Promise<PaginatedResponse<InventoryMovementInterface>> =>
+        await apiClient.get(
+            `inventories/movements?page=${params?.page ?? 1}&query=${
+                params?.query ?? ""
+            }&${Object.entries(params?.filters ?? {})
+                .map((item) => (item[1].length ? `${item[0]}=${item[1]}` : ""))
+                .join("&")}`,
+        ),
 };
