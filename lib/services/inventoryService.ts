@@ -30,6 +30,17 @@ export const inventoryService = {
                 .join("&")}`,
         ),
 
+    findInventory: async (
+        storeId: string,
+        productId: string,
+    ): Promise<
+        { inventory: InventoryInterface } | { message: string } | undefined
+    > =>
+        await apiClient.post("inventories/find", {
+            store: storeId,
+            product: productId,
+        }),
+
     adjustInventory: async (payload: FormData | object): Promise<any> =>
         await apiClient.post("inventories/adjustment", payload),
 
