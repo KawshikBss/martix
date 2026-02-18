@@ -8,6 +8,7 @@ import { TbTransferVertical } from "react-icons/tb";
 import { toast } from "react-toastify";
 import { InventoryInterface } from "@/lib/interfaces/InventoryInterface";
 import { inventoryService } from "@/lib/services/inventoryService";
+import { useStockTransfer } from "@/lib/hooks/inventories/useStockTransfer";
 
 type Props = {};
 
@@ -54,9 +55,7 @@ const StockTransferForm = (props: Props) => {
     const [inventory, setInventory] = useState<InventoryInterface | null>(null);
 
     useEffect(() => {
-        if (!selectedVariant) {
-            setSelectedVariant(selectedProduct?.id);
-        }
+        setSelectedVariant(selectedProduct?.id ?? undefined);
     }, [selectedProduct]);
 
     useEffect(() => {
@@ -80,34 +79,61 @@ const StockTransferForm = (props: Props) => {
                 setInventory(res.inventory);
                 setQuantity(res.inventory.quantity.toString());
             } else if ("message" in res) {
+                setInventory(null);
                 toast.error(res.message);
             }
         }
     };
 
-    const [transferringStoreQuery, settransferringStoreQuery] =
-        useState<string>("");
-    const ontransferringStoreQueryChange = (
+    const [receivingStoreQuery, setreceivingStoreQuery] = useState<string>("");
+    const onReceivingStoreQueryChange = (
         e: React.ChangeEvent<HTMLInputElement>,
     ) => {
-        settransferringStoreQuery(e.target.value);
+        setreceivingStoreQuery(e.target.value);
     };
-    const cleartransferringStoreQuery = () => {
-        setSelectedTransferringStore(null);
-        settransferringStoreQuery("");
+    const clearReceivingStoreQuery = () => {
+        setSelectedReceivingStore(null);
+        setreceivingStoreQuery("");
     };
-    const { data: transferringStores } = useStores({
-        query: transferringStoreQuery,
+    const { data: receivingStores } = useStores({
+        query: receivingStoreQuery,
     });
-    const [selectedTransferringStore, setSelectedTransferringStore] =
+    const [selectedReceivingStore, setSelectedReceivingStore] =
         useState<StoreInterface | null>(null);
 
-    const handleTransfer = async () => {};
+    const { mutateAsync: transferInventoryMutation } = useStockTransfer();
+
+    const handleTransfer = async () => {
+        if (!selectedProduct || !selectedStore || !selectedReceivingStore) {
+            toast.error(
+                "Please select product, source store and destination store.",
+            );
+            return;
+        }
+        if (!inventory) {
+            toast.error("No inventory available to transfer.");
+            return;
+        }
+        if (!quantity || parseInt(quantity) <= 0) {
+            toast.error("Please enter a valid quantity to transfer.");
+            return;
+        }
+        try {
+            await transferInventoryMutation({
+                inventory: inventory?.id!,
+                receiving_store: selectedReceivingStore.id,
+                quantity: parseInt(quantity),
+            });
+            toast.success("Inventory transferred successfully.");
+        } catch (error) {
+            toast.error("Failed to transfer inventory.");
+        }
+    };
 
     return (
         <div className="w-full bg-white rounded-2xl shadow-md mt-6 p-6">
             <div className="py-12 px-6 border-2 border-green-500 rounded-2xl relative">
-                <h3 className="text-xl font-medium mb-2">Transfer From</h3>
+                <h3 className="text-xl font-medium mb-2">Source</h3>
                 <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                     <div className="sm:col-span-3">
                         <label
@@ -148,7 +174,7 @@ const StockTransferForm = (props: Props) => {
                                 )}
                             </div>
                             {!selectedProduct && productQuery?.length > 0 ? (
-                                <div className="absolute top-full mt-2 bg-white rounded-md p-2 border border-gray-400 shadow-md w-full">
+                                <div className="absolute top-full mt-2 bg-white rounded-md p-2 border border-gray-400 shadow-md w-full z-10">
                                     {products?.pages?.[0].data?.length ? (
                                         products?.pages?.map((page) =>
                                             page?.data?.map((product) => (
@@ -251,7 +277,7 @@ const StockTransferForm = (props: Props) => {
                                 )}
                             </div>
                             {!selectedStore && storeQuery?.length > 0 ? (
-                                <div className="absolute top-full mt-2 bg-white rounded-md p-2 border border-gray-400 shadow-md w-full">
+                                <div className="absolute top-full mt-2 bg-white rounded-md p-2 border border-gray-400 shadow-md w-full z-10">
                                     {stores?.pages?.[0].data?.length ? (
                                         stores?.pages?.map((page) =>
                                             page?.data?.map((store) => (
@@ -298,13 +324,16 @@ const StockTransferForm = (props: Props) => {
                         </div>
                     </div>
                 </div>
-                <button className="bg-[#615cf6] hover:bg-white text-white hover:text-[#615cf6] hover:scale-115 hover:-rotate-12 transition-all duration-300 border border-[#615cf6] rounded-full cursor-pointer my-4 mx-auto block h-22 aspect-square absolute top-full left-1/2 transform -translate-x-1/2 -translate-y-10">
+                <button
+                    onClick={handleTransfer}
+                    className="bg-[#615cf6] hover:bg-white text-white hover:text-[#615cf6] hover:scale-115 hover:-rotate-12 transition-all duration-300 border border-[#615cf6] rounded-full cursor-pointer my-4 mx-auto block h-22 aspect-square absolute top-full left-1/2 transform -translate-x-1/2 -translate-y-10"
+                >
                     <TbTransferVertical className="text-2xl mx-auto" />
                     Transfer
                 </button>
             </div>
             <div className="py-12 px-6 border-2 border-red-500 rounded-2xl mt-6">
-                <h3 className="text-xl font-medium mb-2">Transfer To</h3>
+                <h3 className="text-xl font-medium mb-2">Destination</h3>
                 <div className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                     <div className="sm:col-span-3">
                         <label
@@ -315,24 +344,22 @@ const StockTransferForm = (props: Props) => {
                         </label>
                         <div className="mt-2 relative">
                             <div className="flex flex-row justify-between gap-2 md:gap-4">
-                                {selectedTransferringStore ? (
+                                {selectedReceivingStore ? (
                                     <span className="border border-gray-300 rounded-md px-2 py-1 w-full">
-                                        {selectedTransferringStore.name}
+                                        {selectedReceivingStore.name}
                                     </span>
                                 ) : (
                                     <input
-                                        value={transferringStoreQuery}
-                                        onChange={
-                                            ontransferringStoreQueryChange
-                                        }
+                                        value={receivingStoreQuery}
+                                        onChange={onReceivingStoreQueryChange}
                                         type="text"
                                         placeholder="Search stores..."
                                         className="border border-gray-300 rounded-md px-2 py-1 w-full"
                                     />
                                 )}
-                                {transferringStoreQuery.length ? (
+                                {receivingStoreQuery.length ? (
                                     <button
-                                        onClick={cleartransferringStoreQuery}
+                                        onClick={clearReceivingStoreQuery}
                                         className="bg-red-400 hover:bg-transparent text-white hover:text-red-400 border border-red-400 px-2 py-1 rounded-md"
                                     >
                                         <MdClear />
@@ -340,23 +367,23 @@ const StockTransferForm = (props: Props) => {
                                 ) : (
                                     ""
                                 )}
-                                {!selectedTransferringStore && (
+                                {!selectedReceivingStore && (
                                     <button className="bg-[#615cf6] hover:bg-transparent text-white hover:text-[#615cf6] border border-[#615cf6] px-2 py-1 rounded-md">
                                         <MdQrCode />
                                     </button>
                                 )}
                             </div>
-                            {!selectedTransferringStore &&
-                            transferringStoreQuery?.length > 0 ? (
-                                <div className="absolute top-full mt-2 bg-white rounded-md p-2 border border-gray-400 shadow-md w-full">
-                                    {transferringStores?.pages?.[0].data
+                            {!selectedReceivingStore &&
+                            receivingStoreQuery?.length > 0 ? (
+                                <div className="absolute top-full mt-2 bg-white rounded-md p-2 border border-gray-400 shadow-md w-full z-10">
+                                    {receivingStores?.pages?.[0].data
                                         ?.length ? (
-                                        transferringStores?.pages?.map((page) =>
+                                        receivingStores?.pages?.map((page) =>
                                             page?.data?.map((store) => (
                                                 <div
                                                     key={store.id}
                                                     onClick={() =>
-                                                        setSelectedTransferringStore(
+                                                        setSelectedReceivingStore(
                                                             store,
                                                         )
                                                     }
