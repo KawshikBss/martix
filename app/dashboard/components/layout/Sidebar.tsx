@@ -41,6 +41,10 @@ export const navItems: INavItem[] = [
             { title: "Store Overview", href: "/dashboard/stores" },
             { title: "Add Store", href: "/dashboard/stores/add" },
             { title: "Transfer Stock", href: "/dashboard/stores/transfer" },
+            {
+                title: "Stock History",
+                href: "/dashboard/stores/transfer/history",
+            },
         ],
     },
     {
