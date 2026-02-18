@@ -41,6 +41,9 @@ export const inventoryService = {
             product: productId,
         }),
 
+    transferInventory: async (payload: FormData | object): Promise<any> =>
+        await apiClient.post("inventories/transfer", payload),
+
     adjustInventory: async (payload: FormData | object): Promise<any> =>
         await apiClient.post("inventories/adjustment", payload),
 
