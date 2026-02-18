@@ -119,11 +119,28 @@ const StockTransferForm = (props: Props) => {
             return;
         }
         try {
-            await transferInventoryMutation({
+            const res = await transferInventoryMutation({
                 inventory: inventory?.id!,
                 receiving_store: selectedReceivingStore.id,
                 quantity: parseInt(quantity),
             });
+            console.log(res);
+            if (res?.error) {
+                toast.error(res.error);
+                return;
+            } else if (res?.message) {
+                toast.success(res.message);
+                setSelectedProduct(null);
+                setSelectedStore(null);
+                setSelectedReceivingStore(null);
+                setQuantity("");
+                setInventory(null);
+                setProductQuery("");
+                setStoreQuery("");
+                setreceivingStoreQuery("");
+                return;
+            }
+
             toast.success("Inventory transferred successfully.");
         } catch (error) {
             toast.error("Failed to transfer inventory.");
