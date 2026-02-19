@@ -2,6 +2,7 @@ import { apiClient } from "../core/apiClient";
 import { PaginatedResponse } from "../core/PaginatedResponse";
 import { InventoryInterface } from "../interfaces/InventoryInterface";
 import { InventoryMovementInterface } from "../interfaces/InventoryMovementInterface";
+import { InventoryTransferInterface } from "../interfaces/InventoryTransferInterface";
 
 export const inventoryService = {
     getInventories: async (params: {
@@ -43,6 +44,28 @@ export const inventoryService = {
 
     transferInventory: async (payload: FormData | object): Promise<any> =>
         await apiClient.post("inventories/transfer", payload),
+
+    getInventoryTransfers: async (params: {
+        query?: string;
+        page?: number;
+        filters?: {
+            user?: string;
+            store?: string;
+            product?: string;
+            status?: string;
+            min_create_date?: string;
+            max_create_date?: string;
+            min_update_date?: string;
+            max_update_date?: string;
+        };
+    }): Promise<PaginatedResponse<InventoryTransferInterface>> =>
+        await apiClient.get(
+            `inventories/transfers?page=${params?.page ?? 1}&query=${
+                params?.query ?? ""
+            }&${Object.entries(params?.filters ?? {})
+                .map((item) => (item[1].length ? `${item[0]}=${item[1]}` : ""))
+                .join("&")}`,
+        ),
 
     adjustInventory: async (payload: FormData | object): Promise<any> =>
         await apiClient.post("inventories/adjustment", payload),
