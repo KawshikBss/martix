@@ -82,6 +82,16 @@ export const navItems: INavItem[] = [
         ],
     },
     {
+        icon: <MdPointOfSale />,
+        title: "Sales / POS",
+        href: "/dashboard/sales",
+        children: [
+            { title: "All Sales", href: "/dashboard/sales" },
+            { title: "Quick Sale", href: "/dashboard/sales/quick" },
+            // { title: "Receipts / Invoices", href: "/dashboard/sales/receipts" },
+        ],
+    },
+    {
         icon: <FiShoppingCart />,
         title: "Orders",
         href: "/dashboard/orders",
@@ -90,16 +100,6 @@ export const navItems: INavItem[] = [
             { title: "Create New Order", href: "/dashboard/orders/new" },
             { title: "Pending Orders", href: "/dashboard/orders/pending" },
             { title: "Completed Orders", href: "/dashboard/orders/completed" },
-        ],
-    },
-    {
-        icon: <MdPointOfSale />,
-        title: "Sales / POS",
-        href: "/dashboard/sales",
-        children: [
-            { title: "All Sales", href: "/dashboard/sales" },
-            { title: "Quick Sale", href: "/dashboard/sales/quick" },
-            // { title: "Receipts / Invoices", href: "/dashboard/sales/receipts" },
         ],
     },
     {
