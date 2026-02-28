@@ -18,6 +18,7 @@ type Props = {
     setSelectedStore: React.Dispatch<
         React.SetStateAction<StoreInterface | undefined>
     >;
+    posMode?: boolean;
 };
 
 const SideCart = ({
@@ -25,6 +26,7 @@ const SideCart = ({
     onClose,
     selectedStore,
     setSelectedStore,
+    posMode = true,
 }: Props) => {
     const [selectedCustomer, setSelectedCustomer] = useState<
         CustomerInterface | undefined
@@ -178,6 +180,7 @@ const SideCart = ({
                 selectedStore={selectedStore}
                 selectedCustomer={selectedCustomer}
                 onReset={onReset}
+                posMode={posMode}
             />
         </div>
     );

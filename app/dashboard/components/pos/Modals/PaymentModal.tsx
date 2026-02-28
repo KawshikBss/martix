@@ -14,6 +14,7 @@ type Props = {
     selectedStore?: StoreInterface;
     selectedCustomer?: CustomerInterface;
     onReset: () => void;
+    posMode?: boolean;
 };
 
 enum PaymentMethod {
@@ -36,6 +37,7 @@ const PaymentModal = ({
     selectedStore,
     selectedCustomer,
     onReset,
+    posMode = true,
 }: Props) => {
     const { items, isEmpty, subTotal, taxTotal, cartTotal, clearCart } =
         useCart();
@@ -108,7 +110,7 @@ const PaymentModal = ({
         if (paymentDetails.length) {
             var totalReceived = paymentDetails.reduce(
                 (prev, acc) => prev + acc.amount,
-                0
+                0,
             );
             var remaining = cartTotal - totalReceived;
 
@@ -138,7 +140,7 @@ const PaymentModal = ({
         if (paymentDetails.length) {
             paidAmount = paymentDetails.reduce(
                 (prev, acc) => prev + acc.amount,
-                0
+                0,
             );
             due = cartTotal - paidAmount;
             if (due < 0) due = 0;
@@ -155,10 +157,10 @@ const PaymentModal = ({
             due_amount: due,
             payment_method: paymentMethod,
             payment_details: paymentDetails,
+            sale_type: posMode ? "pos" : "order",
             items: items,
         };
-        const response = await createOrderMutation(formData);
-
+        var response = await createOrderMutation(formData);
         if (response) {
             toast.success("Sale recorded successfully!");
             onReset();
