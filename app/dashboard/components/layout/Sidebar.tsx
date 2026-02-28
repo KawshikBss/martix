@@ -98,8 +98,6 @@ export const navItems: INavItem[] = [
         children: [
             { title: "All Orders", href: "/dashboard/orders" },
             { title: "Create New Order", href: "/dashboard/orders/new" },
-            { title: "Pending Orders", href: "/dashboard/orders/pending" },
-            { title: "Completed Orders", href: "/dashboard/orders/completed" },
         ],
     },
     {
