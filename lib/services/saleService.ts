@@ -6,7 +6,7 @@ import { SalesProduct } from "../interfaces/SalesProduct";
 import { UserInterface } from "../interfaces/UserInterface";
 
 export const saleService = {
-    getPosProducts: async (params: {
+    getSaleProducts: async (params: {
         storeId?: string;
         query?: string;
         page?: number;
@@ -30,7 +30,7 @@ export const saleService = {
         };
     }): Promise<PaginatedResponse<SalesProduct>> =>
         await apiClient.get(
-            `pos/products?store=${params?.storeId ?? ""}&page=${
+            `sales/products?store=${params?.storeId ?? ""}&page=${
                 params?.page ?? 1
             }&query=${params?.query ?? ""}&${Object.entries(
                 params?.filters ?? {},
@@ -38,6 +38,7 @@ export const saleService = {
                 .map((item) => (item[1].length ? `${item[0]}=${item[1]}` : ""))
                 .join("&")}`,
         ),
+
     getCustomers: async (params: {
         query?: string;
         store?: string;
@@ -56,6 +57,7 @@ export const saleService = {
     getOrders: async (params: {
         query?: string;
         page?: number;
+        saleType?: string;
         filters?: {
             store: string;
             user: string;
@@ -70,34 +72,29 @@ export const saleService = {
         };
     }): Promise<PaginatedResponse<SaleInterface>> =>
         await apiClient.get(
-            `pos/sales?page=${params?.page ?? 1}&query=${
-                params?.query ?? ""
-            }&${Object.entries(params?.filters ?? {})
+            `sales?page=${params?.page ?? 1}&sale_type=${params?.saleType ?? "order"}
+            &query=${params?.query ?? ""}&${Object.entries(
+                params?.filters ?? {},
+            )
                 .map((item) => (item[1].length ? `${item[0]}=${item[1]}` : ""))
                 .join("&")}`,
         ),
 
     getOrder: async (id?: string): Promise<SaleInterface> =>
-        await apiClient.get(`pos/sales/${id}`),
+        await apiClient.get(`sales/${id}`),
 
     createOrder: async (payload: FormData | object): Promise<SaleInterface> =>
-        await apiClient.post("pos/sales", payload),
+        await apiClient.post("sales", payload),
 
     refundOrder: async (params: {
         saleId?: string;
         payload: FormData | object;
     }): Promise<SaleInterface> =>
-        await apiClient.post(
-            `pos/sales/${params?.saleId}/refund`,
-            params?.payload,
-        ),
+        await apiClient.post(`sales/${params?.saleId}/refund`, params?.payload),
 
     cancelOrder: async (params: {
         saleId?: string;
         payload: FormData | object;
     }): Promise<SaleInterface> =>
-        await apiClient.post(
-            `pos/sales/${params?.saleId}/cancel`,
-            params?.payload,
-        ),
+        await apiClient.post(`sales/${params?.saleId}/cancel`, params?.payload),
 };

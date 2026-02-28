@@ -31,7 +31,7 @@ export function useSaleProducts(params: {
             params?.filters,
         ],
         queryFn: ({ pageParam = 1 }) =>
-            saleService.getPosProducts({ ...params, page: pageParam }),
+            saleService.getSaleProducts({ ...params, page: pageParam }),
         getNextPageParam: (lastPage) => {
             const { current_page, last_page } = lastPage;
             return current_page < last_page ? current_page + 1 : undefined;

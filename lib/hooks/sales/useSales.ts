@@ -3,6 +3,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 
 export function useSales(params: {
     query?: string;
+    saleType?: string;
     filters?: {
         store: string;
         user: string;
