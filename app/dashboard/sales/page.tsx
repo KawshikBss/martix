@@ -20,7 +20,7 @@ import SalesTable from "./components/SalesTable/SalesTable";
 import { SalesList } from "./components/SalesList/SalesList";
 import SalesFilterModal from "./components/SalesFilterModal";
 
-export default function Products() {
+export default function AllSales() {
     const [query, setQuery] = React.useState<string>("");
     const onQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setQuery(e.target.value);
@@ -55,7 +55,7 @@ export default function Products() {
         isSuccess: salesIsSuccess,
         hasNextPage: salesHasNextPage,
         fetchNextPage: fetchNextSales,
-    } = useSales({ query: query, filters: filters });
+    } = useSales({ query: query, saleType: "pos", filters: filters });
 
     return (
         <main className="p-4 md:p-8">
