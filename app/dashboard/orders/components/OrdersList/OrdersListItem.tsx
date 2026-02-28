@@ -1,147 +1,169 @@
-import { IProduct } from "@/public/data/productsData";
+import DashboardAccordion from "@/components/ui/accordions/DashboardAccordion";
+import { useCancelOrder } from "@/lib/hooks/sales/useCancelOrder";
+import { useRefundOrder } from "@/lib/hooks/sales/useRefundOrder";
+import { SaleInterface } from "@/lib/interfaces/SaleInterface";
+import Image from "next/image";
 import Link from "next/link";
-import * as React from "react";
-import { BiPackage } from "react-icons/bi";
-import {
-  FaCashRegister,
-  FaChevronDown,
-  FaChevronUp,
-  FaCreditCard,
-  FaGlobe,
-} from "react-icons/fa";
-import { FaCartShopping } from "react-icons/fa6";
+import { FaCashRegister, FaReceipt, FaUser } from "react-icons/fa";
+import { FaMoneyBill1Wave, FaShop } from "react-icons/fa6";
+import { toast } from "react-toastify";
 
 export interface IOrdersListItemProps {
-  product: IProduct;
+    sale: SaleInterface;
 }
 
-export function OrdersListItem(props: IOrdersListItemProps) {
-  const [isExpanded, setIsExpanded] = React.useState(false);
-  const { product } = props;
-  const toggleExpanded = () => {
-    setIsExpanded(!isExpanded);
-  };
-  return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 mb-3">
-      {/* Collapsed View */}
-      <div
-        className="flex items-center p-4 cursor-pointer hover:bg-gray-50 transition-colors"
-        onClick={toggleExpanded}
-      >
-        <FaCartShopping className="flex-shrink-0 w-6 h-6 text-gray-400" />
-        <div className="flex-1 ml-4">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-sm font-medium text-gray-900">
-                INV-00{product.id}
-              </h3>
-              <p className="text-xs text-gray-500">Customer {product.id}</p>
-            </div>
+export function OrdersListItem({ sale }: IOrdersListItemProps) {
+    const { mutateAsync: refundOrderMutation } = useRefundOrder();
+    const onRefund = async (saleId: string) => {
+        const res = await refundOrderMutation({
+            saleId: saleId?.toString(),
+            payload: {},
+        });
+        if (res) {
+            toast.success("Order refunded successfully!");
+        }
+    };
 
-            <div className="text-right mr-4">
-              <div
-                className={`text-xs font-bold ${
-                  product.id % 2 == 0 ? "text-yellow-600" : "text-green-600"
-                }`}
-              >
-                {product.id % 2 == 0 ? "Pending" : "Completed"}
-              </div>
-              <div className="text-xs text-gray-400">
-                ${product.stockQty * product.price}
-              </div>
-            </div>
-          </div>
-        </div>
+    const { mutateAsync: cancelOrderMutation } = useCancelOrder();
+    const onCancel = async (saleId: string) => {
+        const res = await cancelOrderMutation({
+            saleId: saleId?.toString(),
+            payload: {},
+        });
+        if (res) {
+            toast.success("Order cancelled successfully!");
+        }
+    };
+    return (
+        <DashboardAccordion.Container>
+            <DashboardAccordion.Header>
+                <FaReceipt className="flex-shrink-0 w-6 h-6 text-gray-400" />
+                <div className="flex-1 ml-4">
+                    <div className="flex items-center justify-between">
+                        <div>
+                            <h3 className="text-xs font-medium text-gray-900">
+                                {sale.sale_number}
+                            </h3>
+                            <p className="text-xs text-gray-500">
+                                {sale?.created_at}
+                            </p>
+                        </div>
 
-        {/* Expand Icon */}
-        <button className="flex-shrink-0 p-2 hover:bg-gray-100 rounded-full transition-colors">
-          {isExpanded ? (
-            <FaChevronUp className="w-4 h-4 text-gray-400" />
-          ) : (
-            <FaChevronDown className="w-4 h-4 text-gray-400" />
-          )}
-        </button>
-      </div>
-
-      {/* Expanded View */}
-      {isExpanded && (
-        <div className="px-4 pb-4 border-t border-gray-100">
-          <div className="pt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-gray-50 rounded-lg p-3">
-              <div className="flex items-center">
-                {product.id % 2 == 0 ? (
-                  <FaGlobe className="w-4 h-4 text-blue-500 mr-2" />
-                ) : (
-                  <FaCashRegister className="w-4 h-4 text-green-500 mr-2" />
-                )}
-                <span className="text-sm font-medium text-gray-700">
-                  {product.id % 2 == 0 ? "Online" : "In Store"} Order
-                </span>
-              </div>
-            </div>
-            {/* Stock Quantity */}
-            <div className="bg-gray-50 rounded-lg p-3">
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center">
-                  <BiPackage className="w-4 h-4 text-orange-500 mr-2" />
-                  <span className="text-lg font-bold text-gray-700">
-                    Products
-                  </span>
+                        <div className="text-right mr-4">
+                            <div
+                                className={`text-xs font-bold ${
+                                    sale?.status == "pending"
+                                        ? "text-yellow-600"
+                                        : sale?.status == "completed"
+                                          ? "text-green-600"
+                                          : "text-red-600"
+                                }`}
+                            >
+                                {sale?.status}
+                            </div>
+                        </div>
+                    </div>
                 </div>
-              </div>
-              <div className={`text-sm font-medium`}>
-                {product.name} X {1000 - product.stockQty} units
-              </div>
-            </div>
+            </DashboardAccordion.Header>
+            <DashboardAccordion.Expanded>
+                <DashboardAccordion.Section
+                    icon={<FaShop className="w-4 h-4 text-blue-500 mr-2" />}
+                    title="Store"
+                >
+                    <Link
+                        href="/dashboard/profile"
+                        className="flex flex-row items-center gap-4"
+                    >
+                        <Image
+                            src={
+                                sale?.store?.image_url ??
+                                "/images/user-placeholder.jpg"
+                            }
+                            alt={sale?.store?.name ?? "Profile"}
+                            className="rounded-full w-[40px] h-[40px] border object-cover"
+                            width={40}
+                            height={40}
+                        />
+                        <span className="text-gray-700">
+                            {sale?.store?.name ?? "N/A"}
+                        </span>
+                    </Link>
+                </DashboardAccordion.Section>
+                <DashboardAccordion.Section
+                    icon={<FaUser className="w-4 h-4 text-amber-500 mr-2" />}
+                    title="Customer"
+                >
+                    {sale?.customer ? (
+                        <Link
+                            href="/dashboard/customers"
+                            className="flex flex-row items-center gap-4"
+                        >
+                            <span className="text-gray-700">
+                                {sale?.customer?.name ?? "N/A"}
+                            </span>
+                        </Link>
+                    ) : (
+                        "Walk In Customer"
+                    )}
+                </DashboardAccordion.Section>
+                <DashboardAccordion.Section
+                    icon={
+                        <FaMoneyBill1Wave className="w-4 h-4 text-green-500 mr-2" />
+                    }
+                    title="Total"
+                >
+                    ${sale?.grand_total}
+                </DashboardAccordion.Section>
+                <DashboardAccordion.Section
+                    icon={
+                        <FaCashRegister
+                            className={`w-4 h-4 ${
+                                sale?.payment_status == "pending"
+                                    ? "text-yellow-600"
+                                    : sale?.status == "paid"
+                                      ? "text-green-600"
+                                      : sale?.status == "partial"
+                                        ? "text-orange-600"
+                                        : "text-red-600"
+                            } mr-2`}
+                        />
+                    }
+                    title="Payment"
+                >
+                    {sale?.payment_status}
+                </DashboardAccordion.Section>
 
-            <div className="bg-gray-50 rounded-lg p-3">
-              <div className="flex items-center justify-between mb-2">
-                <div className="flex items-center">
-                  <FaCreditCard className="w-4 h-4 text-green-500 mr-2" />
-                  <span className="text-sm font-medium text-gray-700">
-                    Payment Status
-                  </span>
+                <div className="mt-4 flex flex-wrap gap-2">
+                    <Link
+                        href={`/dashboard/sales/${sale.id}`}
+                        className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white"
+                    >
+                        View
+                    </Link>
+                    <Link
+                        href={`/dashboard/sales/receipts/${sale?.id}`}
+                        className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white"
+                    >
+                        Invoice
+                    </Link>
+                    {sale?.status !== "refunded" && (
+                        <button
+                            onClick={() => onRefund(sale?.id)}
+                            className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white cursor-pointer"
+                        >
+                            Refund
+                        </button>
+                    )}
+                    {sale?.status !== "canceled" && (
+                        <button
+                            onClick={() => onCancel(sale?.id)}
+                            className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white cursor-pointer"
+                        >
+                            Cancel
+                        </button>
+                    )}
                 </div>
-              </div>
-              <div
-                className={`text-lg font-bold ${
-                  product.id % 2 == 0 ? "text-yellow-600" : "text-green-600"
-                }`}
-              >
-                {product.id % 2 == 0 ? "Unpaid" : "Paid"}
-              </div>
-            </div>
-
-            {/* Actions */}
-            <div className="mt-4 flex flex-wrap gap-2">
-              <Link
-                href={"/"}
-                className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white"
-              >
-                View
-              </Link>
-              <Link
-                href={"/"}
-                className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white"
-              >
-                Edit
-              </Link>
-              <Link
-                href={"/"}
-                className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white"
-              >
-                Cancel
-              </Link>
-              <Link
-                href={"/"}
-                className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white"
-              >
-                Print Invoice
-              </Link>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
+            </DashboardAccordion.Expanded>
+        </DashboardAccordion.Container>
+    );
 }
