@@ -135,17 +135,36 @@ export function OrdersListItem({ sale }: IOrdersListItemProps) {
 
                 <div className="mt-4 flex flex-wrap gap-2">
                     <Link
-                        href={`/dashboard/sales/${sale.id}`}
+                        href={`/dashboard/sales/${sale?.id}`}
                         className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white"
                     >
                         View
                     </Link>
-                    <Link
-                        href={`/dashboard/sales/receipts/${sale?.id}`}
-                        className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white"
-                    >
-                        Invoice
-                    </Link>
+                    {sale?.status !== "completed" && (
+                        <Link
+                            href={`/dashboard/sales/receipts/${sale?.id}`}
+                            className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white"
+                        >
+                            Invoice
+                        </Link>
+                    )}
+                    {sale?.status !== "refunded" &&
+                        sale?.payment_status !== "paid" && (
+                            <Link
+                                href={`/`}
+                                className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white"
+                            >
+                                Add Payment
+                            </Link>
+                        )}
+                    {sale?.status === "pending" && (
+                        <button
+                            // onClick={() => onRefund(sale?.id)}
+                            className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white cursor-pointer"
+                        >
+                            Complete
+                        </button>
+                    )}
                     {sale?.status !== "refunded" && (
                         <button
                             onClick={() => onRefund(sale?.id)}
