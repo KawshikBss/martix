@@ -86,6 +86,15 @@ export const saleService = {
     createOrder: async (payload: FormData | object): Promise<SaleInterface> =>
         await apiClient.post("sales", payload),
 
+    completeOrder: async (params: {
+        saleId?: string;
+        payload: FormData | object;
+    }): Promise<SaleInterface> =>
+        await apiClient.post(
+            `sales/${params?.saleId}/complete`,
+            params?.payload,
+        ),
+
     refundOrder: async (params: {
         saleId?: string;
         payload: FormData | object;
