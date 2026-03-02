@@ -1,4 +1,5 @@
 import { useCancelOrder } from "@/lib/hooks/sales/useCancelOrder";
+import { useCompleteOrder } from "@/lib/hooks/sales/useCompleteOrder";
 import { useRefundOrder } from "@/lib/hooks/sales/useRefundOrder";
 import { SaleInterface } from "@/lib/interfaces/SaleInterface";
 import Link from "next/link";
@@ -10,6 +11,17 @@ type Props = { sale?: SaleInterface };
 const OrdersTableItem = ({ sale }: Props) => {
     const [showAllItems, setShowAllItems] = useState(false);
     const toggleShowAllItems = () => setShowAllItems((prev) => !prev);
+
+    const { mutateAsync: completeOrderMutation } = useCompleteOrder();
+    const onComplete = async (saleId?: string) => {
+        const res = await completeOrderMutation({
+            saleId: saleId?.toString(),
+            payload: {},
+        });
+        if (res) {
+            toast.success("Order completed successfully!");
+        }
+    };
 
     const { mutateAsync: refundOrderMutation } = useRefundOrder();
     const onRefund = async (saleId?: string) => {
@@ -98,7 +110,7 @@ const OrdersTableItem = ({ sale }: Props) => {
                     )}
                 {sale?.status === "pending" && (
                     <button
-                        // onClick={() => onRefund(sale?.id)}
+                        onClick={() => onComplete(sale?.id)}
                         className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white cursor-pointer"
                     >
                         Complete
@@ -112,14 +124,15 @@ const OrdersTableItem = ({ sale }: Props) => {
                         Refund
                     </button>
                 )}
-                {sale?.status !== "canceled" && (
-                    <button
-                        onClick={() => onCancel(sale?.id)}
-                        className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white cursor-pointer"
-                    >
-                        Cancel
-                    </button>
-                )}
+                {sale?.status !== "completed" &&
+                    sale?.status !== "canceled" && (
+                        <button
+                            onClick={() => onCancel(sale?.id)}
+                            className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white cursor-pointer"
+                        >
+                            Cancel
+                        </button>
+                    )}
             </td>
         </tr>
     );

@@ -1,4 +1,3 @@
-import { useCancelOrder } from "@/lib/hooks/sales/useCancelOrder";
 import { useRefundOrder } from "@/lib/hooks/sales/useRefundOrder";
 import { SaleInterface } from "@/lib/interfaces/SaleInterface";
 import Link from "next/link";
@@ -22,16 +21,6 @@ const SalesTableItem = ({ sale }: Props) => {
         }
     };
 
-    const { mutateAsync: cancelOrderMutation } = useCancelOrder();
-    const onCancel = async (saleId?: string) => {
-        const res = await cancelOrderMutation({
-            saleId: saleId?.toString(),
-            payload: {},
-        });
-        if (res) {
-            toast.success("Order cancelled successfully!");
-        }
-    };
     return (
         <tr className="border-b border-gray-300 hover:bg-gray-50 align-top">
             <td className="px-2 py-4">{sale?.sale_number}</td>
@@ -96,28 +85,12 @@ const SalesTableItem = ({ sale }: Props) => {
                             Add Payment
                         </Link>
                     )}
-                {sale?.status === "pending" && (
-                    <button
-                        // onClick={() => onRefund(sale?.id)}
-                        className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white cursor-pointer"
-                    >
-                        Complete
-                    </button>
-                )}
                 {sale?.status !== "refunded" && (
                     <button
                         onClick={() => onRefund(sale?.id)}
                         className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white cursor-pointer"
                     >
                         Refund
-                    </button>
-                )}
-                {sale?.status !== "canceled" && (
-                    <button
-                        onClick={() => onCancel(sale?.id)}
-                        className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white cursor-pointer"
-                    >
-                        Cancel
                     </button>
                 )}
             </td>

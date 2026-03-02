@@ -1,5 +1,6 @@
 import DashboardAccordion from "@/components/ui/accordions/DashboardAccordion";
 import { useCancelOrder } from "@/lib/hooks/sales/useCancelOrder";
+import { useCompleteOrder } from "@/lib/hooks/sales/useCompleteOrder";
 import { useRefundOrder } from "@/lib/hooks/sales/useRefundOrder";
 import { SaleInterface } from "@/lib/interfaces/SaleInterface";
 import Image from "next/image";
@@ -13,6 +14,16 @@ export interface IOrdersListItemProps {
 }
 
 export function OrdersListItem({ sale }: IOrdersListItemProps) {
+    const { mutateAsync: completeOrderMutation } = useCompleteOrder();
+    const onComplete = async (saleId?: string) => {
+        const res = await completeOrderMutation({
+            saleId: saleId?.toString(),
+            payload: {},
+        });
+        if (res) {
+            toast.success("Order completed successfully!");
+        }
+    };
     const { mutateAsync: refundOrderMutation } = useRefundOrder();
     const onRefund = async (saleId: string) => {
         const res = await refundOrderMutation({
@@ -159,7 +170,7 @@ export function OrdersListItem({ sale }: IOrdersListItemProps) {
                         )}
                     {sale?.status === "pending" && (
                         <button
-                            // onClick={() => onRefund(sale?.id)}
+                            onClick={() => onComplete(sale?.id)}
                             className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white cursor-pointer"
                         >
                             Complete
@@ -173,14 +184,15 @@ export function OrdersListItem({ sale }: IOrdersListItemProps) {
                             Refund
                         </button>
                     )}
-                    {sale?.status !== "canceled" && (
-                        <button
-                            onClick={() => onCancel(sale?.id)}
-                            className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white cursor-pointer"
-                        >
-                            Cancel
-                        </button>
-                    )}
+                    {sale?.status !== "completed" &&
+                        sale?.status !== "canceled" && (
+                            <button
+                                onClick={() => onCancel(sale?.id)}
+                                className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white cursor-pointer"
+                            >
+                                Cancel
+                            </button>
+                        )}
                 </div>
             </DashboardAccordion.Expanded>
         </DashboardAccordion.Container>

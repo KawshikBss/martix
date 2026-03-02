@@ -1,5 +1,4 @@
 import DashboardAccordion from "@/components/ui/accordions/DashboardAccordion";
-import { useCancelOrder } from "@/lib/hooks/sales/useCancelOrder";
 import { useRefundOrder } from "@/lib/hooks/sales/useRefundOrder";
 import { SaleInterface } from "@/lib/interfaces/SaleInterface";
 import Image from "next/image";
@@ -21,17 +20,6 @@ export function SalesListItem({ sale }: ISalesListItemProps) {
         });
         if (res) {
             toast.success("Order refunded successfully!");
-        }
-    };
-
-    const { mutateAsync: cancelOrderMutation } = useCancelOrder();
-    const onCancel = async (saleId: string) => {
-        const res = await cancelOrderMutation({
-            saleId: saleId?.toString(),
-            payload: {},
-        });
-        if (res) {
-            toast.success("Order cancelled successfully!");
         }
     };
     return (
@@ -157,28 +145,12 @@ export function SalesListItem({ sale }: ISalesListItemProps) {
                                 Add Payment
                             </Link>
                         )}
-                    {sale?.status === "pending" && (
-                        <button
-                            // onClick={() => onRefund(sale?.id)}
-                            className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white cursor-pointer"
-                        >
-                            Complete
-                        </button>
-                    )}
                     {sale?.status !== "refunded" && (
                         <button
                             onClick={() => onRefund(sale?.id)}
                             className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white cursor-pointer"
                         >
                             Refund
-                        </button>
-                    )}
-                    {sale?.status !== "canceled" && (
-                        <button
-                            onClick={() => onCancel(sale?.id)}
-                            className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white cursor-pointer"
-                        >
-                            Cancel
                         </button>
                     )}
                 </div>
