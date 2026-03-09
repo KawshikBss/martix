@@ -1,7 +1,10 @@
 "use client";
 
-import productsData from "@/public/data/productsData";
-import { FaHourglassHalf, FaChartBar, FaCaretUp } from "react-icons/fa6";
+import {
+    FaHourglassHalf,
+    FaChartBar,
+    FaMagnifyingGlassDollar,
+} from "react-icons/fa6";
 import { GrPieChart } from "react-icons/gr";
 import { Bar, Doughnut } from "react-chartjs-2";
 import {
@@ -25,6 +28,8 @@ import Link from "next/link";
 import Loader from "@/components/ui/loaders/Loader";
 import { useSearchParams } from "next/navigation";
 import InventoriesFilterModal from "./components/InventoriesFilterModal";
+import { useInventoryMetrics } from "@/lib/hooks/inventories/useInventoryMetrics";
+import { IoWarning } from "react-icons/io5";
 ChartJS.register(
     ArcElement,
     Tooltip,
@@ -131,6 +136,8 @@ export default function StockLevels() {
     const openFilterModal = () => setShowFilterModal(true);
     const closeFilterModal = () => setShowFilterModal(false);
 
+    const { data: inventoryMetrics } = useInventoryMetrics();
+
     const {
         data: inventories,
         isLoading: inventoriesIsLoading,
@@ -145,47 +152,41 @@ export default function StockLevels() {
             <h3 className="text-2xl font-medium my-6">Stock Levels</h3>
             <div className="my-6 w-full flex flex-col md:flex-row justify-between gap-4">
                 <KpiCard
-                    title="In Stock"
-                    value="+ 10,000"
-                    icon={<FaChartBar className="text-xl text-green-500" />}
+                    title="Total Active Items"
+                    value={inventoryMetrics?.total_active_items ?? "N/A"}
+                    icon={<FaChartBar className="text-xl text-blue-500" />}
                 />
                 <KpiCard
-                    title="Low Stock"
-                    value="+ 10,000"
-                    icon={<FaChartBar className="text-xl text-yellow-500" />}
-                />
-                <KpiCard
-                    title="Out Of Stock"
-                    value="- 10,000"
-                    icon={<FaChartBar className="text-xl text-red-500" />}
-                />
-                <KpiCard
-                    title="Expiring Soon"
-                    value="+ 10,000"
+                    title="Total Inventory Value"
+                    value={inventoryMetrics?.total_inventory_value ?? "N/A"}
                     icon={
-                        <FaHourglassHalf className="text-xl text-yellow-500" />
+                        <FaMagnifyingGlassDollar className="text-xl text-green-500" />
+                    }
+                />
+                <KpiCard
+                    title="Low Stock Items"
+                    value={inventoryMetrics?.low_stock_items ?? "N/A"}
+                    icon={<IoWarning className="text-xl text-yellow-500" />}
+                />
+                <KpiCard
+                    title="Out of Stock Items"
+                    value={inventoryMetrics?.out_of_stock_items ?? "N/A"}
+                    icon={<IoWarning className="text-xl text-red-500" />}
+                />
+                <KpiCard
+                    title="Expiring Soon Items"
+                    value={inventoryMetrics?.expiring_soon_items ?? "N/A"}
+                    icon={<FaHourglassHalf className="text-xl text-gray-500" />}
+                />
+                <KpiCard
+                    title="Expired Items"
+                    value={inventoryMetrics?.expired_items ?? "N/A"}
+                    icon={
+                        <FaHourglassHalf className="text-xl text-amber-500" />
                     }
                 />
             </div>
 
-            <div className="my-6 w-full flex flex-col md:flex-row justify-between gap-4">
-                <KpiCard title="Total Tracked" value="+ 10,000" trend={70} />
-                <KpiCard
-                    title="Total Stock Units on Hand"
-                    value="+ 10,000"
-                    trend={70}
-                />
-                <KpiCard
-                    title="Low or Out of Stock"
-                    value="- 10,000"
-                    trend={-70}
-                />
-                <KpiCard
-                    title="Total Stock Value"
-                    value="$ 10,000"
-                    trend={70}
-                />
-            </div>
             <div className="bg-white rounded-2xl shadow-md p-4 md:p-6">
                 <div className="my-6 flex flex-row justify-between">
                     <input
@@ -213,7 +214,7 @@ export default function StockLevels() {
                     </button>
                 </div>
                 <StockLevelsTable data={inventories} />
-                <StockLevelsList data={productsData} />
+                <StockLevelsList data={inventories} />
                 {inventoriesIsLoading || inventoriesIsFetching ? (
                     <Loader />
                 ) : !inventoriesIsLoading &&
