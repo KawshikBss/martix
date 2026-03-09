@@ -5,7 +5,9 @@ export function useToggleStoreStatus() {
     const queryClient = useQueryClient();
     return useMutation({
         mutationFn: (id?: string) => storeService.toggleStoreStatus(id),
-        onSuccess: () =>
-            queryClient.invalidateQueries({ queryKey: ["stores"] }),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["stores"] });
+            queryClient.invalidateQueries({ queryKey: ["store-metrics"] });
+        },
     });
 }
