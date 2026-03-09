@@ -30,7 +30,7 @@ export const storeService = {
                 params?.query ?? ""
             }&${Object.entries(params?.filters ?? {})
                 .map((item) => (item[1].length ? `${item[0]}=${item[1]}` : ""))
-                .join("&")}`
+                .join("&")}`,
         ),
 
     getStore: async (id?: string): Promise<StoreInterface> =>
@@ -46,4 +46,7 @@ export const storeService = {
         await apiClient.post(`stores/update/${params.id}`, params.payload),
     toggleStoreStatus: async (id?: string): Promise<any> =>
         await apiClient.get(`stores/toggle-status/${id}`),
+
+    getStoreMetrics: async (): Promise<any> =>
+        await apiClient.get("stores/metrics"),
 };
