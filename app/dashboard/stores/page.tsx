@@ -2,13 +2,13 @@
 import KpiCard from "@/components/ui/KpiCard";
 import * as React from "react";
 import {
+    FaBoxes,
     FaChartBar,
     FaChartLine,
+    FaCheck,
     FaFilter,
-    FaHourglassHalf,
     FaStore,
 } from "react-icons/fa";
-import { FaBoxesStacked, FaMoneyBill1Wave } from "react-icons/fa6";
 import { TiWarning } from "react-icons/ti";
 import { Bar, Doughnut, Line } from "react-chartjs-2";
 import {
@@ -32,6 +32,7 @@ import StoresFilterModal from "./components/StoresFilterModal";
 import { useSearchParams } from "next/navigation";
 import { MdClear } from "react-icons/md";
 import Loader from "@/components/ui/loaders/Loader";
+import { useStoreMetrics } from "@/lib/hooks/stores/useStoreMetrics";
 ChartJS.register(
     ArcElement,
     PointElement,
@@ -41,7 +42,7 @@ ChartJS.register(
     CategoryScale,
     LinearScale,
     BarElement,
-    Title
+    Title,
 );
 
 const barChartOptions = {
@@ -128,6 +129,8 @@ const lineChartData = {
 };
 
 export default function BranchOverview() {
+    const { data: storeMetrics } = useStoreMetrics();
+
     const [query, setQuery] = React.useState<string>("");
     const onQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setQuery(e.target.value);
@@ -189,35 +192,24 @@ export default function BranchOverview() {
                 <KpiCard
                     title="Total Branches"
                     icon={<FaStore className="mr-2 text-xl text-blue-500" />}
-                    value="+ 10,000"
+                    value={storeMetrics?.total_stores ?? 0}
                 />
                 <KpiCard
-                    title="Total Sales"
-                    icon={
-                        <FaMoneyBill1Wave className="mr-2 text-xl text-green-500" />
-                    }
-                    value="$ 10,000"
+                    title="Active Stores"
+                    icon={<FaCheck className="mr-2 text-xl text-green-500" />}
+                    value={storeMetrics?.active_stores ?? 0}
                 />
                 <KpiCard
-                    title="Total Stock Value"
+                    title="Inactive Stores"
                     icon={
-                        <FaBoxesStacked className="mr-2 text-xl text-orange-500" />
+                        <TiWarning className="mr-2 text-xl text-orange-500" />
                     }
-                    value="+ 10,000"
+                    value={storeMetrics?.inactive_stores ?? 0}
                 />
                 <KpiCard
-                    title="Low Stock Alerts"
-                    icon={
-                        <TiWarning className="mr-2 text-xl text-yellow-500" />
-                    }
-                    value="+ 10,000"
-                />
-                <KpiCard
-                    title="Pending Orders"
-                    icon={
-                        <FaHourglassHalf className="mr-2 text-xl text-gray-500" />
-                    }
-                    value="- 10,000"
+                    title="Avg Stock"
+                    icon={<FaBoxes className="mr-2 text-xl text-gray-500" />}
+                    value={storeMetrics?.average_inventory_per_store ?? 0}
                 />
             </div>
             <div className="bg-white rounded-2xl shadow-md p-6">
@@ -272,7 +264,7 @@ export default function BranchOverview() {
                         {filters?.stock_level?.length
                             ? ` with ${filters?.stock_level?.replaceAll(
                                   "_",
-                                  " "
+                                  " ",
                               )}`
                             : ""}
                         {filters?.type?.length
@@ -282,10 +274,10 @@ export default function BranchOverview() {
                         filters?.max_inventory_value?.length
                             ? ` with stock value between $${filters?.min_inventory_value} and $${filters?.max_inventory_value}`
                             : filters?.min_inventory_value?.length
-                            ? ` with stock value more than $${filters?.min_inventory_value}`
-                            : filters?.max_inventory_value?.length
-                            ? ` with stock value less than $${filters?.max_inventory_value}`
-                            : ""}
+                              ? ` with stock value more than $${filters?.min_inventory_value}`
+                              : filters?.max_inventory_value?.length
+                                ? ` with stock value less than $${filters?.max_inventory_value}`
+                                : ""}
                         {filters?.has_staff == "true" ? " has staffs" : ""}
                         {filters?.has_low_stock == "true"
                             ? " has low stock"
@@ -300,18 +292,18 @@ export default function BranchOverview() {
                         filters?.max_create_date?.length
                             ? ` created between ${filters?.min_create_date} and ${filters?.max_create_date}`
                             : filters?.min_create_date?.length
-                            ? ` created after ${filters?.min_create_date}`
-                            : filters?.max_create_date?.length
-                            ? ` created before ${filters?.max_create_date}`
-                            : ""}
+                              ? ` created after ${filters?.min_create_date}`
+                              : filters?.max_create_date?.length
+                                ? ` created before ${filters?.max_create_date}`
+                                : ""}
                         {filters?.min_update_date?.length &&
                         filters?.max_update_date?.length
                             ? ` updated between ${filters?.min_update_date} and ${filters?.max_update_date}`
                             : filters?.min_update_date?.length
-                            ? ` updated after ${filters?.min_update_date}`
-                            : filters?.max_update_date?.length
-                            ? ` updated before ${filters?.max_update_date}`
-                            : ""}{" "}
+                              ? ` updated after ${filters?.min_update_date}`
+                              : filters?.max_update_date?.length
+                                ? ` updated before ${filters?.max_update_date}`
+                                : ""}{" "}
                         <Link
                             href="/dashboard/stores/add"
                             className="text-[#615cf6]"
