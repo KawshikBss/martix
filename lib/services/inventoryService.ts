@@ -92,4 +92,13 @@ export const inventoryService = {
                 .map((item) => (item[1].length ? `${item[0]}=${item[1]}` : ""))
                 .join("&")}`,
         ),
+
+    getInventoryMetrics: async (): Promise<any> =>
+        await apiClient.get("inventories/metrics"),
+
+    getInventoryTransferMetrics: async (): Promise<any> =>
+        await apiClient.get("inventories/transfer-metrics"),
+
+    getInventoryMovementMetrics: async (): Promise<any> =>
+        await apiClient.get("inventories/movement-metrics"),
 };
