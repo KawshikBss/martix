@@ -1,29 +1,32 @@
-import { IProduct } from "@/public/data/productsData";
-import Link from "next/link";
-import * as React from "react";
 import { StockLevelsListItem } from "./StockLevelsListItem";
+import { InfiniteData } from "@tanstack/react-query";
+import { PaginatedResponse } from "@/lib/core/PaginatedResponse";
+import { InventoryInterface } from "@/lib/interfaces/InventoryInterface";
 
 export interface IStockLevelsListProps {
-  data: IProduct[];
+    data?: InfiniteData<PaginatedResponse<InventoryInterface>>;
 }
 
-export function StockLevelsList(props: IStockLevelsListProps) {
-  return (
-    <div className="md:hidden">
-      <h4 className="text-lg font-semibold mb-2">Stock Details</h4>
-      {props.data.length === 0 && <p>No data found.</p>}
-      {props.data.length > 0 && (
-        <>
-          <span className="text-center text-gray-500">
-            Showing {props.data.length} results
-          </span>
-          <div className="space-y-4 mt-4">
-            {props.data.map((product) => (
-              <StockLevelsListItem key={product.id} product={product} />
-            ))}
-          </div>
-        </>
-      )}
-    </div>
-  );
+export function StockLevelsList({ data }: IStockLevelsListProps) {
+    const shownCount =
+        data?.pages.reduce((total, page) => total + page.data.length, 0) ?? 0;
+    return data?.pages?.[0].total ? (
+        <div className="md:hidden mt-4">
+            <span className="text-center text-gray-500">
+                Showing {shownCount} of {data?.pages?.[0].total} inventories
+            </span>
+            <div className="space-y-4 mt-4">
+                {data?.pages?.map((page) =>
+                    page.data.map((inventory) => (
+                        <StockLevelsListItem
+                            key={inventory.id}
+                            inventory={inventory}
+                        />
+                    )),
+                )}
+            </div>
+        </div>
+    ) : (
+        ""
+    );
 }
