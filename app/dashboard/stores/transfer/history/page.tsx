@@ -10,6 +10,7 @@ import {
     FaCheckSquare,
     FaFilter,
     FaHourglassHalf,
+    FaSearchDollar,
 } from "react-icons/fa";
 import { MdClear } from "react-icons/md";
 import { TbTransferVertical } from "react-icons/tb";
@@ -17,10 +18,13 @@ import { InventoryTransferTable } from "./components/InventoryTransferTable";
 import Loader from "@/components/ui/loaders/Loader";
 import InventoryTransfersFilterModal from "./components/InventoryTransfersFilterModal";
 import { InventoryTransferList } from "./components/InventoryTransferList/InventoryTransferList";
+import { useInventoryTransferMetrics } from "@/lib/hooks/inventories/useInventoryTransferMetrics";
 
 type Props = {};
 
 const StockTransferHistory = (props: Props) => {
+    const { data: inventoryTransferMetrics } = useInventoryTransferMetrics();
+
     const [query, setQuery] = React.useState<string>("");
     const onQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setQuery(e.target.value);
@@ -70,26 +74,35 @@ const StockTransferHistory = (props: Props) => {
                     icon={
                         <TbTransferVertical className="mr-2 text-xl text-blue-500" />
                     }
-                    value="+ 10,000"
+                    value={inventoryTransferMetrics?.total_transfers ?? 0}
                 />
                 <KpiCard
                     title="Completed"
                     icon={
                         <FaCheckSquare className="mr-2 text-xl text-green-500" />
                     }
-                    value="$ 10,000"
+                    value={inventoryTransferMetrics?.total_completed ?? 0}
                 />
                 <KpiCard
                     title="Pending"
                     icon={
-                        <FaHourglassHalf className="mr-2 text-xl text-yellow-500" />
+                        <FaHourglassHalf className="mr-2 text-xl text-gray-500" />
                     }
-                    value="- 10,000"
+                    value={inventoryTransferMetrics?.total_pending ?? 0}
                 />
                 <KpiCard
                     title="Units Moved"
-                    icon={<FaBoxes className="mr-2 text-xl text-gray-500" />}
-                    value="+ 10,000"
+                    icon={<FaBoxes className="mr-2 text-xl text-amber-500" />}
+                    value={
+                        inventoryTransferMetrics?.total_transfers_quantity ?? 0
+                    }
+                />
+                <KpiCard
+                    title="Total Transfers Value"
+                    icon={
+                        <FaSearchDollar className="mr-2 text-xl text-green-500" />
+                    }
+                    value={inventoryTransferMetrics?.total_transfers_value ?? 0}
                 />
             </div>
             <div className="bg-white rounded-2xl shadow-md p-6">
