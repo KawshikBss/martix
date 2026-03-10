@@ -13,14 +13,21 @@ import { useSearchParams } from "next/navigation";
 import { MdClear } from "react-icons/md";
 import Loader from "@/components/ui/loaders/Loader";
 import KpiCard from "@/components/ui/KpiCard";
-import { FaMoneyBill1Wave } from "react-icons/fa6";
+import {
+    FaMoneyBill1Wave,
+    FaMoneyBillTransfer,
+    FaScaleUnbalanced,
+} from "react-icons/fa6";
 import { IoCloseCircle } from "react-icons/io5";
 import { useSales } from "@/lib/hooks/sales/useSales";
 import SalesTable from "./components/SalesTable/SalesTable";
 import { SalesList } from "./components/SalesList/SalesList";
 import SalesFilterModal from "./components/SalesFilterModal";
+import { useSaleMetrics } from "@/lib/hooks/sales/useSaleMetrics";
 
 export default function AllSales() {
+    const { data: saleMetrics } = useSaleMetrics();
+
     const [query, setQuery] = React.useState<string>("");
     const onQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setQuery(e.target.value);
@@ -73,43 +80,36 @@ export default function AllSales() {
             <div className="my-6 w-full flex flex-col md:flex-row justify-between gap-4">
                 <KpiCard
                     title="Total Sales"
+                    icon={<FaTruck className="mr-2 text-xl text-blue-500" />}
+                    value={saleMetrics?.total_sales ?? "N/A"}
+                />
+                <KpiCard
+                    title="Total Revenue"
                     icon={
                         <FaMoneyBill1Wave className="mr-2 text-xl text-green-500" />
                     }
-                    value="$ 10,000"
+                    value={saleMetrics?.net_revenue ?? "N/A"}
                 />
                 <KpiCard
-                    title="Total Orders"
-                    icon={<FaTruck className="mr-2 text-xl text-blue-500" />}
-                    value="+ 10,000"
-                />
-                <KpiCard
-                    title="Total Paid"
+                    title="Total Transactions"
                     icon={
-                        <FaCheckCircle className="mr-2 text-xl text-teal-500" />
+                        <FaMoneyBillTransfer className="mr-2 text-xl text-teal-500" />
                     }
-                    value="+ 10,000"
+                    value={saleMetrics?.total_transactions ?? "N/A"}
                 />
                 <KpiCard
-                    title="Total Pending"
+                    title="Avg Sale Value"
                     icon={
-                        <FaHourglassHalf className="mr-2 text-xl text-yellow-500" />
+                        <FaScaleUnbalanced className="mr-2 text-xl text-amber-500" />
                     }
-                    value="+ 10,000"
+                    value={saleMetrics?.avg_ticket_value ?? "N/A"}
                 />
                 <KpiCard
                     title="Refunds"
                     icon={
                         <FaRecycle className="mr-2 text-xl text-orange-500" />
                     }
-                    value="+ 10,000"
-                />
-                <KpiCard
-                    title="Cancelled"
-                    icon={
-                        <IoCloseCircle className="mr-2 text-xl text-red-500" />
-                    }
-                    value="- 10,000"
+                    value={saleMetrics?.total_refunded ?? "N/A"}
                 />
             </div>
             <div className="bg-white rounded-2xl shadow-md p-4 md:p-6">

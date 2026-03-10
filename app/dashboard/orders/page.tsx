@@ -10,6 +10,7 @@ import {
     FaFilter,
     FaHourglass,
     FaHourglassHalf,
+    FaSearchDollar,
     FaShoppingCart,
 } from "react-icons/fa";
 import { FaMoneyBill1Wave } from "react-icons/fa6";
@@ -36,6 +37,8 @@ import Loader from "@/components/ui/loaders/Loader";
 import OrdersFilterModal from "./components/OrdersFilterModal";
 import OrdersTable from "./components/OrdersTable/OrdersTable";
 import { OrdersList } from "./components/OrdersList/OrdersList";
+import { useSaleMetrics } from "@/lib/hooks/sales/useSaleMetrics";
+import { IoMdClock } from "react-icons/io";
 ChartJS.register(
     ArcElement,
     Tooltip,
@@ -128,6 +131,8 @@ const lineChartData = {
 };
 
 export default function Orders() {
+    const { data: orderMetrics } = useSaleMetrics(false);
+
     const [query, setQuery] = React.useState<string>("");
     const onQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setQuery(e.target.value);
@@ -182,33 +187,38 @@ export default function Orders() {
                     icon={
                         <FaShoppingCart className="mr-2 text-xl text-blue-500" />
                     }
-                    value="+ 10,000"
-                />
-                <KpiCard
-                    title="Total Orders Value"
-                    icon={
-                        <FaMoneyBill1Wave className="mr-2 text-xl text-green-500" />
-                    }
-                    value="$ 10,000"
+                    value={orderMetrics?.total_sales ?? "N/A"}
                 />
                 <KpiCard
                     title="Pending"
                     icon={
                         <FaHourglassHalf className="mr-2 text-xl text-yellow-500" />
                     }
-                    value="+ 10,000"
+                    value={orderMetrics?.total_pending ?? "N/A"}
                 />
                 <KpiCard
                     title="Completed"
                     icon={
                         <FaCheckCircle className="mr-2 text-xl text-green-500" />
                     }
-                    value="+ 10,000"
+                    value={orderMetrics?.total_completed ?? "N/A"}
                 />
                 <KpiCard
                     title="Cancelled"
                     icon={<MdCancel className="mr-2 text-xl text-red-500" />}
-                    value="- 10,000"
+                    value={orderMetrics?.total_cancelled ?? "N/A"}
+                />
+                <KpiCard
+                    title="Due"
+                    icon={<IoMdClock className="mr-2 text-xl text-gray-500" />}
+                    value={orderMetrics?.total_due ?? "N/A"}
+                />
+                <KpiCard
+                    title="Due Amount"
+                    icon={
+                        <FaSearchDollar className="mr-2 text-xl text-teal-500" />
+                    }
+                    value={orderMetrics?.total_due_amount ?? "N/A"}
                 />
             </div>
             <div className="bg-white rounded-2xl shadow-md p-4 md:p-6">
