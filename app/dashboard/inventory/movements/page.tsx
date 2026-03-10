@@ -17,6 +17,7 @@ import {
     LineElement,
 } from "chart.js";
 import {
+    FaBalanceScale,
     FaBalanceScaleLeft,
     FaFilter,
     FaMinus,
@@ -33,6 +34,7 @@ import { MdClear } from "react-icons/md";
 import { useSearchParams } from "next/navigation";
 import Loader from "@/components/ui/loaders/Loader";
 import InventoryMovementsFilterModal from "./components/InventoryMovementsFilterModal";
+import { useInventoryMovementMetrics } from "@/lib/hooks/inventories/useInventoryMovementMetrics";
 ChartJS.register(
     ArcElement,
     PointElement,
@@ -177,6 +179,8 @@ const horizontalBarChartData = {
 };
 
 export default function InventoryMovements() {
+    const { data: inventoryMovementMetrics } = useInventoryMovementMetrics();
+
     const [query, setQuery] = React.useState<string>("");
     const onQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setQuery(e.target.value);
@@ -223,25 +227,32 @@ export default function InventoryMovements() {
             </div>
             <div className="my-6 w-full flex flex-col md:flex-row justify-between gap-4">
                 <KpiCard
-                    title="Total Movements Today"
-                    value="+ 10,000"
+                    title="Total Movements"
+                    value={inventoryMovementMetrics?.total_movements ?? 0}
                     icon={<FaChartLine className="text-xl text-blue-500" />}
                 />
                 <KpiCard
-                    title="Stock Added Today"
-                    value="+ 10,000"
+                    title="Stock Added"
+                    value={inventoryMovementMetrics?.stock_added ?? 0}
                     icon={<FaPlusSquare className="text-xl text-green-500" />}
                 />
                 <KpiCard
-                    title="Stock Removed Today"
-                    value="- 10,000"
+                    title="Stock Removed"
+                    value={inventoryMovementMetrics?.stock_removed ?? 0}
                     icon={<FaMinusSquare className="text-xl text-red-500" />}
                 />
                 <KpiCard
-                    title="Adjustments Today"
-                    value="+ 10,000"
+                    title="Adjustments"
+                    value={inventoryMovementMetrics?.adjustments ?? 0}
                     icon={
                         <FaBalanceScaleLeft className="text-xl text-amber-500" />
+                    }
+                />
+                <KpiCard
+                    title="Net Stock Change"
+                    value={inventoryMovementMetrics?.net_stock_change ?? 0}
+                    icon={
+                        <FaBalanceScale className="text-xl text-emerald-500" />
                     }
                 />
             </div>
