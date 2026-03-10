@@ -106,4 +106,7 @@ export const saleService = {
         payload: FormData | object;
     }): Promise<SaleInterface> =>
         await apiClient.post(`sales/${params?.saleId}/cancel`, params?.payload),
+
+    getSaleMetrics: async ({ pos = true }): Promise<any> =>
+        await apiClient.get(`sales/${pos ? "pos" : "order"}-metrics`),
 };
