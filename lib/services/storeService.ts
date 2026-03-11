@@ -49,4 +49,7 @@ export const storeService = {
 
     getStoreMetrics: async (): Promise<any> =>
         await apiClient.get("stores/metrics"),
+
+    getSalesGraphData: async (): Promise<any> =>
+        await apiClient.get("stores/sales-graph"),
 };

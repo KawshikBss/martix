@@ -109,4 +109,10 @@ export const saleService = {
 
     getSaleMetrics: async ({ pos = true }): Promise<any> =>
         await apiClient.get(`sales/${pos ? "pos" : "order"}-metrics`),
+
+    getSalesGraphData: async (): Promise<any> =>
+        await apiClient.get("sales/graph?sale_type=pos"),
+
+    getOrdersGraphData: async (): Promise<any> =>
+        await apiClient.get("sales/graph?sale_type=order"),
 };
