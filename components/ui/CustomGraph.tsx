@@ -32,10 +32,23 @@ type Props = {
     type?: "line" | "bar" | "pie";
     data: ChartData;
     seeMoreLink?: string;
+    colspan?: number;
 };
 
-const CustomGraph = ({ title, subtitle, icon, type, data }: Props) => {
+const CustomGraph = ({ title, subtitle, icon, type, data, colspan }: Props) => {
     const displayGraph = (type: string): React.ReactNode => {
+        data = {
+            ...data,
+            datasets: data.datasets.map((item) => {
+                return {
+                    ...item,
+                    borderColor: item?.borderColor?.toString() ?? "#615cf6",
+                    borderWidth: 2,
+                    backgroundColor:
+                        item?.backgroundColor?.toString() ?? "#615cf6A6",
+                };
+            }),
+        };
         const options = {
             responsive: true,
             plugins: {
@@ -70,7 +83,9 @@ const CustomGraph = ({ title, subtitle, icon, type, data }: Props) => {
         }
     };
     return (
-        <div className="w-full h-full bg-white rounded-2xl shadow-md p-6 flex flex-col justify-between">
+        <div
+            className={`w-full h-full bg-white rounded-2xl shadow-md p-6 flex flex-col justify-between col-span-${colspan ?? 1}`}
+        >
             <div className="flex flex-row justify-start items-center">
                 {icon && <div className="text-xl mr-2">{icon}</div>}
                 <h4 className="text-lg font-normal">{title}</h4>
