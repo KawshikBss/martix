@@ -115,4 +115,16 @@ export const saleService = {
 
     getOrdersGraphData: async (): Promise<any> =>
         await apiClient.get("sales/graph?sale_type=order"),
+
+    getPaymentGraphData: async (): Promise<any> =>
+        await apiClient.get("sales/payment-graph"),
+
+    getRevenueGraphData: async (): Promise<any> =>
+        await apiClient.get("sales/revenue-graph"),
+
+    getStatusGraphData: async (): Promise<any> =>
+        await apiClient.get("sales/status-graph"),
+
+    getPaymentStatusGraphData: async (): Promise<any> =>
+        await apiClient.get("sales/payment-status-graph"),
 };

@@ -50,6 +50,12 @@ export const storeService = {
     getStoreMetrics: async (): Promise<any> =>
         await apiClient.get("stores/metrics"),
 
+    getStocksGraphData: async (): Promise<any> =>
+        await apiClient.get("stores/stocks-graph"),
+
     getSalesGraphData: async (): Promise<any> =>
         await apiClient.get("stores/sales-graph"),
+
+    getTransfersGraphData: async (): Promise<any> =>
+        await apiClient.get("stores/transfers-graph"),
 };

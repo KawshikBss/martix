@@ -101,4 +101,22 @@ export const inventoryService = {
 
     getInventoryMovementMetrics: async (): Promise<any> =>
         await apiClient.get("inventories/movement-metrics"),
+
+    getStatusGraphData: async (): Promise<any> =>
+        await apiClient.get("inventories/status-graph"),
+
+    getCategoryGraphData: async (): Promise<any> =>
+        await apiClient.get("inventories/category-value-graph"),
+
+    getMovementLevelsGraphData: async (): Promise<any> =>
+        await apiClient.get("inventories/movement-levels-graph"),
+
+    getMovementTypesGraphData: async (): Promise<any> =>
+        await apiClient.get("inventories/movement-types-graph"),
+
+    getTransferLevelsGraphData: async (): Promise<any> =>
+        await apiClient.get("inventories/transfer-levels-graph"),
+
+    getTransferByStoresGraphData: async (): Promise<any> =>
+        await apiClient.get("inventories/transfer-stores-graph"),
 };

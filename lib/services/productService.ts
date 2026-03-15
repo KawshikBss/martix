@@ -30,14 +30,14 @@ export const productService = {
                 params?.query ?? ""
             }&${Object.entries(params?.filters ?? {})
                 .map((item) => (item[1].length ? `${item[0]}=${item[1]}` : ""))
-                .join("&")}`
+                .join("&")}`,
         ),
 
     getProduct: async (id?: string): Promise<ProductInterface> =>
         await apiClient.get(`products/${id}`),
 
     createProduct: async (
-        payload: FormData | object
+        payload: FormData | object,
     ): Promise<ProductInterface> => await apiClient.post("products", payload),
 
     updateProduct: async (params: {
@@ -45,4 +45,10 @@ export const productService = {
         payload: FormData | object;
     }): Promise<ProductInterface> =>
         await apiClient.post(`products/update/${params.id}`, params.payload),
+
+    getTopProducts: async (): Promise<any> =>
+        await apiClient.get("products/top-selling"),
+
+    getCategoryGraphData: async (): Promise<any> =>
+        await apiClient.get("products/category-graph"),
 };
