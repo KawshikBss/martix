@@ -37,18 +37,23 @@ type Props = {
 
 const CustomGraph = ({ title, subtitle, icon, type, data, colspan }: Props) => {
     const displayGraph = (type: string): React.ReactNode => {
-        data = {
+        const modifiedData = {
             ...data,
             datasets: data.datasets.map((item) => {
                 return {
                     ...item,
-                    borderColor: item?.borderColor?.toString() ?? "#615cf6",
+                    borderColor:
+                        item?.borderColor != undefined
+                            ? item?.borderColor
+                            : "#615cf6",
                     borderWidth: 2,
                     backgroundColor:
-                        item?.backgroundColor?.toString() ?? "#615cf6A6",
+                        item?.backgroundColor != undefined
+                            ? item?.backgroundColor
+                            : "#615cf6A6",
                 };
             }),
-        };
+        } as ChartData;
         const options = {
             responsive: true,
             plugins: {
@@ -66,17 +71,19 @@ const CustomGraph = ({ title, subtitle, icon, type, data, colspan }: Props) => {
                 return (
                     <Bar
                         options={options}
-                        data={data as ChartData<"bar">}
+                        data={modifiedData as ChartData<"bar">}
                         className="my-auto"
                     />
                 );
             case "pie":
-                return <Doughnut data={data as ChartData<"doughnut">} />;
+                return (
+                    <Doughnut data={modifiedData as ChartData<"doughnut">} />
+                );
             default:
                 return (
                     <Line
                         options={options}
-                        data={data as ChartData<"line">}
+                        data={modifiedData as ChartData<"line">}
                         className="my-auto"
                     />
                 );
