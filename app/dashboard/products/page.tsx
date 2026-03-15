@@ -6,10 +6,14 @@ import { ProductsTable } from "./components/ProductsTable/ProductsTable";
 import { ProductsCatalog } from "./components/ProductsCatalog";
 import { useProducts } from "@/lib/hooks/products/useProducts";
 import ProductsFilterModal from "./components/ProductsFilterModal";
-import { FaFilter } from "react-icons/fa";
+import { FaBoxes, FaFilter, FaLayerGroup, FaTrophy } from "react-icons/fa";
 import { useSearchParams } from "next/navigation";
 import { MdClear } from "react-icons/md";
 import Loader from "@/components/ui/loaders/Loader";
+import { useProductCategoriesGraphData } from "@/lib/hooks/products/useProductCategoriesGraphData";
+import CustomGraph from "@/components/ui/CustomGraph";
+import { useTopProducts } from "@/lib/hooks/products/useTopProducts";
+import { useInventoryStatusGraphData } from "@/lib/hooks/inventories/useInventoryStatusGraphData";
 
 export default function Products() {
     const [query, setQuery] = React.useState<string>("");
@@ -54,8 +58,90 @@ export default function Products() {
         fetchNextPage: fetchNextProducts,
     } = useProducts({ query, filters });
 
+    const { data: categoriesGraphData } = useProductCategoriesGraphData();
+    const cleanCategoriesGraphData = React.useMemo(() => {
+        if (!categoriesGraphData) return { labels: [], datasets: [] };
+        var labels = Object.keys(categoriesGraphData);
+        var data = Object.values(categoriesGraphData) as number[];
+
+        return {
+            labels,
+            datasets: [
+                {
+                    data: data,
+                    label: "Categories",
+                },
+            ],
+        };
+    }, [categoriesGraphData]);
+
+    const { data: topProductsData } = useTopProducts();
+    const cleanTopProductsData = React.useMemo(() => {
+        if (!topProductsData) return { labels: [], datasets: [] };
+        var labels = topProductsData.map((item: any) => item?.name);
+        var data = topProductsData.map((item: any) => item?.total_sold);
+
+        return {
+            labels,
+            datasets: [
+                {
+                    data: data,
+                    label: "Top Selling",
+                },
+            ],
+        };
+    }, [topProductsData]);
+
+    const { data: stockStatusGraphData } = useInventoryStatusGraphData();
+    const cleanStockStatusGraphData = React.useMemo(() => {
+        if (!stockStatusGraphData) return { labels: [], datasets: [] };
+        var labels = Object.keys(stockStatusGraphData).map((item: string) =>
+            item.replaceAll("_", " "),
+        );
+        var data = Object.values(stockStatusGraphData) as number[];
+
+        return {
+            labels,
+            datasets: [
+                {
+                    data: data,
+                    borderColor: ["#00c950", "#f0b50f", "#febcbf", "#ff710e"],
+                    borderWidth: 2,
+                    backgroundColor: [
+                        "#00c950A6",
+                        "#f0b50fA6",
+                        "#febcbfA6",
+                        "#ff710eA6",
+                    ],
+                },
+            ],
+        };
+    }, [stockStatusGraphData]);
+
     return (
         <main className="p-4 md:p-8">
+            <div className="w-full grid grid-cols-1 md:grid-cols-5 gap-6 my-6">
+                <CustomGraph
+                    title="Products by categories"
+                    icon={<FaLayerGroup />}
+                    type="bar"
+                    colspan={2}
+                    data={cleanCategoriesGraphData}
+                />
+                <CustomGraph
+                    title="Top Selling Products"
+                    icon={<FaTrophy />}
+                    type="bar"
+                    colspan={2}
+                    data={cleanTopProductsData}
+                />
+                <CustomGraph
+                    title="Stock Status"
+                    icon={<FaBoxes />}
+                    type="pie"
+                    data={cleanStockStatusGraphData}
+                />
+            </div>
             <div className="bg-white rounded-2xl shadow-md p-4 md:p-6">
                 <div className="w-full flex flex-row justify-between items-center">
                     <h3 className="text-2xl font-medium">Products</h3>
@@ -105,7 +191,7 @@ export default function Products() {
                         {filters?.product_type?.length
                             ? ` with "${filters?.product_type?.replaceAll(
                                   "_",
-                                  " "
+                                  " ",
                               )}"`
                             : ""}
                         {filters?.min_price?.length
@@ -138,18 +224,18 @@ export default function Products() {
                         filters?.max_create_date?.length
                             ? ` created between ${filters?.min_create_date} and ${filters?.max_create_date}`
                             : filters?.min_create_date?.length
-                            ? ` created after ${filters?.min_create_date}`
-                            : filters?.max_create_date?.length
-                            ? ` created before ${filters?.max_create_date}`
-                            : ""}
+                              ? ` created after ${filters?.min_create_date}`
+                              : filters?.max_create_date?.length
+                                ? ` created before ${filters?.max_create_date}`
+                                : ""}
                         {filters?.min_update_date?.length &&
                         filters?.max_update_date?.length
                             ? ` updated between ${filters?.min_update_date} and ${filters?.max_update_date}`
                             : filters?.min_update_date?.length
-                            ? ` updated after ${filters?.min_update_date}`
-                            : filters?.max_update_date?.length
-                            ? ` updated before ${filters?.max_update_date}`
-                            : ""}{" "}
+                              ? ` updated after ${filters?.min_update_date}`
+                              : filters?.max_update_date?.length
+                                ? ` updated before ${filters?.max_update_date}`
+                                : ""}{" "}
                         <Link
                             href="/dashboard/products/add"
                             className="text-[#615cf6]"

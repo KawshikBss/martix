@@ -12,13 +12,17 @@ import {
     FaHourglassHalf,
     FaSearchDollar,
 } from "react-icons/fa";
-import { MdClear } from "react-icons/md";
+import { MdClear, MdTrackChanges } from "react-icons/md";
 import { TbTransferVertical } from "react-icons/tb";
 import { InventoryTransferTable } from "./components/InventoryTransferTable";
 import Loader from "@/components/ui/loaders/Loader";
 import InventoryTransfersFilterModal from "./components/InventoryTransfersFilterModal";
 import { InventoryTransferList } from "./components/InventoryTransferList/InventoryTransferList";
 import { useInventoryTransferMetrics } from "@/lib/hooks/inventories/useInventoryTransferMetrics";
+import { useInventoryTransfersByStoresGraphData } from "@/lib/hooks/inventories/useInventoryTransfersByStoresGraphData";
+import CustomGraph from "@/components/ui/CustomGraph";
+import { GrTransaction } from "react-icons/gr";
+import { useInventoryTransferLevelsGraphData } from "@/lib/hooks/inventories/useInventoryTransferLevelsGraphData";
 
 type Props = {};
 
@@ -57,6 +61,46 @@ const StockTransferHistory = (props: Props) => {
 
     const openFilterModal = () => setShowFilterModal(true);
     const closeFilterModal = () => setShowFilterModal(false);
+
+    const { data: transferStoresGraphData } =
+        useInventoryTransfersByStoresGraphData();
+    const cleanTransferStoresGraphData = React.useMemo(() => {
+        if (!transferStoresGraphData) return { labels: [], datasets: [] };
+        var labels = Object.keys(transferStoresGraphData);
+        var data = Object.values(transferStoresGraphData).map(
+            (item: any) => item.count,
+        );
+
+        return {
+            labels,
+            datasets: [
+                {
+                    data: data,
+                    label: "Total transfers",
+                },
+            ],
+        };
+    }, [transferStoresGraphData]);
+
+    const { data: transferLevelsGraphData } =
+        useInventoryTransferLevelsGraphData();
+    const cleanTransferLevelsGraphData = React.useMemo(() => {
+        if (!transferLevelsGraphData) return { labels: [], datasets: [] };
+        var labels = Object.keys(transferLevelsGraphData);
+        var data = Object.values(transferLevelsGraphData).map(
+            (item: any) => item.count,
+        );
+
+        return {
+            labels,
+            datasets: [
+                {
+                    data: data,
+                    label: "Transfers over time",
+                },
+            ],
+        };
+    }, [transferLevelsGraphData]);
     return (
         <main className="p-4 md:p-8">
             <div className="bg-white rounded-2xl shadow-md p-4 md:p-6 w-full flex flex-row justify-between items-center">
@@ -103,6 +147,20 @@ const StockTransferHistory = (props: Props) => {
                         <FaSearchDollar className="mr-2 text-xl text-green-500" />
                     }
                     value={inventoryTransferMetrics?.total_transfers_value ?? 0}
+                />
+            </div>
+
+            <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6 my-6">
+                <CustomGraph
+                    title="Transfers"
+                    icon={<MdTrackChanges />}
+                    data={cleanTransferLevelsGraphData}
+                />
+                <CustomGraph
+                    title="Transfers by store"
+                    icon={<GrTransaction />}
+                    type="bar"
+                    data={cleanTransferStoresGraphData}
                 />
             </div>
             <div className="bg-white rounded-2xl shadow-md p-6">

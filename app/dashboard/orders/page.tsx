@@ -1,35 +1,16 @@
 "use client";
-import productsData from "@/public/data/productsData";
-import Image from "next/image";
+
 import Link from "next/link";
 import * as React from "react";
 import {
-    FaChartBar,
-    FaChartLine,
     FaCheckCircle,
     FaFilter,
-    FaHourglass,
     FaHourglassHalf,
     FaSearchDollar,
     FaShoppingCart,
+    FaTruck,
 } from "react-icons/fa";
-import { FaMoneyBill1Wave } from "react-icons/fa6";
 import { MdCancel, MdClear } from "react-icons/md";
-import { Bar, Doughnut, Line } from "react-chartjs-2";
-import {
-    Chart as ChartJS,
-    ArcElement,
-    Tooltip,
-    Legend,
-    CategoryScale,
-    LinearScale,
-    BarElement,
-    Title,
-    PointElement,
-    LineElement,
-} from "chart.js";
-import categoriesData from "@/public/data/categoriesData";
-import { GrPieChart } from "react-icons/gr";
 import KpiCard from "@/components/ui/KpiCard";
 import { useSearchParams } from "next/navigation";
 import { useSales } from "@/lib/hooks/sales/useSales";
@@ -39,96 +20,9 @@ import OrdersTable from "./components/OrdersTable/OrdersTable";
 import { OrdersList } from "./components/OrdersList/OrdersList";
 import { useSaleMetrics } from "@/lib/hooks/sales/useSaleMetrics";
 import { IoMdClock } from "react-icons/io";
-ChartJS.register(
-    ArcElement,
-    Tooltip,
-    Legend,
-    CategoryScale,
-    LinearScale,
-    BarElement,
-    PointElement,
-    LineElement,
-    Title,
-);
-
-const barChartOptions = {
-    responsive: true,
-    plugins: {
-        legend: {
-            position: "top" as const,
-        },
-        title: {
-            display: true,
-            text: "Chart.js Bar Chart",
-        },
-    },
-};
-
-const barChartLabels = [...categoriesData.map((cat) => cat.name)];
-
-const barChartData = {
-    labels: barChartLabels,
-    datasets: [
-        {
-            label: "Categories",
-            data: barChartLabels.map(() => Math.floor(Math.random() * 1001)),
-            backgroundColor: "rgba(53, 162, 235, 0.5)",
-        },
-        {
-            label: "Categories",
-            data: barChartLabels.map(() => Math.floor(Math.random() * 1001)),
-            backgroundColor: "rgba(53, 162, 235, 0.5)",
-        },
-        {
-            label: "Categories",
-            data: barChartLabels.map(() => Math.floor(Math.random() * 1001)),
-            backgroundColor: "rgba(53, 162, 235, 0.5)",
-        },
-    ],
-};
-
-const doughnutChartData = {
-    labels: ["Red", "Yellow"],
-    datasets: [
-        {
-            label: "# of Votes",
-            data: [12, 19],
-            backgroundColor: [
-                "rgba(255, 99, 132, 0.2)",
-                "rgba(255, 206, 86, 0.2)",
-            ],
-            borderColor: ["rgba(255, 99, 132, 1)", "rgba(255, 206, 86, 1)"],
-            borderWidth: 1,
-        },
-    ],
-};
-
-const lineChartOptions = {
-    responsive: true,
-    plugins: {
-        legend: {
-            position: "top" as const,
-        },
-        title: {
-            display: true,
-            text: "Chart.js Line Chart",
-        },
-    },
-};
-
-const lineChartLabels = [...productsData.map((prod) => prod.name).slice(0, 7)];
-
-const lineChartData = {
-    labels: lineChartLabels,
-    datasets: [
-        {
-            label: "Dataset 1",
-            data: lineChartLabels.map(() => Math.floor(Math.random() * 1001)),
-            borderColor: "rgb(255, 99, 132)",
-            backgroundColor: "rgba(255, 99, 132, 0.5)",
-        },
-    ],
-};
+import { useStatusGraphData } from "@/lib/hooks/sales/useStatusGraphData";
+import CustomGraph from "@/components/ui/CustomGraph";
+import { useOrdersGraphData } from "@/lib/hooks/sales/useOrdersGraphData";
 
 export default function Orders() {
     const { data: orderMetrics } = useSaleMetrics(false);
@@ -168,6 +62,49 @@ export default function Orders() {
         hasNextPage: salesHasNextPage,
         fetchNextPage: fetchNextSales,
     } = useSales({ query: query, filters: filters });
+
+    const { data: statusGraphData } = useStatusGraphData();
+    const cleanStatusGraphData = React.useMemo(() => {
+        if (!statusGraphData) return { labels: [], datasets: [] };
+        var labels = Object.keys(statusGraphData);
+        var data = Object.values(statusGraphData) as number[];
+
+        return {
+            labels,
+            datasets: [
+                {
+                    data: data,
+                    borderColor: ["#00c950", "#f0b50f", "#febcbf", "#ff710e"],
+                    borderWidth: 2,
+                    backgroundColor: [
+                        "#00c950A6",
+                        "#f0b50fA6",
+                        "#febcbfA6",
+                        "#ff710eA6",
+                    ],
+                },
+            ],
+        };
+    }, [statusGraphData]);
+
+    const { data: ordersGraphData } = useOrdersGraphData();
+    const cleanOrdersGraphData = React.useMemo(() => {
+        if (!ordersGraphData) return { labels: [], datasets: [] };
+        var labels = Object.keys(ordersGraphData);
+        var data = Object.values(ordersGraphData).map(
+            (item: any) => item?.total,
+        );
+
+        return {
+            labels,
+            datasets: [
+                {
+                    data: data,
+                    label: "Orders over time",
+                },
+            ],
+        };
+    }, [ordersGraphData]);
     return (
         <main className="p-4 md:p-8">
             <div className="bg-white rounded-2xl shadow-md p-4 md:p-6">
@@ -219,6 +156,20 @@ export default function Orders() {
                         <FaSearchDollar className="mr-2 text-xl text-teal-500" />
                     }
                     value={orderMetrics?.total_due_amount ?? "N/A"}
+                />
+            </div>
+            <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-6 my-6">
+                <CustomGraph
+                    title="Order Status"
+                    icon={<FaTruck />}
+                    type="pie"
+                    data={cleanStatusGraphData}
+                />
+                <CustomGraph
+                    title="Orders"
+                    icon={<FaShoppingCart />}
+                    colspan={2}
+                    data={cleanOrdersGraphData}
                 />
             </div>
             <div className="bg-white rounded-2xl shadow-md p-4 md:p-6">
@@ -312,35 +263,6 @@ export default function Orders() {
                 show={showFilterModal}
                 onClose={closeFilterModal}
             />
-
-            <div className="w-full my-6 flex flex-col md:flex-row justify-between items-start gap-6">
-                <div className="w-full h-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between">
-                    <div className="mb-4 flex flex-row justify-start items-center">
-                        <FaChartBar className="mr-6 text-xl" />
-                        <h4 className="text-lg font-semibold">
-                            Sales/Purchase/Online Orders
-                        </h4>
-                    </div>
-                    <Bar options={barChartOptions} data={barChartData} />
-                </div>
-                <div className="w-full md:w-4/7 aspect-square bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between">
-                    <div className="mb-4 flex flex-row justify-start items-center">
-                        <GrPieChart className="mr-6 text-xl" />
-                        <h4 className="text-lg font-semibold">
-                            Orders by Status
-                        </h4>
-                    </div>
-                    <Doughnut data={doughnutChartData} />
-                </div>
-            </div>
-
-            <div className="w-full h-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between">
-                <div className="mb-4 flex flex-row justify-start items-center">
-                    <FaChartLine className="mr-6 text-xl" />
-                    <h4 className="text-lg font-semibold">Orders over time</h4>
-                </div>
-                <Line options={lineChartOptions} data={lineChartData} />
-            </div>
         </main>
     );
 }

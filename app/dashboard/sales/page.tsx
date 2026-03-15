@@ -7,6 +7,8 @@ import {
     FaFilter,
     FaHourglassHalf,
     FaRecycle,
+    FaShoppingCart,
+    FaStore,
     FaTruck,
 } from "react-icons/fa";
 import { useSearchParams } from "next/navigation";
@@ -24,6 +26,12 @@ import SalesTable from "./components/SalesTable/SalesTable";
 import { SalesList } from "./components/SalesList/SalesList";
 import SalesFilterModal from "./components/SalesFilterModal";
 import { useSaleMetrics } from "@/lib/hooks/sales/useSaleMetrics";
+import { useSalesGraphData } from "@/lib/hooks/sales/useSalesGraphData";
+import CustomGraph from "@/components/ui/CustomGraph";
+import { GrMoney } from "react-icons/gr";
+import { useRevenueGraphData } from "@/lib/hooks/sales/useRevenueGraphData";
+import { usePaymentStatusGraphData } from "@/lib/hooks/sales/usePaymentStatusGraphData";
+import { useStoreSalesGraphData } from "@/lib/hooks/stores/useStoreSalesGraphData";
 
 export default function AllSales() {
     const { data: saleMetrics } = useSaleMetrics();
@@ -63,6 +71,82 @@ export default function AllSales() {
         hasNextPage: salesHasNextPage,
         fetchNextPage: fetchNextSales,
     } = useSales({ query: query, saleType: "pos", filters: filters });
+
+    const { data: salesGraphData } = useSalesGraphData();
+    const cleanSalesGraphData = React.useMemo(() => {
+        if (!salesGraphData) return { labels: [], datasets: [] };
+        var labels = Object.keys(salesGraphData);
+        var data = Object.values(salesGraphData).map(
+            (item: any) => item?.total,
+        );
+
+        return {
+            labels,
+            datasets: [
+                {
+                    data: data,
+                    label: "Sales over time",
+                },
+            ],
+        };
+    }, [salesGraphData]);
+
+    const { data: revenueGraphData } = useRevenueGraphData();
+    const cleanRevenueGraphData = React.useMemo(() => {
+        if (!revenueGraphData) return { labels: [], datasets: [] };
+        var labels = Object.keys(revenueGraphData);
+        var data = Object.values(revenueGraphData) as number[];
+
+        return {
+            labels,
+            datasets: [
+                {
+                    data: data,
+                    borderColor: ["#00c950", "#ff710e"],
+                    borderWidth: 2,
+                    backgroundColor: ["#00c950A6", "#ff710eA6"],
+                },
+            ],
+        };
+    }, [revenueGraphData]);
+
+    const { data: paymentStatusGraphData } = usePaymentStatusGraphData();
+    const cleanPaymentStatusGraphData = React.useMemo(() => {
+        if (!paymentStatusGraphData) return { labels: [], datasets: [] };
+        var labels = Object.keys(paymentStatusGraphData);
+        var data = Object.values(paymentStatusGraphData) as number[];
+
+        return {
+            labels,
+            datasets: [
+                {
+                    data: data,
+                    borderColor: ["#00c950", "#ff710e", "#f0b50f"],
+                    borderWidth: 2,
+                    backgroundColor: ["#00c950A6", "#ff710eA6", "#f0b50fA6"],
+                },
+            ],
+        };
+    }, [paymentStatusGraphData]);
+
+    const { data: storeSalesGraphData } = useStoreSalesGraphData();
+    const cleanStoreSalesGraphData = React.useMemo(() => {
+        if (!storeSalesGraphData) return { labels: [], datasets: [] };
+        var labels = Object.keys(storeSalesGraphData);
+        var data = Object.values(storeSalesGraphData).map(
+            (item: any) => item?.total,
+        );
+
+        return {
+            labels,
+            datasets: [
+                {
+                    data: data,
+                    label: "Sales over stores",
+                },
+            ],
+        };
+    }, [storeSalesGraphData]);
 
     return (
         <main className="p-4 md:p-8">
@@ -110,6 +194,33 @@ export default function AllSales() {
                         <FaRecycle className="mr-2 text-xl text-orange-500" />
                     }
                     value={saleMetrics?.total_refunded ?? "N/A"}
+                />
+            </div>
+            <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-6 my-6">
+                <CustomGraph
+                    title="Sales"
+                    icon={<FaShoppingCart />}
+                    colspan={2}
+                    data={cleanSalesGraphData}
+                />
+                <CustomGraph
+                    title="Revenue Vs Refunds"
+                    icon={<GrMoney />}
+                    type="pie"
+                    data={cleanRevenueGraphData}
+                />
+                <CustomGraph
+                    title="Payment status"
+                    icon={<GrMoney />}
+                    type="pie"
+                    data={cleanPaymentStatusGraphData}
+                />
+                <CustomGraph
+                    title="Store Sales"
+                    icon={<FaStore />}
+                    type="bar"
+                    colspan={2}
+                    data={cleanStoreSalesGraphData}
                 />
             </div>
             <div className="bg-white rounded-2xl shadow-md p-4 md:p-6">

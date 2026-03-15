@@ -1,29 +1,16 @@
 "use client";
-import KpiCard from "@/components/ui/KpiCard";
+
 import * as React from "react";
+import KpiCard from "@/components/ui/KpiCard";
 import {
     FaBoxes,
+    FaCashRegister,
     FaChartBar,
-    FaChartLine,
     FaCheck,
     FaFilter,
     FaStore,
 } from "react-icons/fa";
 import { TiWarning } from "react-icons/ti";
-import { Bar, Doughnut, Line } from "react-chartjs-2";
-import {
-    Chart as ChartJS,
-    ArcElement,
-    PointElement,
-    Tooltip,
-    Legend,
-    CategoryScale,
-    LinearScale,
-    BarElement,
-    Title,
-    LineElement,
-} from "chart.js";
-import { GrPieChart } from "react-icons/gr";
 import { StoresList } from "./components/StoresList/StoresList";
 import { StoresTable } from "./components/StoresTable";
 import Link from "next/link";
@@ -33,100 +20,11 @@ import { useSearchParams } from "next/navigation";
 import { MdClear } from "react-icons/md";
 import Loader from "@/components/ui/loaders/Loader";
 import { useStoreMetrics } from "@/lib/hooks/stores/useStoreMetrics";
-ChartJS.register(
-    ArcElement,
-    PointElement,
-    Tooltip,
-    Legend,
-    LineElement,
-    CategoryScale,
-    LinearScale,
-    BarElement,
-    Title,
-);
-
-const barChartOptions = {
-    responsive: true,
-    plugins: {
-        legend: {
-            position: "top" as const,
-        },
-        title: {
-            display: true,
-            text: "Chart.js Bar Chart",
-        },
-    },
-};
-
-const barChartLabels = ["Store A", "Store B", "Store C", "Store D", "Store E"];
-
-const barChartData = {
-    labels: barChartLabels,
-    datasets: [
-        {
-            label: "Dataset 1",
-            data: barChartLabels.map(() => Math.floor(Math.random() * 1001)),
-            backgroundColor: "rgba(255, 99, 132, 0.5)",
-        },
-    ],
-};
-
-const doughnutChartData = {
-    labels: ["Red", "Yellow"],
-    datasets: [
-        {
-            label: "# of Votes",
-            data: [12, 19],
-            backgroundColor: [
-                "rgba(255, 99, 132, 0.2)",
-                "rgba(255, 206, 86, 0.2)",
-            ],
-            borderColor: ["rgba(255, 99, 132, 1)", "rgba(255, 206, 86, 1)"],
-            borderWidth: 1,
-        },
-    ],
-};
-
-const lineChartOptions = {
-    responsive: true,
-    plugins: {
-        legend: {
-            position: "top" as const,
-        },
-        title: {
-            display: true,
-            text: "Chart.js Line Chart",
-        },
-    },
-};
-
-const lineChartLabels = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-];
-
-const lineChartData = {
-    labels: lineChartLabels,
-    datasets: [
-        {
-            label: "Dataset 1",
-            data: lineChartLabels.map(() => Math.floor(Math.random() * 1001)),
-            borderColor: "rgb(255, 99, 132)",
-            backgroundColor: "rgba(255, 99, 132, 0.5)",
-        },
-        {
-            label: "Dataset 2",
-            data: lineChartLabels.map(() => Math.floor(Math.random() * 1001)),
-            borderColor: "rgb(53, 162, 235)",
-            backgroundColor: "rgba(53, 162, 235, 0.5)",
-        },
-    ],
-};
+import { useStoreSalesGraphData } from "@/lib/hooks/stores/useStoreSalesGraphData";
+import CustomGraph from "@/components/ui/CustomGraph";
+import { useStoreStocksGraphData } from "@/lib/hooks/stores/useStoreStocksGraphData";
+import { useStoreTransfersGraphData } from "@/lib/hooks/stores/useStoreTransfersGraphData";
+import { BiTransfer } from "react-icons/bi";
 
 export default function BranchOverview() {
     const { data: storeMetrics } = useStoreMetrics();
@@ -177,6 +75,70 @@ export default function BranchOverview() {
     const openFilterModal = () => setShowFilterModal(true);
     const closeFilterModal = () => setShowFilterModal(false);
 
+    const { data: salesGraphData } = useStoreSalesGraphData();
+    const cleanSalesGraphData = React.useMemo(() => {
+        if (!salesGraphData) return { labels: [], datasets: [] };
+        var labels = Object.keys(salesGraphData);
+        var data = Object.values(salesGraphData).map(
+            (item: any) => item?.total,
+        );
+
+        return {
+            labels,
+            datasets: [
+                {
+                    data: data,
+                    label: "Sales this month",
+                },
+            ],
+        };
+    }, [salesGraphData]);
+
+    const { data: stocksGraphData } = useStoreStocksGraphData();
+    const cleanStocksGraphData = React.useMemo(() => {
+        if (!stocksGraphData) return { labels: [], datasets: [] };
+        var labels = Object.keys(stocksGraphData);
+        var data = Object.values(stocksGraphData).map(
+            (item: any) => item?.quantity,
+        );
+
+        return {
+            labels,
+            datasets: [
+                {
+                    data: data,
+                    label: "Stocks this month",
+                },
+            ],
+        };
+    }, [salesGraphData]);
+
+    const { data: transfersGraphData } = useStoreTransfersGraphData();
+    const cleanTransfersGraphData = React.useMemo(() => {
+        if (!transfersGraphData) return { labels: [], datasets: [] };
+        var labels = [] as string[];
+        var data = [] as number[];
+
+        Object.entries(transfersGraphData).forEach((entry: any) => {
+            var source = entry[0];
+            var transfers = entry[1];
+            Object.entries(transfers).forEach((transferEntry: any) => {
+                labels.push(`${source} - ${transferEntry[0]}`);
+                data.push(transferEntry[1].count);
+            });
+        });
+
+        return {
+            labels,
+            datasets: [
+                {
+                    data: data,
+                    label: "Transfers this month",
+                },
+            ],
+        };
+    }, [transfersGraphData]);
+
     return (
         <main className="p-4 md:p-8">
             <div className="bg-white rounded-2xl shadow-md p-4 md:p-6 w-full flex flex-row justify-between items-center">
@@ -210,6 +172,30 @@ export default function BranchOverview() {
                     title="Avg Stock"
                     icon={<FaBoxes className="mr-2 text-xl text-gray-500" />}
                     value={storeMetrics?.average_inventory_per_store ?? 0}
+                />
+            </div>
+
+            <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6 my-6">
+                <CustomGraph
+                    title="Stocks by Branch"
+                    type="bar"
+                    icon={<FaChartBar />}
+                    data={cleanStocksGraphData}
+                />
+                <CustomGraph
+                    title="Transfers by Branch"
+                    type="bar"
+                    icon={<BiTransfer />}
+                    data={cleanTransfersGraphData}
+                />
+            </div>
+
+            <div className="w-full grid grid-cols-1 gap-6 my-6">
+                <CustomGraph
+                    title="Sales by Branch"
+                    type="bar"
+                    icon={<FaCashRegister />}
+                    data={cleanSalesGraphData}
                 />
             </div>
             <div className="bg-white rounded-2xl shadow-md p-6">
@@ -322,33 +308,6 @@ export default function BranchOverview() {
                 ) : (
                     ""
                 )}
-            </div>
-            <div className="w-full my-6 flex flex-col md:flex-row justify-between items-start gap-6">
-                <div className="w-full h-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between">
-                    <div className="mb-4 flex flex-row justify-start items-center">
-                        <FaChartBar className="mr-6 text-xl" />
-                        <h4 className="text-lg font-semibold">
-                            Sales by Branch
-                        </h4>
-                    </div>
-                    <Bar options={barChartOptions} data={barChartData} />
-                </div>
-                <div className="w-full md:w-1/3 aspect-square bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between">
-                    <div className="mb-4 flex flex-row justify-start items-center">
-                        <GrPieChart className="mr-6 text-xl" />
-                        <h4 className="text-lg font-semibold">
-                            Inventory Value Comparison
-                        </h4>
-                    </div>
-                    <Doughnut data={doughnutChartData} />
-                </div>
-            </div>
-            <div className="w-full h-full bg-white rounded-2xl shadow-md p-4 flex flex-col justify-between">
-                <div className="mb-4 flex flex-row justify-start items-center">
-                    <FaChartLine className="mr-6 text-xl" />
-                    <h4 className="text-lg font-semibold">Low Stock Trend</h4>
-                </div>
-                <Line options={lineChartOptions} data={lineChartData} />
             </div>
             <StoresFilterModal
                 show={showFilterModal}

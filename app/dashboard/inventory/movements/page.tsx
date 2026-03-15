@@ -1,28 +1,13 @@
 "use client";
 
-import productsData from "@/public/data/productsData";
 import * as React from "react";
-import { FaChartLine } from "react-icons/fa6";
-import { Bar, Line } from "react-chartjs-2";
-import {
-    Chart as ChartJS,
-    ArcElement,
-    PointElement,
-    Tooltip,
-    Legend,
-    CategoryScale,
-    LinearScale,
-    BarElement,
-    Title,
-    LineElement,
-} from "chart.js";
+import { FaBoxesPacking, FaChartLine } from "react-icons/fa6";
 import {
     FaBalanceScale,
     FaBalanceScaleLeft,
+    FaChartBar,
     FaFilter,
-    FaMinus,
     FaMinusSquare,
-    FaPlus,
     FaPlusSquare,
 } from "react-icons/fa";
 import KpiCard from "@/components/ui/KpiCard";
@@ -35,148 +20,10 @@ import { useSearchParams } from "next/navigation";
 import Loader from "@/components/ui/loaders/Loader";
 import InventoryMovementsFilterModal from "./components/InventoryMovementsFilterModal";
 import { useInventoryMovementMetrics } from "@/lib/hooks/inventories/useInventoryMovementMetrics";
-ChartJS.register(
-    ArcElement,
-    PointElement,
-    Tooltip,
-    Legend,
-    LineElement,
-    CategoryScale,
-    LinearScale,
-    BarElement,
-    Title,
-);
-
-const doughnutChartData = {
-    labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-    datasets: [
-        {
-            label: "# of Votes",
-            data: [12, 19, 3, 5, 2, 3],
-            backgroundColor: [
-                "rgba(255, 99, 132, 0.2)",
-                "rgba(54, 162, 235, 0.2)",
-                "rgba(255, 206, 86, 0.2)",
-                "rgba(75, 192, 192, 0.2)",
-                "rgba(153, 102, 255, 0.2)",
-                "rgba(255, 159, 64, 0.2)",
-            ],
-            borderColor: [
-                "rgba(255, 99, 132, 1)",
-                "rgba(54, 162, 235, 1)",
-                "rgba(255, 206, 86, 1)",
-                "rgba(75, 192, 192, 1)",
-                "rgba(153, 102, 255, 1)",
-                "rgba(255, 159, 64, 1)",
-            ],
-            borderWidth: 1,
-        },
-    ],
-};
-
-const barChartOptions = {
-    responsive: true,
-    plugins: {
-        legend: {
-            position: "top" as const,
-        },
-        title: {
-            display: true,
-            text: "Chart.js Bar Chart",
-        },
-    },
-};
-
-const barChartLabels = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-];
-
-const barChartData = {
-    labels: barChartLabels,
-    datasets: [
-        {
-            label: "Dataset 1",
-            data: barChartLabels.map(() => Math.floor(Math.random() * 1001)),
-            backgroundColor: "rgba(255, 99, 132, 0.5)",
-        },
-        {
-            label: "Dataset 2",
-            data: barChartLabels.map(() => Math.floor(Math.random() * 1001)),
-            backgroundColor: "rgba(53, 162, 235, 0.5)",
-        },
-    ],
-};
-
-const lineChartOptions = {
-    responsive: true,
-    plugins: {
-        legend: {
-            position: "top" as const,
-        },
-        title: {
-            display: true,
-            text: "Chart.js Line Chart",
-        },
-    },
-};
-
-const lineChartLabels = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-];
-
-const lineChartData = {
-    labels: lineChartLabels,
-    datasets: [
-        {
-            label: "Dataset 1",
-            data: lineChartLabels.map(() => Math.floor(Math.random() * 1001)),
-            borderColor: "rgb(255, 99, 132)",
-            backgroundColor: "rgba(255, 99, 132, 0.5)",
-        },
-        {
-            label: "Dataset 2",
-            data: lineChartLabels.map(() => Math.floor(Math.random() * 1001)),
-            borderColor: "rgb(53, 162, 235)",
-            backgroundColor: "rgba(53, 162, 235, 0.5)",
-        },
-    ],
-};
-
-const horizontalBarChartLabels = [
-    ...productsData.map((product) => product.name),
-];
-
-const horizontalBarChartData = {
-    labels: horizontalBarChartLabels,
-    datasets: [
-        {
-            label: "Dataset 1",
-            data: horizontalBarChartLabels.map(() =>
-                Math.floor(Math.random() * 1001),
-            ),
-            backgroundColor: "rgba(255, 99, 132, 0.5)",
-        },
-        {
-            label: "Dataset 2",
-            data: horizontalBarChartLabels.map(() =>
-                Math.floor(Math.random() * 1001),
-            ),
-            backgroundColor: "rgba(53, 162, 235, 0.5)",
-        },
-    ],
-};
+import { useInventoryMovementTypesGraphData } from "@/lib/hooks/inventories/useInventoryMovementTypesGraphData";
+import CustomGraph from "@/components/ui/CustomGraph";
+import { getRandomColor } from "@/lib/utils/formatters";
+import { useInventoryMovementLevelsGraphData } from "@/lib/hooks/inventories/useInventoryMovementLevelsGraphData";
 
 export default function InventoryMovements() {
     const { data: inventoryMovementMetrics } = useInventoryMovementMetrics();
@@ -213,6 +60,60 @@ export default function InventoryMovements() {
 
     const openFilterModal = () => setShowFilterModal(true);
     const closeFilterModal = () => setShowFilterModal(false);
+
+    const { data: movementTypesGraphData } =
+        useInventoryMovementTypesGraphData();
+    const cleanMovementTypesGraphData = React.useMemo(() => {
+        if (!movementTypesGraphData) return { labels: [], datasets: [] };
+        var labels = Object.keys(movementTypesGraphData);
+        var data = Object.values(movementTypesGraphData).map(
+            (item: any) => item.count,
+        );
+        var colors = data.map((_) => getRandomColor());
+
+        return {
+            labels,
+            datasets: [
+                {
+                    data: data,
+                    borderColor: colors,
+                    borderWidth: 2,
+                    backgroundColor: colors.map((item) => item + "A6"),
+                },
+            ],
+        };
+    }, [movementTypesGraphData]);
+
+    const { data: movementLevelsGraphData } =
+        useInventoryMovementLevelsGraphData();
+    const cleanMovementLevelsGraphData = React.useMemo(() => {
+        if (!movementLevelsGraphData) return { labels: [], datasets: [] };
+        var labels = Object.keys(movementLevelsGraphData);
+        var stockInData = [] as number[];
+        var stockOutData = [] as number[];
+        var data = Object.values(movementLevelsGraphData).map((item: any) => {
+            stockInData.push(item.stock_in);
+            stockOutData.push(Math.abs(item.stock_out));
+        });
+
+        return {
+            labels,
+            datasets: [
+                {
+                    data: stockInData,
+                    borderColor: "#00c950",
+                    backgroundColor: "#00c950A6",
+                    label: "Stock In",
+                },
+                {
+                    data: stockOutData,
+                    borderColor: "#febcbf",
+                    backgroundColor: "#febcbfA6",
+                    label: "Stock Out",
+                },
+            ],
+        };
+    }, [movementLevelsGraphData]);
 
     return (
         <main className="p-4 md:p-8">
@@ -256,6 +157,23 @@ export default function InventoryMovements() {
                     }
                 />
             </div>
+
+            <div className="w-full grid grid-cols-1 md:grid-cols-3 gap-6 my-6">
+                <CustomGraph
+                    title="Movement type"
+                    icon={<FaBoxesPacking />}
+                    type="pie"
+                    data={cleanMovementTypesGraphData}
+                />
+                <CustomGraph
+                    title="Stock In vs Stock Out"
+                    icon={<FaChartBar />}
+                    colspan={2}
+                    type="bar"
+                    data={cleanMovementLevelsGraphData}
+                />
+            </div>
+
             <div className="bg-white rounded-2xl shadow-md p-6">
                 <div className="my-6 flex flex-row justify-between">
                     <input
