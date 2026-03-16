@@ -24,6 +24,7 @@ export interface StoreInterface {
     manager_id: string;
     manager: UserInterface;
     owner: UserInterface;
+    can_edit: boolean;
     staff: {
         role: RoleInterface;
         user: UserInterface;
