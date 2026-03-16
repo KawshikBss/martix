@@ -11,16 +11,6 @@ import { useQueryClient } from "@tanstack/react-query";
 
 type Props = {};
 
-interface RecordInterface {
-    id: string;
-    name: string;
-}
-
-interface StaffRecord {
-    staff: RecordInterface;
-    role: RecordInterface;
-}
-
 const UpdateStore = (props: Props) => {
     const { storeId } = useParams();
     const { data: store } = useStore(storeId?.toString());
@@ -28,60 +18,14 @@ const UpdateStore = (props: Props) => {
     const { back } = useRouter();
 
     const [imagePreview, setImagePreview] = useState<string | undefined | null>(
-        store?.image_url
+        store?.image_url,
     );
     const storeFormRef = useRef<HTMLFormElement>(null);
 
-    const [staffList, setStaffList] = useState<StaffRecord[]>([]);
-
-    const addToStaffList = (staff: RecordInterface, role: RecordInterface) => {
-        const staffRecord = { staff, role } as StaffRecord;
-        setStaffList((prev) => {
-            return [...prev, staffRecord];
-        });
-    };
-
-    const removeFromStaffList = (staff_id: string) => {
-        setStaffList((prev) =>
-            prev.filter((item) => item.staff.id != staff_id)
-        );
-    };
-
     useEffect(() => {
         if (!store) return;
-        setStaffList(
-            store.staff.map((item) => {
-                return {
-                    staff: { id: item.user.id, name: item.user.name },
-                    role: { id: item.role.id, name: item.role.name },
-                };
-            })
-        );
         setImagePreview(store.image_url);
     }, [store]);
-
-    const [selectedStaff, setSelectedStaff] = useState<RecordInterface | null>(
-        null
-    );
-    const [selectedRole, setSelectedRole] = useState<RecordInterface | null>(
-        null
-    );
-
-    const onStaffSelect = (id: string, name: string) => {
-        setSelectedStaff({ id, name });
-    };
-
-    const onRoleSelect = (id: string, name: string) => {
-        setSelectedRole({ id, name });
-    };
-
-    const onAddStaffToList = () => {
-        if (!selectedStaff || !selectedRole) {
-            toast.error("Select both staff and role to add!");
-            return;
-        }
-        addToStaffList(selectedStaff, selectedRole);
-    };
 
     const { mutateAsync: updateStoreMutation } = useUpdateStore();
 
@@ -89,14 +33,6 @@ const UpdateStore = (props: Props) => {
         if (!storeFormRef.current) return;
         storeFormRef.current?.reset();
         setImagePreview(null);
-        setStaffList(
-            store?.staff?.map((item) => {
-                return {
-                    staff: { id: item.user.id, name: item.user.name },
-                    role: { id: item.role.id, name: item.role.name },
-                };
-            }) ?? []
-        );
     };
 
     const [savingStore, setSavingStore] = useState(false);
@@ -142,18 +78,6 @@ const UpdateStore = (props: Props) => {
             formData.append("address", address);
             formData.append("address_2", address_2);
             if (manager_id) formData.append("manager_id", manager_id);
-            if (staffList.length) {
-                staffList.forEach((record, index) => {
-                    formData.append(
-                        `staff_list[${index}][staff_id]`,
-                        String(record.staff.id)
-                    );
-                    formData.append(
-                        `staff_list[${index}][role_id]`,
-                        String(record.role.id)
-                    );
-                });
-            }
             const response = await updateStoreMutation({
                 id: storeId?.toString(),
                 payload: formData,
@@ -206,13 +130,6 @@ const UpdateStore = (props: Props) => {
                 store={store}
                 setImagePreview={setImagePreview}
                 ref={storeFormRef}
-                staffList={staffList}
-                setSelectedStaff={setSelectedStaff}
-                setSelectedRole={setSelectedRole}
-                removeFromStaffList={removeFromStaffList}
-                onStaffSelect={onStaffSelect}
-                onRoleSelect={onRoleSelect}
-                onAddStaffToList={onAddStaffToList}
             />
         </main>
     );

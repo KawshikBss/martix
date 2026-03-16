@@ -9,61 +9,13 @@ import Loader from "@/components/ui/loaders/Loader";
 
 type Props = {};
 
-interface RecordInterface {
-    id: string;
-    name: string;
-}
-
-interface StaffRecord {
-    staff: RecordInterface;
-    role: RecordInterface;
-}
-
 const AddStore = (props: Props) => {
     const { back } = useRouter();
 
     const [imagePreview, setImagePreview] = useState<string | undefined | null>(
-        null
+        null,
     );
     const storeFormRef = useRef<HTMLFormElement>(null);
-
-    const [staffList, setStaffList] = useState<StaffRecord[]>([]);
-
-    const addToStaffList = (staff: RecordInterface, role: RecordInterface) => {
-        const staffRecord = { staff, role } as StaffRecord;
-        setStaffList((prev) => {
-            return [...prev, staffRecord];
-        });
-    };
-
-    const removeFromStaffList = (staff_id: string) => {
-        setStaffList((prev) =>
-            prev.filter((item) => item.staff.id != staff_id)
-        );
-    };
-
-    const [selectedStaff, setSelectedStaff] = useState<RecordInterface | null>(
-        null
-    );
-    const [selectedRole, setSelectedRole] = useState<RecordInterface | null>(
-        null
-    );
-
-    const onStaffSelect = (id: string, name: string) => {
-        setSelectedStaff({ id, name });
-    };
-
-    const onRoleSelect = (id: string, name: string) => {
-        setSelectedRole({ id, name });
-    };
-
-    const onAddStaffToList = () => {
-        if (!selectedStaff || !selectedRole) {
-            toast.error("Select both staff and role to add!");
-            return;
-        }
-        addToStaffList(selectedStaff, selectedRole);
-    };
 
     const { mutateAsync: createStoreMutation } = useCreateStore();
 
@@ -71,7 +23,6 @@ const AddStore = (props: Props) => {
         if (!storeFormRef.current) return;
         storeFormRef.current?.reset();
         setImagePreview(null);
-        setStaffList([]);
     };
 
     const [savingStore, setSavingStore] = useState(false);
@@ -115,18 +66,6 @@ const AddStore = (props: Props) => {
             formData.append("address", address);
             formData.append("address_2", address_2);
             if (manager_id) formData.append("manager_id", manager_id);
-            if (staffList.length) {
-                staffList.forEach((record, index) => {
-                    formData.append(
-                        `staff_list[${index}][staff_id]`,
-                        String(record.staff.id)
-                    );
-                    formData.append(
-                        `staff_list[${index}][role_id]`,
-                        String(record.role.id)
-                    );
-                });
-            }
             const response = await createStoreMutation(formData);
             console.log(response);
             if (response) {
@@ -173,13 +112,6 @@ const AddStore = (props: Props) => {
                 imagePreview={imagePreview}
                 setImagePreview={setImagePreview}
                 ref={storeFormRef}
-                staffList={staffList}
-                setSelectedStaff={setSelectedStaff}
-                setSelectedRole={setSelectedRole}
-                removeFromStaffList={removeFromStaffList}
-                onStaffSelect={onStaffSelect}
-                onRoleSelect={onRoleSelect}
-                onAddStaffToList={onAddStaffToList}
             />
         </main>
     );
