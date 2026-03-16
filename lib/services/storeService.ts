@@ -47,6 +47,12 @@ export const storeService = {
     toggleStoreStatus: async (id?: string): Promise<any> =>
         await apiClient.get(`stores/toggle-status/${id}`),
 
+    addMember: async (params: {
+        id?: string;
+        payload: FormData | object;
+    }): Promise<any> =>
+        await apiClient.post(`stores/${params.id}/members/add`, params.payload),
+
     getStoreMetrics: async (): Promise<any> =>
         await apiClient.get("stores/metrics"),
 
