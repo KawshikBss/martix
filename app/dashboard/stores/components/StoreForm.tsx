@@ -21,13 +21,6 @@ type Props = {
     store?: StoreInterface;
     imagePreview?: string | undefined | null;
     setImagePreview: Dispatch<SetStateAction<string | undefined | null>>;
-    staffList: StaffRecord[];
-    setSelectedStaff: Dispatch<SetStateAction<RecordInterface | null>>;
-    setSelectedRole: Dispatch<SetStateAction<RecordInterface | null>>;
-    removeFromStaffList: (staff_id: string) => void;
-    onStaffSelect: (id: string, name: string) => void;
-    onRoleSelect: (id: string, name: string) => void;
-    onAddStaffToList: () => void;
 };
 
 interface RecordInterface {
@@ -40,19 +33,7 @@ interface StaffRecord {
     role: RecordInterface;
 }
 
-const StoreForm = ({
-    ref,
-    store,
-    imagePreview,
-    setImagePreview,
-    staffList,
-    setSelectedStaff,
-    setSelectedRole,
-    removeFromStaffList,
-    onStaffSelect,
-    onRoleSelect,
-    onAddStaffToList,
-}: Props) => {
+const StoreForm = ({ ref, store, imagePreview, setImagePreview }: Props) => {
     const imageInputRef = useRef<HTMLInputElement | null>(null);
 
     const handleImageClick = () => imageInputRef.current?.click();
@@ -334,104 +315,6 @@ const StoreForm = ({
                                 </Link>
                             </div>
                         </div>
-                        {!staffList.length ? (
-                            <div className="col-span-full">Add Staffs</div>
-                        ) : (
-                            staffList.map((staffRecord, index) => (
-                                <React.Fragment key={index.toString()}>
-                                    <div className="sm:col-span-3">
-                                        {staffRecord.staff.name}
-                                    </div>
-                                    <div className="sm:col-span-3">
-                                        [ {staffRecord.role.name} ]
-                                    </div>
-                                    <span
-                                        onClick={() =>
-                                            removeFromStaffList(
-                                                staffRecord.staff.id
-                                            )
-                                        }
-                                        className="sm:col-span-1 bg-red-400 hover:bg-transparent text-white hover:text-red-400 border border-red-400 px-2 py-1 rounded-md cursor-pointer"
-                                    >
-                                        Remove
-                                    </span>
-                                </React.Fragment>
-                            ))
-                        )}
-                        <div className="sm:col-span-3">
-                            <label
-                                htmlFor="staff"
-                                className="block text-sm/6 font-medium"
-                            >
-                                Staff
-                            </label>
-                            <div className="mt-2 grid grid-cols-1">
-                                <select
-                                    id="staff"
-                                    name="staff"
-                                    autoComplete="staff"
-                                    className="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                                >
-                                    <option
-                                        onClick={() => setSelectedStaff(null)}
-                                    >
-                                        None
-                                    </option>
-
-                                    {users?.map((user) => (
-                                        <option
-                                            key={user.id}
-                                            onClick={() =>
-                                                onStaffSelect(
-                                                    user.id,
-                                                    user.name
-                                                )
-                                            }
-                                        >
-                                            {user.name}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                        </div>
-                        <div className="sm:col-span-3">
-                            <label
-                                htmlFor="role"
-                                className="block text-sm/6 font-medium"
-                            >
-                                Role
-                            </label>
-                            <div className="mt-2 grid grid-cols-1">
-                                <select
-                                    id="role"
-                                    name="role"
-                                    autoComplete="role"
-                                    className="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-1.5 pr-8 pl-3 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
-                                >
-                                    <option
-                                        onClick={() => setSelectedRole(null)}
-                                    >
-                                        None
-                                    </option>
-                                    {roles?.map((role) => (
-                                        <option
-                                            key={role.id}
-                                            onClick={() =>
-                                                onRoleSelect(role.id, role.name)
-                                            }
-                                        >
-                                            {role.name}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                        </div>
-                        <span
-                            onClick={onAddStaffToList}
-                            className="sm:col-span-1 bg-[#615cf6] hover:bg-transparent text-white hover:text-[#615cf6] border border-[#615cf6] px-2 py-1 rounded-md cursor-pointer"
-                        >
-                            Add
-                        </span>
                     </div>
                 </div>
             </div>

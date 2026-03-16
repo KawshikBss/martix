@@ -6,9 +6,10 @@ import { PaginatedResponse } from "@/lib/core/PaginatedResponse";
 
 export interface IStoresListProps {
     data?: InfiniteData<PaginatedResponse<StoreInterface>>;
+    handleAddMember?: (store: StoreInterface) => void;
 }
 
-export function StoresList({ data }: IStoresListProps) {
+export function StoresList({ data, handleAddMember }: IStoresListProps) {
     const shownCount =
         data?.pages.reduce((total, page) => total + page.data.length, 0) ?? 0;
     return data?.pages?.[0].total ? (
@@ -19,8 +20,12 @@ export function StoresList({ data }: IStoresListProps) {
             <div className="space-y-4 mt-4">
                 {data?.pages?.map((page) =>
                     page.data.map((store) => (
-                        <StoresListItem key={store.id} store={store} />
-                    ))
+                        <StoresListItem
+                            key={store.id}
+                            store={store}
+                            handleAddMember={handleAddMember}
+                        />
+                    )),
                 )}
             </div>
         </div>

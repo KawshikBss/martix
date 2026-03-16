@@ -7,11 +7,12 @@ import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 import { FaBoxes, FaPhone, FaUsers } from "react-icons/fa";
 import { FaLocationPin } from "react-icons/fa6";
 import { MdEmail, MdWarning } from "react-icons/md";
 import { toast } from "react-toastify";
+import AddMemberModal from "../components/AddMemberModal";
 
 type Props = {};
 
@@ -28,6 +29,11 @@ const SingleStore = (props: Props) => {
         }
         queryClient.invalidateQueries({ queryKey: ["store", storeId] });
     };
+
+    const [showMemberModal, setShowMemberModal] = useState<boolean>(false);
+
+    const openMemberModal = () => setShowMemberModal(true);
+    const closeMemberModal = () => setShowMemberModal(false);
 
     return (
         <main className="p-4 md:p-8">
@@ -269,9 +275,19 @@ const SingleStore = (props: Props) => {
                 <p className="text-gray-700 font-semibold mb-6">
                     {store?.manager.name}
                 </p>
-                <h3 className="text-2xl font-bold mb-2">
-                    People in This Store
-                </h3>
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
+                    <h3 className="text-2xl font-bold mb-2">
+                        People in This Store
+                    </h3>
+                    {store?.can_edit && (
+                        <span
+                            onClick={openMemberModal}
+                            className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white cursor-pointer"
+                        >
+                            Add Member
+                        </span>
+                    )}
+                </div>
                 {store?.staff?.length ? (
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                         {store?.staff?.map((staff) => (
@@ -322,6 +338,13 @@ const SingleStore = (props: Props) => {
                                     <MdEmail className="text-blue-600 text-lg inline me-2" />
                                     {staff?.user?.email ?? "N/A"}
                                 </p>
+                                <div className="flex flex-wrap gap-2 mt-2">
+                                    {store?.can_edit && (
+                                        <button className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white">
+                                            Remove
+                                        </button>
+                                    )}
+                                </div>
                             </div>
                         ))}
                     </div>
@@ -329,6 +352,11 @@ const SingleStore = (props: Props) => {
                     <p className="text-gray-700 text-xl">No staff yet</p>
                 )}
             </div>
+            <AddMemberModal
+                store={store}
+                show={showMemberModal}
+                onClose={closeMemberModal}
+            />
         </main>
     );
 };

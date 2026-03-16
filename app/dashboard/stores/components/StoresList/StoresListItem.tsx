@@ -11,9 +11,13 @@ import { toast } from "react-toastify";
 
 export interface IStoresListItemProps {
     store: StoreInterface;
+    handleAddMember?: (store: StoreInterface) => void;
 }
 
-export function StoresListItem({ store }: IStoresListItemProps) {
+export function StoresListItem({
+    store,
+    handleAddMember,
+}: IStoresListItemProps) {
     const { mutateAsync: toggleStoreStatusMutation } = useToggleStoreStatus();
     const onToggleStoreStatus = (id: string) => {
         toggleStoreStatusMutation(id);
@@ -151,6 +155,18 @@ export function StoresListItem({ store }: IStoresListItemProps) {
                     >
                         {store?.is_active ? "Disable" : "Enable"}
                     </span>
+                    {store?.can_edit && (
+                        <span
+                            onClick={() => {
+                                if (handleAddMember) {
+                                    handleAddMember(store);
+                                }
+                            }}
+                            className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white cursor-pointer"
+                        >
+                            Add Member
+                        </span>
+                    )}
                 </div>
             </DashboardAccordion.Expanded>
         </DashboardAccordion.Container>

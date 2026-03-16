@@ -25,6 +25,8 @@ import CustomGraph from "@/components/ui/CustomGraph";
 import { useStoreStocksGraphData } from "@/lib/hooks/stores/useStoreStocksGraphData";
 import { useStoreTransfersGraphData } from "@/lib/hooks/stores/useStoreTransfersGraphData";
 import { BiTransfer } from "react-icons/bi";
+import AddMemberModal from "./components/AddMemberModal";
+import { StoreInterface } from "@/lib/interfaces/StoreIntefrace";
 
 export default function BranchOverview() {
     const { data: storeMetrics } = useStoreMetrics();
@@ -74,6 +76,19 @@ export default function BranchOverview() {
 
     const openFilterModal = () => setShowFilterModal(true);
     const closeFilterModal = () => setShowFilterModal(false);
+
+    const [selectedMemberStore, setSelectedMemberStore] = React.useState<
+        StoreInterface | undefined
+    >(undefined);
+
+    const [showMemberModal, setShowMemberModal] =
+        React.useState<boolean>(false);
+
+    const openMemberModal = (store?: StoreInterface) => {
+        setSelectedMemberStore(store);
+        setShowMemberModal(true);
+    };
+    const closeMemberModal = () => setShowMemberModal(false);
 
     const { data: salesGraphData } = useStoreSalesGraphData();
     const cleanSalesGraphData = React.useMemo(() => {
@@ -225,8 +240,8 @@ export default function BranchOverview() {
                         <FaFilter />
                     </button>
                 </div>
-                <StoresTable data={stores} />
-                <StoresList data={stores} />
+                <StoresTable data={stores} handleAddMember={openMemberModal} />
+                <StoresList data={stores} handleAddMember={openMemberModal} />
                 {storesIsLoading || storesIsFetching ? (
                     <Loader />
                 ) : !storesIsLoading &&
@@ -312,6 +327,11 @@ export default function BranchOverview() {
             <StoresFilterModal
                 show={showFilterModal}
                 onClose={closeFilterModal}
+            />
+            <AddMemberModal
+                store={selectedMemberStore}
+                show={showMemberModal}
+                onClose={closeMemberModal}
             />
         </main>
     );

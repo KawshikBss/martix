@@ -8,9 +8,10 @@ import Link from "next/link";
 
 export interface IStoresTableProps {
     data?: InfiniteData<PaginatedResponse<StoreInterface>>;
+    handleAddMember?: (store: StoreInterface) => void;
 }
 
-export function StoresTable({ data }: IStoresTableProps) {
+export function StoresTable({ data, handleAddMember }: IStoresTableProps) {
     const { mutateAsync: toggleStoreStatusMutation } = useToggleStoreStatus();
 
     return data?.pages?.[0].total ? (
@@ -74,9 +75,21 @@ export function StoresTable({ data }: IStoresTableProps) {
                                 >
                                     {item.is_active ? "Disable" : "Enable"}
                                 </span>
+                                {item.can_edit && (
+                                    <span
+                                        onClick={() => {
+                                            if (handleAddMember) {
+                                                handleAddMember(item);
+                                            }
+                                        }}
+                                        className="bg-gray-200 px-2 py-1 rounded-md hover:bg-white cursor-pointer"
+                                    >
+                                        Add Member
+                                    </span>
+                                )}
                             </td>
                         </tr>
-                    ))
+                    )),
                 )}
             </tbody>
         </table>
