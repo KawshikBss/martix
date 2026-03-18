@@ -37,8 +37,8 @@ export function ProductCard({ product }: IProductCardProps) {
                                 product?.stock_status === "Out Of Stock"
                                     ? "bg-red-500"
                                     : product?.stock_status === "Low Stock"
-                                    ? "bg-yellow-500"
-                                    : "bg-green-500"
+                                      ? "bg-yellow-500"
+                                      : "bg-green-500"
                             } text-white text-xs font-semibold px-3 py-1 rounded-full shadow`}
                         >
                             {product?.stock_status}
@@ -78,7 +78,12 @@ export function ProductCard({ product }: IProductCardProps) {
                     <p className="text-md text-gray-600">
                         Total Stock: {product?.current_stock_quantity}
                     </p>
-                    <p className="text-md text-gray-600">Total Sales: {1000}</p>
+                    <p className="text-md text-gray-600">
+                        Total Sales:{" "}
+                        {product?.total_sales
+                            ? "৳" + product?.total_sales
+                            : "N/A"}
+                    </p>
                 </div>
                 <div className="flex justify-center gap-4 flex-wrap mt-4">
                     <Link

@@ -54,7 +54,9 @@ const ProductsTableItem = ({ product }: Props) => {
                 <td className="px-2 py-4 text-end">
                     {product?.current_stock_quantity ?? "N/A"}
                 </td>
-                <td className="px-2 py-4 text-end">$120</td>
+                <td className="px-2 py-4 text-end">
+                    {product?.total_sales ? "৳" + product?.total_sales : "N/A"}
+                </td>
                 <td className="px-2 py-4 flex justify-center gap-4 flex-wrap">
                     <Link
                         href={`/dashboard/products/${product.id}`}
