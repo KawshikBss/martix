@@ -45,8 +45,8 @@ export function StoresTable({ data, handleAddMember }: IStoresTableProps) {
                             <td className="px-2 py-4">
                                 {item.is_active ? "Active" : "Inactive"}
                             </td>
-                            <td className="px-2 py-4">{1000}</td>
-                            <td className="px-2 py-4">{1000}</td>
+                            <td className="px-2 py-4">${item.today_sales}</td>
+                            <td className="px-2 py-4">${item.monthly_sales}</td>
                             <td className="px-2 py-4">
                                 ${item.current_inventory_value}
                             </td>

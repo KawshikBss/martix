@@ -105,7 +105,7 @@ export function StoresListItem({
                     }
                     title="Today's Sales"
                 >
-                    ${1000}
+                    ${store?.today_sales}
                 </DashboardAccordion.Section>
                 <DashboardAccordion.Section
                     icon={
@@ -113,7 +113,7 @@ export function StoresListItem({
                     }
                     title="Monthly Sales"
                 >
-                    ${1000}
+                    ${store?.monthly_sales}
                 </DashboardAccordion.Section>
                 <DashboardAccordion.Section
                     icon={<BiPackage className="w-4 h-4 text-blue-500 mr-2" />}
