@@ -169,24 +169,26 @@ export default function BranchOverview() {
                 <KpiCard
                     title="Total Branches"
                     icon={<FaStore className="mr-2 text-xl text-blue-500" />}
-                    value={storeMetrics?.total_stores ?? 0}
+                    value={storeMetrics?.total_stores ?? "None"}
                 />
                 <KpiCard
                     title="Active Stores"
                     icon={<FaCheck className="mr-2 text-xl text-green-500" />}
-                    value={storeMetrics?.active_stores ?? 0}
+                    value={storeMetrics?.active_stores ?? "None"}
                 />
                 <KpiCard
                     title="Inactive Stores"
                     icon={
                         <TiWarning className="mr-2 text-xl text-orange-500" />
                     }
-                    value={storeMetrics?.inactive_stores ?? 0}
+                    value={storeMetrics?.inactive_stores ?? "None"}
                 />
                 <KpiCard
                     title="Avg Stock"
                     icon={<FaBoxes className="mr-2 text-xl text-gray-500" />}
-                    value={storeMetrics?.average_inventory_per_store ?? 0}
+                    value={
+                        storeMetrics?.average_inventory_per_store ?? "0 units"
+                    }
                 />
             </div>
 

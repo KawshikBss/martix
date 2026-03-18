@@ -36,7 +36,7 @@ import { usePaymentsGraphData } from "@/lib/hooks/sales/usePaymentsGraphData";
 export default function Dashboard() {
     const { data: dashboardMetrics } = useDashboardMetrics();
     const { data: inventoriesData } = useInventories();
-    const { data: salesData } = useSales({});
+    const { data: salesData } = useSales({ saleType: "pos" });
     const { data: salesGraphData } = useSalesGraphData();
     const cleanSalesGraphData = useMemo(() => {
         if (!salesGraphData) return { labels: [], datasets: [] };
@@ -129,12 +129,12 @@ export default function Dashboard() {
                     icon={
                         <FaCashRegister className="mr-2 text-xl text-green-500" />
                     }
-                    value={dashboardMetrics?.sales_today ?? "N/A"}
+                    value={dashboardMetrics?.sales_today ?? "0$"}
                 />
                 <KpiCard
                     title="Today's Orders"
                     icon={<FaTruck className="mr-2 text-xl text-blue-500" />}
-                    value={dashboardMetrics?.orders_today ?? "N/A"}
+                    value={dashboardMetrics?.orders_today ?? "None"}
                 />
                 <KpiCard
                     title="Top Product"
@@ -146,21 +146,21 @@ export default function Dashboard() {
                     icon={
                         <FaHourglassHalf className="mr-2 text-xl text-gray-500" />
                     }
-                    value={dashboardMetrics?.pending_today ?? "N/A"}
+                    value={dashboardMetrics?.pending_today ?? "None"}
                 />
                 <KpiCard
                     title="Today's Dues"
                     icon={
                         <FaSearchDollar className="mr-2 text-xl text-amber-500" />
                     }
-                    value={dashboardMetrics?.total_due_today ?? "N/A"}
+                    value={dashboardMetrics?.total_due_today ?? "0$"}
                 />
                 <KpiCard
                     title="Low Stocks"
                     icon={
                         <IoWarning className="mr-2 text-xl text-yellow-500" />
                     }
-                    value={dashboardMetrics?.low_stock_items ?? "N/A"}
+                    value={dashboardMetrics?.low_stock_items ?? "None"}
                 />
             </div>
             <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6 my-6">
@@ -256,7 +256,7 @@ export default function Dashboard() {
                                 </h4>
                                 <p className="text-sm text-gray-500">
                                     You have completed{" "}
-                                    {dashboardMetrics?.sales_today ?? "0"} sales
+                                    {salesData?.pages[0]?.total ?? "0"} sales
                                     today
                                 </p>
                             </div>
