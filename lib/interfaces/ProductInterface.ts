@@ -28,4 +28,5 @@ export interface ProductInterface {
     stock_status: string;
     created_at: string;
     updated_at: string;
+    total_sales: number;
 }
