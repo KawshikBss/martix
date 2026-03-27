@@ -20,7 +20,6 @@ import { TbCancel } from "react-icons/tb";
 import { GrMoney } from "react-icons/gr";
 import { FiShoppingCart } from "react-icons/fi";
 import { FaRegBell } from "react-icons/fa6";
-import notificationsData from "@/public/data/notificationsData";
 import KpiCard from "@/components/ui/KpiCard";
 import { useDashboardMetrics } from "@/lib/hooks/dashboard/useDashboardMetrics";
 import { IoWarning } from "react-icons/io5";
@@ -32,6 +31,8 @@ import { useMemo } from "react";
 import { useStoreSalesGraphData } from "@/lib/hooks/stores/useStoreSalesGraphData";
 import { useTopProducts } from "@/lib/hooks/products/useTopProducts";
 import { usePaymentsGraphData } from "@/lib/hooks/sales/usePaymentsGraphData";
+import { useNotifications } from "@/lib/hooks/notifications/useNotifications";
+import { useUnreadNotificationsCount } from "@/lib/hooks/notifications/useUnreadNotificationsCount";
 
 export default function Dashboard() {
     const { data: dashboardMetrics } = useDashboardMetrics();
@@ -55,6 +56,10 @@ export default function Dashboard() {
             ],
         };
     }, [salesGraphData]);
+
+    const { data: notificationsList } = useNotifications();
+
+    const { data: unreadCount } = useUnreadNotificationsCount();
 
     const { data: storeSalesGraphData } = useStoreSalesGraphData();
     const cleanStoreSalesGraphData = useMemo(() => {
@@ -257,7 +262,7 @@ export default function Dashboard() {
                                 <p className="text-sm text-gray-500">
                                     You have completed{" "}
                                     {salesData?.pages[0]?.total ?? "0"} sales
-                                    today
+                                    this month
                                 </p>
                             </div>
                             <Link
@@ -310,30 +315,31 @@ export default function Dashboard() {
                                     Notifications
                                 </h4>
                                 <p className="text-sm text-gray-500">
-                                    You have 5 new notifications
+                                    You have {unreadCount?.count ?? 0} unread
+                                    notifications
                                 </p>
                             </div>
-                            <Link href="/" className="text-sm text-blue-500">
-                                See All
-                            </Link>
                         </div>
                     </div>
                     <div className="mt-4 mx-2 mb-2 h-100 overflow-y-scroll">
                         <ul className="list-none list-inside">
-                            {notificationsData.map((notification) => (
-                                <li key={notification.id} className="py-2">
-                                    <span
-                                        className={`flex flex-row justify-start items-center gap-4 ${
-                                            notification.read
-                                                ? "text-black-500"
-                                                : "text-green-500"
-                                        }`}
-                                    >
-                                        <FaInfoCircle />
-                                        {notification.message}
-                                    </span>
-                                </li>
-                            ))}
+                            {notificationsList?.pages?.[0]?.data?.map(
+                                (item) => (
+                                    <li key={item.id} className="py-2">
+                                        <Link
+                                            href={item.data.action_url ?? "/"}
+                                            className={`flex flex-row justify-start items-center gap-4 ${
+                                                item.read
+                                                    ? "text-black-500"
+                                                    : "text-green-500"
+                                            } hover:text-blue-500`}
+                                        >
+                                            <FaInfoCircle />
+                                            {item.data.title}
+                                        </Link>
+                                    </li>
+                                ),
+                            )}
                         </ul>
                     </div>
                 </div>
