@@ -100,7 +100,7 @@ export const navItems: INavItem[] = [
             { title: "Create New Order", href: "/dashboard/orders/new" },
         ],
     },
-    {
+    /* {
         icon: <TbReportSearch />,
         title: "Reports",
         href: "/dashboard/reports",
@@ -138,7 +138,7 @@ export const navItems: INavItem[] = [
             { title: "Customer List", href: "/dashboard/customers" },
             { title: "Order History", href: "/dashboard/customers/history" },
         ],
-    },
+    }, */
     /* {
     icon: <LuChartNoAxesCombined />,
     title: "Analytics / Trends",
@@ -148,7 +148,7 @@ export const navItems: INavItem[] = [
       { title: "Stock Suggestions", href: "/dashboard/analytics/suggestions" },
     ],
   }, */
-    {
+    /* {
         icon: <BsGear />,
         title: "System",
         href: "/dashboard/system",
@@ -160,7 +160,7 @@ export const navItems: INavItem[] = [
             },
             { title: "Help & Support", href: "/dashboard/system/help" },
         ],
-    },
+    }, */
 ];
 
 export function Sidebar(props: ISidebarProps) {
