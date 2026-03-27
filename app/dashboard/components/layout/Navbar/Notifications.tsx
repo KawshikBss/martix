@@ -1,5 +1,6 @@
 "use clinet";
 
+import Loader from "@/components/ui/loaders/Loader";
 import { useNotificationMarkAsRead } from "@/lib/hooks/notifications/useNotificationMarkAsRead";
 import { useNotifications } from "@/lib/hooks/notifications/useNotifications";
 import { useUnreadNotificationsCount } from "@/lib/hooks/notifications/useUnreadNotificationsCount";
@@ -12,12 +13,26 @@ type Props = {};
 const Notifications = (props: Props) => {
     const {
         data: notificationsList,
+        isLoading,
         isSuccess,
         hasNextPage,
+        fetchNextPage,
+        isFetchingNextPage,
     } = useNotifications();
     const [isNotificationsOpen, setIsNotificationsOpen] = React.useState(false);
 
     const { data: unreadCount } = useUnreadNotificationsCount();
+
+    const handleScroll = (event: React.UIEvent<HTMLDivElement>) => {
+        const target = event.currentTarget;
+
+        const isAtBottom =
+            target.scrollTop + target.clientHeight >= target.scrollHeight - 10;
+
+        if (isAtBottom && hasNextPage && !isFetchingNextPage) {
+            fetchNextPage();
+        }
+    };
 
     const toggleNotifications = () => {
         setIsNotificationsOpen(!isNotificationsOpen);
@@ -53,10 +68,12 @@ const Notifications = (props: Props) => {
                 className="relative w-5 h-5 cursor-pointer mt-1 text-gray-600 hover:text-gray-800 transition-colors duration-200"
             >
                 <FaRegBell className="w-5 h-5" />
-                {unreadCount?.count && unreadCount?.count > 0 && (
+                {unreadCount?.count && unreadCount?.count > 0 ? (
                     <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
                         {unreadCount?.count}
                     </span>
+                ) : (
+                    ""
                 )}
             </button>
 
@@ -74,8 +91,17 @@ const Notifications = (props: Props) => {
                         </button>
                     </div>
 
-                    <div className="max-h-96 overflow-y-auto">
-                        {isSuccess ? (
+                    <div
+                        className="max-h-96 overflow-y-auto"
+                        onScroll={handleScroll}
+                    >
+                        {isSuccess &&
+                        !notificationsList?.pages?.[0]?.data?.length ? (
+                            <div className="p-8 text-center text-gray-500">
+                                <FaRegBell className="w-8 h-8 mx-auto mb-2 text-gray-300" />
+                                <p>No notifications</p>
+                            </div>
+                        ) : (
                             notificationsList?.pages?.map((page) =>
                                 page?.data?.map((notification) => (
                                     <div
@@ -128,17 +154,19 @@ const Notifications = (props: Props) => {
                                     </div>
                                 )),
                             )
-                        ) : (
-                            <div className="p-8 text-center text-gray-500">
-                                <FaRegBell className="w-8 h-8 mx-auto mb-2 text-gray-300" />
-                                <p>No notifications</p>
-                            </div>
                         )}
                     </div>
 
-                    {hasNextPage && (
+                    {(isFetchingNextPage || (!isSuccess && isLoading)) && (
+                        <Loader />
+                    )}
+
+                    {hasNextPage && !isFetchingNextPage && (
                         <div className="p-3 border-t border-gray-100 text-center">
-                            <button className="text-sm text-blue-600 hover:text-blue-800 font-medium">
+                            <button
+                                className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                                onClick={() => fetchNextPage()}
+                            >
                                 View all notifications
                             </button>
                         </div>
