@@ -91,39 +91,23 @@ const Notifications = (props: Props) => {
                                                 : ""
                                         }`}
                                     >
-                                        <div className="flex items-start justify-between">
-                                            <div className="flex-1">
-                                                <div className="flex items-center gap-2">
-                                                    <div
-                                                        className={`w-2 h-2 rounded-full ${getNotificationPriority(
-                                                            notification?.data
-                                                                ?.priority,
-                                                        )}`}
-                                                    />
-                                                    <h4
-                                                        className={`text-sm font-medium ${
-                                                            !notification.read
-                                                                ? "text-gray-900"
-                                                                : "text-gray-700"
-                                                        }`}
-                                                    >
-                                                        {
-                                                            notification?.data
-                                                                ?.title
-                                                        }
-                                                    </h4>
-                                                </div>
-                                                <p className="text-sm text-gray-600 mt-1">
-                                                    {
-                                                        notification?.data
-                                                            ?.message
-                                                    }
-                                                </p>
-                                                <p className="text-xs text-gray-400 mt-1">
-                                                    {notification.created_at}
-                                                </p>
-                                            </div>
-                                            {notification.read && (
+                                        <div className="flex items-center gap-2">
+                                            <div
+                                                className={`w-2 h-2 rounded-full ${getNotificationPriority(
+                                                    notification?.data
+                                                        ?.priority,
+                                                )}`}
+                                            />
+                                            <h4
+                                                className={`text-sm font-medium ${
+                                                    !notification.read
+                                                        ? "text-gray-900"
+                                                        : "text-gray-700"
+                                                }`}
+                                            >
+                                                {notification?.data?.title}
+                                            </h4>
+                                            {!notification.read && (
                                                 <FaEye
                                                     onClick={(e) =>
                                                         markAsRead(
@@ -131,10 +115,16 @@ const Notifications = (props: Props) => {
                                                             notification?.id,
                                                         )
                                                     }
-                                                    className="text-xl text-blue-500 hover:bg-transparent hover:scale-110 cursor-pointer transition-all duration-300 ease-in-out"
+                                                    className="text-xl text-blue-500 hover:bg-transparent hover:scale-110 cursor-pointer transition-all duration-300 ease-in-out ms-auto"
                                                 />
                                             )}
                                         </div>
+                                        <p className="text-sm text-gray-600 mt-1">
+                                            {notification?.data?.message}
+                                        </p>
+                                        <p className="text-xs text-gray-400 mt-1">
+                                            {notification.created_at}
+                                        </p>
                                     </div>
                                 )),
                             )
