@@ -9,5 +9,6 @@ export interface NotificationInterface {
         reference_type: string;
         reference_id: string;
     };
-    read_at: string;
+    read: boolean;
+    created_at: string;
 }
