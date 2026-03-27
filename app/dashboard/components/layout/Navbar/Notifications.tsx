@@ -1,10 +1,11 @@
 "use clinet";
 
+import { useNotificationMarkAsRead } from "@/lib/hooks/notifications/useNotificationMarkAsRead";
 import { useNotifications } from "@/lib/hooks/notifications/useNotifications";
 import { useUnreadNotificationsCount } from "@/lib/hooks/notifications/useUnreadNotificationsCount";
 import { useRouter } from "next/navigation";
-import React from "react";
-import { FaRegBell, FaTimes } from "react-icons/fa";
+import React, { MouseEvent } from "react";
+import { FaEye, FaRegBell, FaTimes } from "react-icons/fa";
 
 type Props = {};
 
@@ -27,19 +28,22 @@ const Notifications = (props: Props) => {
         if (route) replace(route);
     };
 
-    const markAsRead = (id: string) => {
-        // Handle marking notification as read
-        console.log(`Mark notification ${id} as read`);
+    const { mutateAsync: notificationMarkAsReadMutation } =
+        useNotificationMarkAsRead();
+
+    const markAsRead = async (event: MouseEvent, id?: string) => {
+        event.stopPropagation();
+        await notificationMarkAsReadMutation(id);
     };
 
-    const getNotificationType = (type: string): string => {
-        switch (type) {
-            case "low_stock":
+    const getNotificationPriority = (priority: string): string => {
+        switch (priority) {
+            case "medium":
                 return "bg-yellow-600";
-            case "out_of_stock":
+            case "high":
                 return "bg-red-600";
             default:
-                return "bg-gray-600";
+                return "bg-green-600";
         }
     };
     return (
@@ -82,7 +86,7 @@ const Notifications = (props: Props) => {
                                             )
                                         }
                                         className={`p-4 border-b border-gray-50 hover:bg-gray-50 cursor-pointer transition-colors ${
-                                            !notification.read_at
+                                            !notification.read
                                                 ? "bg-blue-50"
                                                 : ""
                                         }`}
@@ -91,14 +95,14 @@ const Notifications = (props: Props) => {
                                             <div className="flex-1">
                                                 <div className="flex items-center gap-2">
                                                     <div
-                                                        className={`w-2 h-2 rounded-full ${getNotificationType(
+                                                        className={`w-2 h-2 rounded-full ${getNotificationPriority(
                                                             notification?.data
-                                                                ?.type,
+                                                                ?.priority,
                                                         )}`}
                                                     />
                                                     <h4
                                                         className={`text-sm font-medium ${
-                                                            !notification.read_at
+                                                            !notification.read
                                                                 ? "text-gray-900"
                                                                 : "text-gray-700"
                                                         }`}
@@ -116,11 +120,19 @@ const Notifications = (props: Props) => {
                                                     }
                                                 </p>
                                                 <p className="text-xs text-gray-400 mt-1">
-                                                    {/* {notification.time} */}
+                                                    {notification.created_at}
                                                 </p>
                                             </div>
-                                            {!notification.read_at && (
-                                                <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 mt-1" />
+                                            {notification.read && (
+                                                <FaEye
+                                                    onClick={(e) =>
+                                                        markAsRead(
+                                                            e,
+                                                            notification?.id,
+                                                        )
+                                                    }
+                                                    className="text-xl text-blue-500 hover:bg-transparent hover:scale-110 cursor-pointer transition-all duration-300 ease-in-out"
+                                                />
                                             )}
                                         </div>
                                     </div>
