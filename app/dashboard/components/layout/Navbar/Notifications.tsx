@@ -1,0 +1,150 @@
+"use clinet";
+
+import { useNotifications } from "@/lib/hooks/notifications/useNotifications";
+import { useUnreadNotificationsCount } from "@/lib/hooks/notifications/useUnreadNotificationsCount";
+import { useRouter } from "next/navigation";
+import React from "react";
+import { FaRegBell, FaTimes } from "react-icons/fa";
+
+type Props = {};
+
+const Notifications = (props: Props) => {
+    const {
+        data: notificationsList,
+        isSuccess,
+        hasNextPage,
+    } = useNotifications();
+    const [isNotificationsOpen, setIsNotificationsOpen] = React.useState(false);
+
+    const { data: unreadCount } = useUnreadNotificationsCount();
+
+    const toggleNotifications = () => {
+        setIsNotificationsOpen(!isNotificationsOpen);
+    };
+
+    const { replace } = useRouter();
+    const onClickNotification = (route?: string) => {
+        if (route) replace(route);
+    };
+
+    const markAsRead = (id: string) => {
+        // Handle marking notification as read
+        console.log(`Mark notification ${id} as read`);
+    };
+
+    const getNotificationType = (type: string): string => {
+        switch (type) {
+            case "low_stock":
+                return "bg-yellow-600";
+            case "out_of_stock":
+                return "bg-red-600";
+            default:
+                return "bg-gray-600";
+        }
+    };
+    return (
+        <div className="md:relative">
+            <button
+                onClick={toggleNotifications}
+                className="relative w-5 h-5 cursor-pointer mt-1 text-gray-600 hover:text-gray-800 transition-colors duration-200"
+            >
+                <FaRegBell className="w-5 h-5" />
+                {unreadCount?.count && unreadCount?.count > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                        {unreadCount?.count}
+                    </span>
+                )}
+            </button>
+
+            {isNotificationsOpen && (
+                <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                    <div className="flex justify-between items-center p-4 border-b border-gray-100">
+                        <h3 className="text-lg font-semibold text-gray-900">
+                            Notifications
+                        </h3>
+                        <button
+                            onClick={() => setIsNotificationsOpen(false)}
+                            className="text-gray-400 hover:text-gray-600"
+                        >
+                            <FaTimes className="w-4 h-4" />
+                        </button>
+                    </div>
+
+                    <div className="max-h-96 overflow-y-auto">
+                        {isSuccess ? (
+                            notificationsList?.pages?.map((page) =>
+                                page?.data?.map((notification) => (
+                                    <div
+                                        key={notification.id}
+                                        onClick={() =>
+                                            onClickNotification(
+                                                notification.data.action_url,
+                                            )
+                                        }
+                                        className={`p-4 border-b border-gray-50 hover:bg-gray-50 cursor-pointer transition-colors ${
+                                            !notification.read_at
+                                                ? "bg-blue-50"
+                                                : ""
+                                        }`}
+                                    >
+                                        <div className="flex items-start justify-between">
+                                            <div className="flex-1">
+                                                <div className="flex items-center gap-2">
+                                                    <div
+                                                        className={`w-2 h-2 rounded-full ${getNotificationType(
+                                                            notification?.data
+                                                                ?.type,
+                                                        )}`}
+                                                    />
+                                                    <h4
+                                                        className={`text-sm font-medium ${
+                                                            !notification.read_at
+                                                                ? "text-gray-900"
+                                                                : "text-gray-700"
+                                                        }`}
+                                                    >
+                                                        {
+                                                            notification?.data
+                                                                ?.title
+                                                        }
+                                                    </h4>
+                                                </div>
+                                                <p className="text-sm text-gray-600 mt-1">
+                                                    {
+                                                        notification?.data
+                                                            ?.message
+                                                    }
+                                                </p>
+                                                <p className="text-xs text-gray-400 mt-1">
+                                                    {/* {notification.time} */}
+                                                </p>
+                                            </div>
+                                            {!notification.read_at && (
+                                                <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0 mt-1" />
+                                            )}
+                                        </div>
+                                    </div>
+                                )),
+                            )
+                        ) : (
+                            <div className="p-8 text-center text-gray-500">
+                                <FaRegBell className="w-8 h-8 mx-auto mb-2 text-gray-300" />
+                                <p>No notifications</p>
+                            </div>
+                        )}
+                    </div>
+
+                    {hasNextPage && (
+                        <div className="p-3 border-t border-gray-100 text-center">
+                            <button className="text-sm text-blue-600 hover:text-blue-800 font-medium">
+                                View all notifications
+                            </button>
+                        </div>
+                    )}
+                </div>
+            )}
+        </div>
+    );
+};
+
+export default Notifications;
