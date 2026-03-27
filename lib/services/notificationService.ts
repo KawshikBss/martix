@@ -9,4 +9,6 @@ export const notificationService = {
         await apiClient.get(`notifications?page=${params?.page ?? 1}`),
     getUnreadCount: async (): Promise<any> =>
         await apiClient.get("notifications/unread-count"),
+    markAsRead: async (id?: string): Promise<any> =>
+        await apiClient.get(`notifications/${id}/read`),
 };
