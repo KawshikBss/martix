@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { Sidebar } from "./Sidebar";
-import Navbar from "./Navbar";
+import Navbar from "./Navbar/Navbar";
 import PageLoader from "@/components/ui/loaders/PageLoader";
 import { CartProvider } from "@/lib/providers/CartProvider";
 
